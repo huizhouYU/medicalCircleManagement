@@ -5,8 +5,7 @@ import Home from '../components/home/home.vue'
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
+  routes: [{
       name: 'login',
       path: '/login',
       component: Login
@@ -14,7 +13,17 @@ export default new Router({
     {
       name: 'home',
       path: '/',
-      component: Home
+      component: Home,
+      children: [{
+        path: '/goods1',
+        name: '商品列表',
+        component: () => import("../components/goods/goods1.vue"),
+      },
+      {
+        path: '/goods2',
+        name: '商品列表2',
+        component: () => import("../components/goods/goods2.vue"),
+      }]
     }
   ]
 })
