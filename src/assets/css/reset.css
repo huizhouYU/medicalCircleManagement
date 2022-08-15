@@ -1,0 +1,17 @@
+html,
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+p,
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
