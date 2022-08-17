@@ -15,15 +15,20 @@ export default new Router({
       path: '/',
       component: Home,
       children: [{
-        path: '/goods1',
-        name: '商品列表',
-        component: () => import("../components/goods/goods1.vue"),
-      },
-      {
-        path: '/goods2',
-        name: '商品列表2',
-        component: () => import("../components/goods/goods2.vue"),
-      }]
+          path: '/goodsIndex',
+          name: '商品列表',
+          component: () => import("../components/goods/goodsIndex.vue"),
+        }, {
+          path: '/goods1',
+          name: '上传图片',
+          component: () => import("../components/goods/goods1.vue"),
+        },
+        {
+          path: '/goods2',
+          name: '富文本',
+          component: () => import("../components/goods/goods2.vue"),
+        }
+      ]
     }
   ]
 })

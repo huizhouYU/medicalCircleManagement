@@ -1,65 +1,16 @@
 {
-  "id": "3576888",
+  "id": "3594407",
   "name": "medicalCircleManagement",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
     {
-      "icon_id": "2076258",
-      "name": "客服",
-      "font_class": "kefu",
-      "unicode": "e88f",
-      "unicode_decimal": 59535
-    },
-    {
-      "icon_id": "5387693",
-      "name": "地图_定位",
-      "font_class": "ditu_dingwei",
-      "unicode": "eb33",
-      "unicode_decimal": 60211
-    },
-    {
-      "icon_id": "18175747",
-      "name": "圆点",
-      "font_class": "double-circle",
-      "unicode": "ea6c",
-      "unicode_decimal": 60012
-    },
-    {
-      "icon_id": "1367732",
-      "name": "双箭头",
-      "font_class": "shuangjiantou",
-      "unicode": "e624",
-      "unicode_decimal": 58916
-    },
-    {
-      "icon_id": "11806658",
-      "name": "热门活动2",
-      "font_class": "remenhuodong",
-      "unicode": "e606",
-      "unicode_decimal": 58886
-    },
-    {
-      "icon_id": "3199558",
-      "name": "招聘需求汇总",
-      "font_class": "drxx51",
-      "unicode": "e706",
-      "unicode_decimal": 59142
-    },
-    {
-      "icon_id": "12754142",
-      "name": "右箭头",
-      "font_class": "youjiantou_huaban",
-      "unicode": "e63c",
-      "unicode_decimal": 58940
-    },
-    {
-      "icon_id": "16001757",
-      "name": "放大镜2",
-      "font_class": "fangdajing2",
-      "unicode": "e633",
-      "unicode_decimal": 58931
+      "icon_id": "17868607",
+      "name": "左箭头",
+      "font_class": "zuojiantou",
+      "unicode": "e610",
+      "unicode_decimal": 58896
     }
   ]
 }

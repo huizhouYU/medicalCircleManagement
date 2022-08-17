@@ -4,15 +4,20 @@
       <img src="../../assets/images/logo.png" alt="">
     </div>
     <div class="header-right">
-      <div class="w-box">
-        <div class="n-box"></div>
-      </div>
-      <span title="阿里巴巴图标矢量库">阿里巴巴图标矢量库</span>
+      <span :title="username">{{username}}</span>
+      <img src="../../assets/images/icon_logout.png" alt="" title="退出">
     </div>
   </div>
 </template>
 
 <script>
+  export default{
+    data(){
+      return{
+        username:'欢迎您，迅即影像网络'
+      }
+    }
+  }
 </script>
 
 <style scoped lang="less">
@@ -22,19 +27,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-right: 20px;
+    padding-right: 75px;
     box-sizing: border-box;
 
 
     .img-box {
-      width: 200px;
+      width: 210px;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
 
       img {
-        width: 120px;
-        height: 60px;
+        width: 125px;
+        height: 42px;
       }
     }
 
@@ -42,37 +48,26 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-    }
-
-    .w-box {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-image: linear-gradient(45deg, #4aa2ff, #33ee68);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      .n-box {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        margin: auto;
-        background-color: #fff;
-
+      img{
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
       }
     }
 
+
     span {
       display: inline-block;
+      width: 105px;
+      height: 16px;
       font-size: 12px;
-      margin-left: 10px;
-      color: #999;
-      width: 80px;
+      margin-right: 40px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       box-sizing: border-box;
+      font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+      color: #333333;
     }
   }
 </style>

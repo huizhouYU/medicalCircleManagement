@@ -1,43 +1,40 @@
 <template>
-  <div id="NavMenu">
-    <el-menu :default-active="activeIndex" class="el-menu-vertical-demo" text-color="#999" :unique-opened="true"
-      @select="handleSelect" router active-text-color="#ffd04b">
+  <el-menu :default-active="activeIndex" class="el-menu-vertical-demo" text-color="#999" :unique-opened="true"
+    @select="handleSelect" router active-text-color="#1890FF">
 
-      <template v-for="(item,index) in navMenuData">
-        <el-submenu :index="item.index">
-          <template slot="title">
-            <i :class="item.iconfont"></i>
-            <span>{{item.name}}</span>
-          </template>
-          <template v-for="item2 in item.child">
-            <el-menu-item :index="item2.index">{{item2.name}}</el-menu-item>
-          </template>
-        </el-submenu>
-      </template>
+    <template v-for="(item,index) in navMenuData">
+      <el-submenu :index="item.index">
+        <template slot="title">
+          <i :class="item.iconfont"></i>
+          <span>{{item.name}}</span>
+        </template>
+        <template v-for="item2 in item.child">
+          <el-menu-item :index="item2.index">{{item2.name}}</el-menu-item>
+        </template>
+      </el-submenu>
+    </template>
 
-    </el-menu>
-  </div>
+  </el-menu>
 </template>
 
 <script>
   export default {
-    name: "NavMenu",
     data() {
       return {
-        activeIndex: "1-1",
+        activeIndex: "/goodsIndex",
         navMenuData: [{
             index: "1",
             name: "商品",
             iconfont: "el-icon-location",
             child: [{
-              index: "/goods1",
+              index: "/goodsIndex",
               name: "商品列表"
+            },{
+              index: "/goods1",
+              name: "上传图片"
             }, {
               index: "/goods2",
-              name: "商品列表2"
-            }, {
-              index: "/shop3",
-              name: "选项3"
+              name: "富文本"
             }]
           },
           {
@@ -89,14 +86,33 @@
 </script>
 
 <style scoped lang="less">
-  .NavMenu {
-
-    .el-submenu .el-menu-item {
-      max-width: 200px;
-    }
+  .el-submenu .el-menu-item {
+    max-width: 210px;
   }
 
   .el-menu {
     border: none;
+    height: 100%;
+    padding: 10px 20px;
+    box-sizing: border-box;
+  }
+
+  .el-submenu .el-menu-item {
+    min-width: 10px;
+  }
+
+  // 菜单栏选中的背景颜色
+  .el-menu-item.is-active {
+    background-color: #E6F7FF !important;
+  }
+
+  // 一级菜单文字颜色
+  .el-submenu__title {
+    color: #333 !important;
+  }
+
+  // 二级菜单文字大小
+  .el-menu-item {
+    font-size: 12px;
   }
 </style>

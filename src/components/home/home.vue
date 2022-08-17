@@ -5,8 +5,8 @@
     </el-header>
     <el-container>
       <!-- 左侧菜单栏 -->
-      <el-aside width="200px" class="aside">
-        <MenuTree></MenuTree>
+      <el-aside class="aside">
+        <MenusTree></MenusTree>
       </el-aside>
       <el-container>
         <el-main class="main">
@@ -18,11 +18,11 @@
 </template>
 
 <script>
-  import MenuTree from '@/components/home/menustree.vue';
+  import MenusTree from '@/components/home/menustree.vue';
   import homeHeader from '@/components/home/homeHeader.vue';
   export default {
     components: {
-      MenuTree,
+      MenusTree,
       homeHeader
     },
 
@@ -40,79 +40,35 @@
     },
     data() {
       return {
-        uniqueOpened: true, //是否只保持一个子菜单的展开
-        menuList: [{
-            id: 1,
-            parentid: '0',
-            name: '商品',
-            icon: 'HomeFilled',
-            url: '/homepage',
-            children: [{
-              id: 3,
-              parentid: '2',
-              name: '商品列表',
-              icon: '',
-              url: '/shopList'
-            }, ]
-          },
-          {
-            id: 2,
-            parentid: '0',
-            name: '订单管理',
-            icon: 'UserFilled',
-            children: [{
-                id: 3,
-                parentid: '2',
-                name: '订单列表',
-                icon: '',
-                url: '/grade',
-              },
-              {
-                id: 5,
-                parentid: '2',
-                name: '管理订单',
-                icon: '',
-                url: '/grade',
-              }
-            ]
-          },
-          {
-            id: 6,
-            parentid: '0',
-            name: '个人信息',
-            icon: 'List',
-            children: [{
-              id: 3,
-              parentid: '2',
-              name: '密码修改',
-              icon: '',
-              url: '/password'
-            }, ]
-          }
-        ]
       }
     }
   }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+  /* 整个页面 */
   .content {
     height: 100%;
+    background-color: #F5F7FA;
   }
 
+  // 头部
   .header {
-    height: 80px !important;
+    height: 90px !important;
     border-bottom: 1px solid #eee;
-    padding:0;
-    
+    padding: 0;
+    background-color: #fff;
   }
 
+  // 左侧菜单栏
   .aside {
-    height: calc(100%-120px);
+    width: 210px !important;
     border-right: 1px solid #eee;
   }
 
+  //中间主体区域
   .main {
-    /* background-color: bisque; */
+    padding: 20px;
+    // background-color: #fff;
   }
 </style>
