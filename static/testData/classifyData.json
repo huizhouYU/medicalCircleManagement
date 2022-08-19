@@ -1,0 +1,111 @@
+{
+  "linkageData": [{
+      "id": "1",
+      "name": "联影",
+      "child": [{
+          "id": "1-1",
+          "name": "PET CT/ PET MRI",
+          "parentId": 1,
+          "child": [{
+              "id": "1-1-1",
+              "name": "uEXPLORER",
+              "parentId": "1-1"
+            },
+            {
+              "id": "1-2-2",
+              "name": "uEXPLORER",
+              "parentId": "1-1"
+            }
+          ]
+        },
+        {
+          "id": "1-2",
+          "name": "PET CT/ PET MRI",
+          "parentId": 1,
+          "child": [{
+              "id": "1-1-1",
+              "name": "uEXPLORER2",
+              "parentId": "1-2"
+            },
+            {
+              "id": "1-2-2",
+              "name": "uEXPLORER2",
+              "parentId": "1-2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "联影",
+      "child": [{
+          "id": "2-1",
+          "name": "PET CT2/ PET MRI",
+          "parentId": "2",
+          "child": [{
+              "id": "1-1-1",
+              "name": "uEXPLORER3",
+              "parentId": "2-1"
+            },
+            {
+              "id": "1-2-2",
+              "name": "uEXPLORER3",
+              "parentId": "2-1"
+            }
+          ]
+        },
+        {
+          "id": "2-2",
+          "name": "PET CT2/ PET MRI",
+          "parentId": "2"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "联影",
+      "child": [{
+          "id": "3-1",
+          "name": "PET CT3/ PET MRI",
+          "parentId": "3"
+        },
+        {
+          "id": "3-2",
+          "name": "PET CT3/ PET MRI",
+          "parentId": "3"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "联影",
+      "child": [{
+          "id": "4-1",
+          "name": "PET CT4/ PET MRI",
+          "parentId": "4"
+        },
+        {
+          "id": "4-2",
+          "name": "PET CT4/ PET MRI",
+          "parentId": "4"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "联影",
+      "child": [{
+          "id": "5-1",
+          "name": "PET CT5/ PET MRI",
+          "parentId": "5"
+        },
+        {
+          "id": "5-2",
+          "name": "PET CT5/ PET MRI",
+          "parentId": "5"
+        }
+      ]
+    }
+  ]
+}

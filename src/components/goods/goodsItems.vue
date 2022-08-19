@@ -235,7 +235,6 @@
         text-align: center;
         line-height: 24px;
         border: none;
-
         color: #fff;
       }
     }

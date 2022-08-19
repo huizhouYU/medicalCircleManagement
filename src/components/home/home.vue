@@ -48,7 +48,7 @@
 <style scoped lang="less">
   /* 整个页面 */
   .content {
-    height: 100%;
+    // height: 100%;
     background-color: #F5F7FA;
   }
 
@@ -58,6 +58,13 @@
     border-bottom: 1px solid #eee;
     padding: 0;
     background-color: #fff;
+  }
+  // 头部下面的主体内容:左侧菜单栏+中间内容
+  .el-aside {
+      height: calc(100vh - 90px);// 设置左侧 aside 高度
+  }
+  .el-main {
+      height: calc(100vh - 90px);// 设置左侧 aside 高度
   }
 
   // 左侧菜单栏
@@ -69,6 +76,7 @@
   //中间主体区域
   .main {
     padding: 20px;
+    // min-width: 850px;
     // background-color: #fff;
   }
 </style>

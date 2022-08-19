@@ -30,7 +30,7 @@
         </div>
       </div>
       <!-- 添加商品 -->
-      <button class="btn-add">添加商品 </button>
+      <button class="btn-add" @click="toAddGoods">添加商品 </button>
     </div>
     <!-- 模块三 商品列表 -->
     <goods-items class="items"></goods-items>
@@ -67,6 +67,11 @@
         inputKey: '', //输入商品名称/关键字
         value: ''
       }
+    },
+    methods:{
+      toAddGoods(){
+        this.$router.push('/addGoods')
+      }
     }
   }
 </script>
@@ -87,13 +92,14 @@
       border-radius: 6px 6px 6px 6px;
       text-align: center;
       line-height: 34px;
+      cursor: pointer;
     }
 
     //标题
     .title {
       margin-left: 20px;
-      width: 88px;
       height: 34px;
+      padding: 0px 20px;
       background: #1890FF;
       border-radius: 6px 6px 6px 6px;
       font-size: 12px;

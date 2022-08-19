@@ -19,6 +19,15 @@ export default new Router({
           name: '商品列表',
           component: () => import("../components/goods/goodsIndex.vue"),
         }, {
+          path: '/addGoods',
+          name: '添加商品',
+          component: () => import("../components/goods/addGoods.vue"),
+        },
+        {
+          path: '/publishGood',
+          name: '发布商品',
+          component: () => import("../components/goods/publishGood.vue"),
+        }, {
           path: '/goods1',
           name: '上传图片',
           component: () => import("../components/goods/goods1.vue"),
