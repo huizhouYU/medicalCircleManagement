@@ -25,7 +25,7 @@
     <div class="multistage-linkage">
       <div class="module-uls">
         <!-- 一级菜单 -->
-        <ul class="item-a">
+        <ul class="item-a" id="item-a">
           <li v-for="(item,index) in linkageData" :key="item.id" :class="{'selected':selectIndex.item1 == item.id}"
             @click="chooseItem1(index,item.id)">
             {{item.name}} <i class="iconfont">&#xe62b;</i>
@@ -78,7 +78,7 @@
           item2: '-1',
           item3: '-1'
         },
-        isNextFlag:false,//是否允许跳转下一步
+        isNextFlag: false, //是否允许跳转下一步
         chooseClassify: "", //选中的类目 拼接
         chosedData: [{
           id: '',
@@ -110,9 +110,12 @@
           } else {
             this.$message.error("数据请求失败，请稍后再试！")
           }
+          console.log(this.$route.query.chosedData)
           if (this.$route.query.chosedData !== undefined) {
-            this.chosedData = this.$route.query.chosedData
+
+            this.chosedData = JSON.parse(this.$route.query.chosedData)
             this.setData()
+            this.position()
           }
         })
       },
@@ -128,7 +131,41 @@
           if (this.chosedData[2].name != '') {
             this.chooseClassify += " > " + this.chosedData[2].name
           }
+        } else {
+          this.isNextFlag = false
         }
+      },
+      // 根据传值定位三级联动菜单
+      position() {
+        console.log("定位")
+        this.selectIndex.item1 = this.chosedData[0].id
+        this.selectIndex.item2 = this.chosedData[1].id
+        this.selectIndex.item3 = this.chosedData[2].id
+        var a = document.getElementsByClassName("item-a")[0].offsetHeight
+        //循环一级菜单
+        for (var i = 0; i < this.linkageData.length; i++) {
+          if (this.linkageData[i].id == this.chosedData[0].id) {
+
+            // if(i*32 > 170 ){
+            //   console.log(i*32)
+            //   // document.getElementById('item-a').scrollTop=i*32
+            //   document.getElementsByClassName("item-a")[0].scrollTop=200
+            //   console.log(document.getElementsByClassName("item-a")[0].scrollTop)
+            // }
+            this.item2ChildData = this.linkageData[i].child
+            this.isShowFlag2 = true
+            //循环二级菜单
+            for (var j = 0; j < this.item2ChildData.length; j++) {
+              if (this.item2ChildData[j].id == this.chosedData[1].id) {
+                this.item3ChildData = this.item2ChildData[j].child
+                this.isShowFlag3 = true
+                return
+              }
+            }
+            return
+          }
+        }
+
       },
       //选择一级分类
       chooseItem1(val, id) {
@@ -194,10 +231,11 @@
       },
       //下一步
       nextStep() {
+        var chosedDataString = JSON.stringify(this.chosedData)
         this.$router.replace({
           path: '/publishGood',
           query: {
-            chosedData: this.chosedData
+            chosedData: chosedDataString
           }
         })
       }
@@ -340,6 +378,7 @@
       display: flex;
       justify-content: flex-start;
       height: 374px;
+      // height: 170px;
 
       .item-a,
       .item-b,
@@ -419,7 +458,8 @@
         font-weight: 400;
         color: #FFFFFF;
       }
-      .next-btn-t{
+
+      .next-btn-t {
         background: #1890FF;
       }
     }

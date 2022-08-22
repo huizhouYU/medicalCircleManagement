@@ -1,25 +1,16 @@
 <template>
-  <div v-loading="loading">
-    <el-upload ref='upload' list-type="picture-card" :limit="5" :show-file-list="false" multiple action="#"
-        :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :auto-upload="false" :file-list="fileList"
-        :on-success="uploadAppSuccess" :on-error="handleImageError" :before-upload="beforeAvatarUpload" :on-change="changehandleupload"
-       accept=".gif,.jpeg,.jpg,.JPG,.JPEG,.png,.svg,.ico" title="点击上传">
-    <!-- <el-upload
-                 ref="upload"
-                 action=""
-                 list-type="picture-card"
-                 :on-preview="handlePictureCardPreview"
-                 :on-remove="handleRemove"
-                 :on-change="UploadImage"
-                 :limit="5"
-                 :file-list="fileList"
-                 :auto-upload="false"
-             > -->
-    
-       <i class="el-icon-plus"></i>
-     </el-upload>
+  <div v-loading="loading" class="images-content">
+    <el-upload ref='upload' class="upload-add" list-type="picture-card"  :show-file-list="false" multiple
+      action="#" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :auto-upload="false"
+      :file-list="fileList" :on-success="uploadAppSuccess" :on-error="handleImageError"
+      :before-upload="beforeAvatarUpload" :on-change="changehandleupload"
+      :on-exceed="limitNum()" :limit="5"
+      accept=".gif,.jpeg,.jpg,.JPG,.JPEG,.png,.svg,.ico" title="点击上传" v-show="isShowUpload">
+      <img src="../../assets/images/icon_add-pic.png" alt="">
+      <span>添加图片</span>
+    </el-upload>
     <draggable tag="ul" v-model="allListChild" v-bind="dragOptions" @update="datadragEnd" @start="drag = true"
-      @end="drag = false" style="margin-left:-40px;">
+      @end="drag = false" style="margin-left:15px;">
       <div class="img-wrapper" v-for="(item,index) in allListChild" :key="index">
         <el-image :src="item.imgUrl">
         </el-image>
@@ -36,13 +27,7 @@
         </el-dialog>
       </div>
     </draggable>
-    <!-- <el-upload :show-file-list="false" action="" list-type="picture-card" :http-request="handleupload"
-      :on-success="handlePictureSuccess"> -->
-    <!-- <el-upload ref='upload' list-type="picture-card" :limit="20" :show-file-list="false" multiple action="#"
-      :data="qiniuUploadForm" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :auto-upload="false"
-      :on-success="uploadAppSuccess" :on-error="handleImageError" :before-upload="beforeAvatarUpload"
-      accept=".gif,.jpeg,.jpg,.JPG,.JPEG,.png,.svg,.ico" title="点击上传"> -->
-    
+
   </div>
 </template>
 
@@ -58,6 +43,7 @@
     },
     data() {
       return {
+        isShowUpload: true, //是否展示上传图片
         loading: false,
         allListChild: [],
         imgUrl: '',
@@ -65,10 +51,9 @@
         qiniuUploadForm: {}, // 七牛图片的上传对象
         dialogVisible: false,
         dialogImageUrl: '',
-        fileList:[]
+        fileList: []
       };
     },
-
     methods: {
       beforeAvatarUpload(file) {
         this.loading = true;
@@ -114,7 +99,7 @@
         }
         this.loading = false
       },
-      changehandleupload(file){
+      changehandleupload(file) {
         console.log("handleupload");
         console.log(file);
         var temp = {
@@ -124,6 +109,7 @@
         this.allListChild.push(temp) // 启动拖拽功能
         this.$emit('allList', this.allListChild)
         setTimeout(this.loading = false, 10000)
+        this.isShow()
       },
       handlePreview(file) {
         console.log(file);
@@ -132,6 +118,11 @@
       //删除图片
       deleImg(data, index) {
         this.allListChild.splice(index, 1)
+        this.isShow()
+      },
+      limitNum(files, fileList){
+        console.log("files",files)
+        console.log("fileList",fileList)
       },
       // 拖动排序
       datadragEnd(evt) {
@@ -141,6 +132,13 @@
           item.orderNumber = index
         })
         this.$emit('allList', this.allListChild)
+      },
+      isShow(){
+        if(this.allListChild.length >=5){
+          this.isShowUpload = false
+        }else{
+          this.isShowUpload = true
+        }
       }
 
     },
@@ -162,6 +160,13 @@
   }
 </script>
 <style lang="less" scoped>
+  .images-content {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+  }
+
   .img-list {
     display: inline-block;
   }
@@ -170,11 +175,11 @@
     float: left;
     position: relative;
     margin-right: 20px;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
     border: 1px dashed #c0ccda;
     border-radius: 6px;
-    width: 148px;
-    height: 148px;
+    width: 70px;
+    height: 70px;
     overflow: hidden;
 
     &:hover {
@@ -190,8 +195,8 @@
 
   .operate-bg {
     background: #000000;
-    width: 148px;
-    height: 148px;
+    width: 70px;
+    height: 70px;
     opacity: 0.4;
     position: absolute;
     top: 0;
@@ -202,20 +207,50 @@
   .del-icon {
     position: absolute;
     top: 0;
-    right: 36px;
-    font-size: 25px;
-    line-height: 142px;
+    right: 40px;
+    font-size: 20px;
+    line-height: 70px;
     color: #ffffff;
     z-index: 10;
+    // margin-right: 5px;
   }
 
   .preview-icon {
     position: absolute;
     top: 0;
-    left: 36px;
-    font-size: 25px;
-    line-height: 142px;
+    left: 40px;
+    font-size: 20px;
+    line-height: 70px;
     color: #ffffff;
     z-index: 10;
+  }
+
+
+  .upload-add {
+    /deep/ .el-upload--picture-card {
+      width: 70px;
+      height: 70px;
+      background: #FFFFFF;
+      border-radius: 4px 4px 4px 4px;
+      border: 1px solid #EBEEF5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      line-height: normal;
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+
+      span {
+        margin-top: 8px;
+        font-size: 12px;
+        font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+        font-weight: 400;
+        color: #BBBBBB;
+      }
+    }
   }
 </style>

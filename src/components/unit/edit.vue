@@ -161,6 +161,6 @@ export default {
     background-color: #d3d3d3;
   }
   .quill-editor ,.editor{
-    height: 200px;
+    height: 300px;
   }
 </style>

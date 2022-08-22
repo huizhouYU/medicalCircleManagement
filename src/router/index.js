@@ -25,7 +25,8 @@ export default new Router({
         },
         {
           path: '/publishGood',
-          name: '发布商品',
+          // title:'发布商品',
+          name: 'publishGood',
           component: () => import("../components/goods/publishGood.vue"),
         }, {
           path: '/goods1',
