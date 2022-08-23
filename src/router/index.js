@@ -37,6 +37,16 @@ export default new Router({
           path: '/goods2',
           name: '富文本',
           component: () => import("../components/goods/goods2.vue"),
+        },
+        {
+          path: '/orderManage',
+          name: '订单管理',
+          component: () => import("../pages/order/orderManage.vue"),
+        },
+        {
+          path: '/timeSelect',
+          name: '时间选择器',
+          component: () => import("../pages/order/timeSelect.vue"),
         }
       ]
     }

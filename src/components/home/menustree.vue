@@ -42,11 +42,11 @@
             name: "订单",
             iconfont: "el-icon-menu",
             child: [{
-              index: "3-1",
-              name: "选项1"
+              index: "/orderManage",
+              name: "订单管理"
             }, {
-              index: "3-2",
-              name: "选项2"
+              index: "/timeSelect",
+              name: "时间选择器"
             }, {
               index: "3-3",
               name: "选项3"
