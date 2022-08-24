@@ -22,7 +22,7 @@
             </el-form-item>
             <el-form-item label="图片可拖曳排序：" prop="trialImgs">
               <div class="row">
-                <DragUpload :allList="ruleForm.trialImgs" v-on:allList="trialImgs">
+                <DragUpload :allList="ruleForm.trialImgs" v-on:allList="trialImgs" :limit="limit">
                 </DragUpload>
                 <div class="el-upload__tip gray-tip">每张图片大小不超过10M</div>
               </div>
@@ -44,6 +44,7 @@
   export default {
     data() {
       return {
+        limit: 5,
         formInline: {
           user: '',
           region: ''
@@ -117,14 +118,16 @@
 </script>
 
 <style scoped lang="less">
-  .select-box{
+  .select-box {
     margin: 20px;
   }
-  .select{
+
+  .select {
     width: 200px;
+
     //修改下拉箭头的颜色
-    /deep/ .el-select .el-input .el-select__caret{
-      color:#000;
+    /deep/ .el-select .el-input .el-select__caret {
+      color: #000;
     }
   }
 </style>

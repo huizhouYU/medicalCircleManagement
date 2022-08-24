@@ -4,7 +4,7 @@
       action="#" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :auto-upload="false"
       :file-list="fileList" :on-success="uploadAppSuccess" :on-error="handleImageError"
       :before-upload="beforeAvatarUpload" :on-change="changehandleupload"
-      :on-exceed="limitNum()" :limit="5"
+      :on-exceed="limitNum()" :limit="limit"
       accept=".gif,.jpeg,.jpg,.JPG,.JPEG,.png,.svg,.ico" title="点击上传" v-show="isShowUpload">
       <img src="../../assets/images/icon_add-pic.png" alt="">
       <span>添加图片</span>
@@ -37,6 +37,7 @@
     name: "DragUpload",
     props: {
       allList: Array,
+      limit:Number
     },
     components: {
       draggable,

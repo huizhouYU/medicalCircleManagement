@@ -4,36 +4,11 @@
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55">
       </el-table-column>
-      <el-table-column prop="id" label="产品编码" width="120"></el-table-column>
-      <el-table-column label="商品圈" width="100">
-        <template slot-scope="scope">
-          <!-- <img :src="scope.row.imgUrl" alt="图片加载失败"> -->
-          <img src="../../assets/images/img/brand03.jpg" alt="图片加载失败" class="item-img">
-        </template>
-      </el-table-column>
-      <el-table-column prop="name" label="商品名称" width="150"></el-table-column>
-      <el-table-column prop="sort" label="商品分类" width="150"></el-table-column>
-      <el-table-column prop="brand" label="品牌" width="120"></el-table-column>
-      <el-table-column prop="price" label="价格" width="100"></el-table-column>
-      <el-table-column prop="stock" label="库存" width="100"></el-table-column>
-      <el-table-column label="上架" width="90">
-        <template slot-scope="scope">
-          <div class="check-div" :class="scope.row.isPut?'checked-put':'unchecked-put'"
-            @click="changePutState(scope.$index, currentPageData)"></div>
-        </template>
-      </el-table-column>
-      <el-table-column label="推荐" width="90">
-        <template slot-scope="scope">
-          <div class="check-div" :class="scope.row.isRecommend?'checked-put':'unchecked-put'"
-            @click="changeRecommendState(scope.$index, currentPageData)"></div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="isForbid" label="禁售" width="90">
-        <template slot-scope="scope">
-          <div class="check-div" :class="scope.row.isForbid?'checked-forbid':'unchecked-forbid'"
-            @click="changeForbidState(scope.$index, currentPageData)"></div>
-        </template>
-      </el-table-column>
+      <el-table-column prop="infoType" label="信息类型"></el-table-column>
+      <el-table-column prop="infoTitle" label="信息标题"></el-table-column>
+      <el-table-column prop="brand" label="设备品牌"></el-table-column>
+      <el-table-column prop="model" label="设备型号"></el-table-column>
+      <el-table-column prop="publishTime" label="发布时间"></el-table-column>
       <el-table-column fixed="right" label="操作" width="120">
         <template slot-scope="scope">
           <el-button @click.native.prevent="editRow(scope.$index, currentPageData)" type="text" size="small">
@@ -49,7 +24,7 @@
       <div class="left">
         <el-checkbox v-model="isAddAllTerminalStatus" @change="allSelectTerminal">全选</el-checkbox>
         <button @click="deleteChoosed" class="pl-delete-btn">
-          删除
+          取消任务
         </button>
       </div>
 
@@ -106,10 +81,10 @@
         );
       },
       async loadData() {
-        await axios.get("http://localhost:8080/static/testData/goods.json").then(res => {
+        await axios.get("http://localhost:8080/static/testData/demands.json").then(res => {
           console.log(res);
           if (res.status == 200) {
-            this.tableData = res.data.goodsData
+            this.tableData = res.data.demandsData
             console.log(this.tableData)
             console.log(this.tableData.length)
           } else {
@@ -227,7 +202,7 @@
 
       //批量删除按钮
       .pl-delete-btn {
-        width: 48px;
+        width: 72px;
         height: 24px;
         background: #FF7575;
         border-radius: 4px 4px 4px 4px;
@@ -236,6 +211,9 @@
         line-height: 24px;
         border: none;
         color: #fff;
+        font-size: 12px;
+        font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+        font-weight: 400;
       }
     }
   }

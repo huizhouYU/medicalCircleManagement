@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "23026306",
+      "name": "旗帜",
+      "font_class": "yangshi_icon_tongyong_flag",
+      "unicode": "e675",
+      "unicode_decimal": 58997
+    },
+    {
       "icon_id": "287167",
       "name": "右箭头",
       "font_class": "youjiantou",

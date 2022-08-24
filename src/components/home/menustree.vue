@@ -54,17 +54,29 @@
           },
           {
             index: "3",
-            name: "个人信息",
+            name: "需求管理",
             iconfont: "el-icon-document",
             child: [{
-              index: "3-1",
-              name: "选项1"
+              index: "/demandManage",
+              name: "需求管理"
             }, {
               index: "3-2",
               name: "选项2"
             }, {
               index: "3-3",
               name: "选项3"
+            }]
+          },
+          {
+            index: "4",
+            name: "店铺设置",
+            iconfont: "el-icon-setting",
+            child: [{
+              index: "/shopSetting",
+              name: "店铺装修"
+            }, {
+              index: "/shopCarousel",
+              name: "店铺轮播"
             }]
           },
 

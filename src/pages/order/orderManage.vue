@@ -50,7 +50,8 @@
                 <el-checkbox v-model="item.checked" @change="clickCheckbox(index)"></el-checkbox>
                 <span>订单编号: {{item.number}}</span>
                 <span>下单时间: {{item.orderTime}}</span>
-                <span>支付方式: {{item.payWay}}</span>
+                <span class="payWay-span">支付方式: {{item.payWay}}</span>
+                <i class="iconfont">&#xe675;</i>
               </td>
             </tr>
             <tr class="order-detail">
@@ -482,6 +483,15 @@
         span {
           margin-right: 30px;
         }
+        .payWay-span{
+          margin-right: 10px;
+        }
+        i{
+          font-size: 12px;
+          color:#333;
+          cursor: pointer;
+        }
+        
       }
 
       .order-detail:last-child {

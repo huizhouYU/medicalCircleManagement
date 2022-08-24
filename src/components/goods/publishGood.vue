@@ -82,7 +82,7 @@
       <div class="product-images">产品主图：
         <div label="图片可拖曳排序：" prop="trialImgs" class="content-images">
           <div class="row">
-            <DragUpload :allList="ruleForm.trialImgs" v-on:allList="trialImgs">
+            <DragUpload :allList="ruleForm.trialImgs" v-on:allList="trialImgs" :limit="limit">
             </DragUpload>
             <div class="el-upload__tip gray-tip">请：主图按照图片上传顺序展示，图片支持jpg/png格式，不超过10M，尺寸为800*800，拖拽图片可调整排序</div>
           </div>
@@ -140,6 +140,7 @@
     },
     data() {
       return {
+        limit: 5,
         //商品信息
         goodInfo: {
           chooseClassify: '', //选择的类目【拼接字符串】
@@ -254,13 +255,13 @@
       },
       //当选择“咨询议价”时，商品价格禁止输入
       isEditPrice() {
-        console.log("this.isEditPriceFlag",this.isEditPriceFlag)
+        console.log("this.isEditPriceFlag", this.isEditPriceFlag)
         if (this.goodInfo.chosedXS == 2) {
           this.isEditPriceFlag = false
         } else {
           this.isEditPriceFlag = true
         }
-         console.log("this.isEditPriceFlag",this.isEditPriceFlag)
+        console.log("this.isEditPriceFlag", this.isEditPriceFlag)
       },
       //返回上一步
       preStep() {
@@ -355,7 +356,8 @@
         justify-content: flex-start;
         align-items: center;
       }
-      .item2{
+
+      .item2 {
         margin-right: 10px;
       }
 

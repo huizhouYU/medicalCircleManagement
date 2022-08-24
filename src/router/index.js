@@ -47,6 +47,26 @@ export default new Router({
           path: '/timeSelect',
           name: '时间选择器',
           component: () => import("../pages/order/timeSelect.vue"),
+        },
+        {
+          path: '/demandManage',
+          name: '需求管理',
+          component: () => import("../pages/demand/demandManage.vue"),
+        },
+        {
+          path: '/publishDemand',
+          name: '发布需求',
+          component: () => import("../pages/demand/publishDemand.vue"),
+        },
+        {
+          path: '/shopSetting',
+          name: '店铺设置',
+          component: () => import("../pages/shop/shopSetting.vue"),
+        },
+        {
+          path: '/shopCarousel',
+          name: '店铺轮播',
+          component: () => import("../pages/shop/shopCarousel.vue"),
         }
       ]
     }
