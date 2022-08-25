@@ -29,7 +29,7 @@
             child: [{
               index: "/goodsIndex",
               name: "商品列表"
-            },{
+            }, {
               index: "/goods1",
               name: "上传图片"
             }, {
@@ -72,12 +72,17 @@
             name: "店铺设置",
             iconfont: "el-icon-setting",
             child: [{
-              index: "/shopSetting",
-              name: "店铺装修"
-            }, {
-              index: "/shopCarousel",
-              name: "店铺轮播"
-            }]
+                index: "/shopSetting",
+                name: "店铺装修"
+              }, {
+                index: "/shopCarousel",
+                name: "店铺轮播"
+              },
+              {
+                index: "/storeAuthentication",
+                name: "商家认证"
+              }
+            ]
           },
 
         ]

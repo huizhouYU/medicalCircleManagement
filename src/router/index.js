@@ -67,6 +67,11 @@ export default new Router({
           path: '/shopCarousel',
           name: '店铺轮播',
           component: () => import("../pages/shop/shopCarousel.vue"),
+        },
+        {
+          path: '/storeAuthentication',
+          name: '商家认证',
+          component: () => import("../pages/shop/storeAuthentication.vue"),
         }
       ]
     }
