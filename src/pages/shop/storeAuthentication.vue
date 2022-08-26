@@ -75,74 +75,24 @@
       </div>
       <!-- 证明材料 -->
       <div v-show="active == 2" class="zm-info public-step">
-        <div class="item-title">认证信息</div>
+        <div class="item-title">证明材料</div>
         <!-- 上传证件 -->
         <el-form-item label="上传证件" prop="name" class="">
+
           <div class="img-list">
             <!-- 身份证正面 -->
-            <div class="upload-img-item">
-              <div v-if="ruleForm.cardFront != ''" class="upload-img card-img" @mouseenter="showCardFrontDiv"
-                @mouseleave="hideCardFrontDiv">
-                <img :src="ruleForm.cardFront" alt="" class="card-img-info">
-                <!-- 预览+删除 -->
-                <div class="preview-del-div" v-show="isShowCardFrontDiv">
-                  <i class="el-icon-zoom-in"></i>
-                  <i class="el-icon-delete"></i>
-                </div>
-              </div>
-              <div class="upload-img" v-else>
-                <img src="../../../static/img/sjrz/pic_card_z.png" alt="">
-                <span>上传</span>
-              </div>
-
-
-              <div class="remarks">
-                <span class="remarks-top">身份证正面</span>
-                <span class="remarks-bottom">请上传本人（法人）身份证原件图</span>
-              </div>
-            </div>
+            <upload-one-img :mrSrc="cardFront.cardImg" :title="cardFront.cardTitle" :remark="cardFront.cardRemark">
+            </upload-one-img>
             <!-- 身份证反面 -->
-            <div class="upload-img-item">
-              <div v-if="ruleForm.cardBack != ''" class="upload-img card-img">
-                <img :src="ruleForm.cardBack" alt="" class="card-img-info">
-              </div>
-              <div class="upload-img" v-else>
-                <img src="../../../static/img/sjrz/pic_card_f.png" alt="">
-                <span>上传</span>
-              </div>
-              <div class="remarks">
-                <span class="remarks-top">身份证反面</span>
-                <span class="remarks-bottom">请上传本人（法人）身份证原件图</span>
-              </div>
-            </div>
+            <upload-one-img :mrSrc="cardBack.cardImg" :title="cardBack.cardTitle" :remark="cardBack.cardRemark">
+            </upload-one-img>
             <!-- 手持身份证 -->
-            <div class="upload-img-item">
-              <div v-if="ruleForm.cardHold != ''" class="upload-img card-img">
-                <img :src="ruleForm.cardHold" alt="" class="card-img-info">
-              </div>
-              <div class="upload-img" v-else>
-                <img src="../../../static/img/sjrz/pic_card_s.png" alt="">
-                <span>上传</span>
-              </div>
-              <div class="remarks">
-                <span class="remarks-top">手持身份证</span>
-                <span class="remarks-bottom">请上传手持身份证</span>
-              </div>
-            </div>
+            <upload-one-img :mrSrc="cardHold.cardImg" :title="cardHold.cardTitle" :remark="cardHold.cardRemark">
+            </upload-one-img>
             <!-- 其他证件 -->
-            <div class="upload-img-item">
-              <div v-if="ruleForm.cardOther != ''" class="upload-img card-img">
-                <img :src="ruleForm.cardOther" alt="" class="card-img-info">
-              </div>
-              <div class="upload-img" v-else>
-                <img src="../../../static/img/sjrz/pic_card_other.png" alt="">
-                <span>上传</span>
-              </div>
-              <div class="remarks">
-                <span class="remarks-top">其他证件</span>
-                <span class="remarks-bottom">请上传证件原件图</span>
-              </div>
-            </div>
+            <upload-one-img :mrSrc="cardOther.cardImg" :title="cardOther.cardTitle" :remark="cardOther.cardRemark">
+            </upload-one-img>
+
           </div>
         </el-form-item>
         <!-- 上一步 下一步 -->
@@ -162,7 +112,10 @@
         <!-- 验证码 -->
         <el-form-item label="验证码" prop="vCode" class="vcode-input">
           <el-input v-model="ruleForm.vCode"></el-input>
-          <el-button @click="getVcode" class="getVcode-btn" type="primary" plain>获取验证码</el-button>
+          <el-button @click="getVcode" class="getVcode-btn" type="primary" plain :disabled="!show">
+            <span v-show="show">获取验证码</span>
+            <span v-show="!show" class="count">{{count}} s</span>
+          </el-button>
 
         </el-form-item>
 
@@ -172,21 +125,54 @@
           <el-button @click="submitForm" class="submit-but" type="primary" plain>确认提交</el-button>
         </div>
       </div>
-
     </el-form>
-
-    <!-- 第五步:设置上一步和下一步的按钮 -->
-    <!-- <el-button v-if="active < 3" @click="next">下一步</el-button> -->
-    <!-- <el-button v-if="active > 1" @click="pre">上一步</el-button> -->
 
 
   </div>
 </template>
 
 <script>
+  import UploadOneImg from '../shop/uploadOneImg.vue'
   export default {
+    components: {
+      UploadOneImg
+    },
     data() {
+      var checkphone = (rule, value, callback) => {
+        // let phoneReg = /(^1[3|4|5|6|7|8|9]\d{9}$)|(^09\d{8}$)/;
+        if (value === "") {
+          callback(new Error("请输入手机号"));
+        } else if (!this.isCellPhone(value)) {
+          // 引入methods中封装的检查手机格式的方法
+          callback(new Error("请输入正确的手机号!"));
+        } else {
+          callback();
+        }
+      };
       return {
+        show: true,
+        count: '',
+        cardFront: {
+          cardImg: "../../../static/img/sjrz/pic_card_z.png",
+          cardTitle: '身份证正面',
+          cardRemark: '请上传本人（法人）身份证原件图',
+        },
+        cardBack: {
+          cardImg: "../../../static/img/sjrz/pic_card_f.png",
+          cardTitle: '身份证反面',
+          cardRemark: '请上传本人（法人）身份证原件图',
+        },
+        cardHold: {
+          cardImg: "../../../static/img/sjrz/pic_card_s.png",
+          cardTitle: '手持身份证',
+          cardRemark: '请上传手持身份证',
+        },
+        cardOther: {
+          cardImg: "../../../static/img/sjrz/pic_card_other.png",
+          cardTitle: '其他证件',
+          cardRemark: '请上传证件原件图',
+        },
+
         isShowCardFrontDiv: false, //是否展示【身份证正面】隐藏div
         active: 1,
         // 主体类型选项
@@ -257,8 +243,8 @@
           ],
           phone: [{
             required: true,
-            message: '请填写联系电话',
-            trigger: 'blur'
+            validator: checkphone,
+            trigger: "blur"
           }],
           vCode: [{
             required: true,
@@ -270,6 +256,13 @@
       }
     },
     methods: {
+      isCellPhone(val) {
+        if (!/^1(3|4|5|6|7|8)\d{9}$/.test(val)) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       showCardFrontDiv() {
         this.isShowCardFrontDiv = true
       },
@@ -286,7 +279,22 @@
       },
       // 获取验证码
       getVcode() {
-
+        //axios请求
+        console.log(this.ruleForm.phone)
+        // 验证码倒计时
+        if (!this.timer) {
+          this.count = 60;
+          this.show = false;
+          this.timer = setInterval(() => {
+            if (this.count > 0 && this.count <= 60) {
+              this.count--;
+            } else {
+              this.show = true;
+              clearInterval(this.timer);
+              this.timer = null;
+            }
+          }, 1000);
+        }
       },
       //提交
       submitForm(formName) {
@@ -472,91 +480,7 @@
         grid-template-columns: repeat(auto-fill, 460px);
         justify-content: flex-start;
         grid-row-gap: 40px;
-        font-size: 12px;
-        font-family: Microsoft YaHei-Regular, Microsoft YaHei;
-        font-weight: 400;
-        color: #999999;
 
-        // 每一个上传图片
-        .upload-img-item {
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
-
-          //展示已上传的证件照片
-          .card-img {
-            position: relative;
-            border-radius: 4px;
-
-            .card-img-info {
-              width: 100%;
-              height: 100%;
-              border-radius: 4px;
-            }
-
-            .preview-del-div {
-              position: absolute;
-              border-radius: 4px;
-              border: 1px solid #EBEEF5;
-              box-sizing: border-box;
-              width: 100%;
-              height: 100%;
-              background: rgba(0, 0, 0, 0.4);
-              display: flex;
-              justify-content: space-around;
-              align-items: center;
-
-              i {
-                color: #fff;
-                font-size: 18px;
-              }
-            }
-          }
-
-          // 左边上传图片
-          .upload-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 4px;
-            border: 1px solid #EBEEF5;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-
-            img {
-              width: 37px;
-              height: 37px;
-            }
-
-            span {
-              height: 20px;
-              line-height: 20px;
-            }
-          }
-
-          // 右边上传图片的说明
-          .remarks {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            margin-left: 15px;
-
-            span {
-              height: 20px;
-              line-height: 20px;
-            }
-
-            .remarks-top {
-              color: #333333;
-            }
-
-            .remarks-bottom {
-              color: #999999;
-            }
-          }
-        }
       }
 
       // 第二步 【证明材料】下面的按钮距离上面的高度

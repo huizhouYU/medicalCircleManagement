@@ -94,8 +94,8 @@
       }
     },
     mounted() {
-      console.log(this.activeIndex)
-      console.log(this.$route.path)
+      // console.log(this.activeIndex)
+      // console.log(this.$route.path)
       this.activeIndex = this.$route.path.substring(1, this.$route.path.length);
 
     }

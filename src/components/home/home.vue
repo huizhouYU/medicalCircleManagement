@@ -27,10 +27,9 @@
     },
 
     created() {
-      console.log(this.$router)
+      // console.log(this.$router)
       // 获取token
       const token = localStorage.getItem('token')
-      console.log('token', token)
       if (!token) {
         // 没有token 返回登录页
         this.$router.push({
