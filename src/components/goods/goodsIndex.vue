@@ -11,8 +11,8 @@
     <div class="search-add">
       <!-- 搜索部分 -->
       <div class="search">
-        <!-- 本店分类 -->
-        <el-select v-model="value" placeholder="本店分类" class="choose-store-sort">
+        <!-- 商品分类 -->
+        <el-select v-model="sortValue" placeholder="商品分类" class="choose-store-sort">
           <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
@@ -24,7 +24,7 @@
         <!-- input 输入关键字  -->
         <div class="input-box">
           <el-input v-model="inputKey" placeholder="请输入商品名称/关键字" class="input-search"></el-input>
-          <button class="btn-search">
+          <button class="btn-search" @click="selectData()">
             <img src="../../assets/images/icon_search.png" alt="">
           </button>
         </div>
@@ -45,32 +45,30 @@
     },
     data() {
       return {
-        //本店分类
+        //商品分类
         options: [],
         //商品状态
         shopStateOptions: [{
-          value: '选项1',
-          label: '黄金糕'
+          value: '1',
+          label: '上架'
         }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
+          value: '2',
+          label: '下架'
         }],
         inputKey: '', //输入商品名称/关键字
-        value: ''
+        value: '',
+        sortValue: '', //选择的商品分类
       }
     },
-    methods:{
-      toAddGoods(){
+    methods: {
+      //添加商品
+      toAddGoods() {
         this.$router.push('/addGoods')
+      },
+      //根据条件筛选数据
+      selectData() {
+
+        alert("不要点啦！后台接口数据还没做呢。。。")
       }
     }
   }
@@ -138,9 +136,23 @@
         border-radius: 6px 6px 6px 6px;
         border: 1px solid #EBEEF5;
         box-sizing: border-box;
+        font-size: 12px;
 
         /deep/ .el-input__inner {
           height: 34px;
+          line-height: 34px;
+        }
+
+        /deep/.el-select-dropdown__item span {
+          font-size: 12px;
+        }
+
+        /deep/ .el-select-dropdown__empty,
+        /deep/.el-input__inner {
+          font-size: 12px !important;
+        }
+
+        /deep/ .el-input__icon {
           line-height: 34px;
         }
       }
@@ -185,6 +197,7 @@
           border: none;
           margin-left: -2px;
           z-index: 1;
+          cursor: pointer;
 
           img {
             width: 20px;
@@ -212,7 +225,7 @@
   }
 
   // 模块三 商品列表
-  .items{
+  .items {
     margin-top: 20px;
   }
 </style>

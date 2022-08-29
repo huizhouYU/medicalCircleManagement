@@ -2,7 +2,7 @@
 	"goodsData": [{
 			"id": 1,
 			"imgUrl": "../../assets/images/img/brand03.jpg",
-			"name": "联影核磁共振核磁共振脑部专 业CT专业医器械",
+			"name": "联影核磁共振核磁共振脑部专 业CT专业医器械共振核磁共振脑共振核磁共振脑共振核磁共振脑",
 			"sort": "联影/核磁共振/uMR 870",
 			"address": "上海市普陀区金沙江路 1518 弄",
 			"brand": "联影",
@@ -21,7 +21,7 @@
 			"brand": "联影",
 			"price": "99",
 			"stock": "999",
-			"isPut": true,
+			"isPut": false,
 			"isRecommend": false,
 			"isForbid": true
 		}, {
@@ -34,8 +34,8 @@
 			"price": "99",
 			"stock": "999",
 			"isPut": true,
-			"isRecommend": false,
-			"isForbid": true
+			"isRecommend": true,
+			"isForbid": false
 		}, {
 			"id": 1234,
 			"imgUrl": "../../assets/images/img/brand03.jpg",
@@ -47,7 +47,7 @@
 			"stock": "999",
 			"isPut": true,
 			"isRecommend": false,
-			"isForbid": true
+			"isForbid": false
 		}, {
 			"id": 12345,
 			"imgUrl": "../../assets/images/img/brand03.jpg",
@@ -93,9 +93,9 @@
 			"brand": "联影",
 			"price": "99",
 			"stock": "999",
-			"isPut": true,
-			"isRecommend": false,
-			"isForbid": true
+			"isPut": false,
+			"isRecommend": true,
+			"isForbid": false
 		}, {
 			"id": 123456789,
 			"imgUrl": "../../assets/images/img/brand03.jpg",
@@ -118,7 +118,7 @@
 			"price": "99",
 			"stock": "999",
 			"isPut": true,
-			"isRecommend": false,
+			"isRecommend": true,
 			"isForbid": true
 		}, {
 			"id": 12345678911,
@@ -129,9 +129,9 @@
 			"brand": "联影",
 			"price": "99",
 			"stock": "999",
-			"isPut": true,
+			"isPut": false,
 			"isRecommend": false,
-			"isForbid": true
+			"isForbid": false
 		}
 	]
 }

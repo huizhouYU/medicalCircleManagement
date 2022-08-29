@@ -5,13 +5,17 @@
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column prop="id" label="产品编码" width="120"></el-table-column>
-      <el-table-column label="商品圈" width="100">
+      <el-table-column label="商品图" width="100">
         <template slot-scope="scope">
           <!-- <img :src="scope.row.imgUrl" alt="图片加载失败"> -->
           <img src="../../assets/images/img/brand03.jpg" alt="图片加载失败" class="item-img">
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="商品名称" width="150"></el-table-column>
+      <el-table-column label="商品名称" width="150">
+        <template slot-scope="scope">
+          <span class="goods-name-span" :title="scope.row.name">{{scope.row.name}} </span>
+        </template>
+      </el-table-column>
       <el-table-column prop="sort" label="商品分类" width="150"></el-table-column>
       <el-table-column prop="brand" label="品牌" width="120"></el-table-column>
       <el-table-column prop="price" label="价格" width="100"></el-table-column>
@@ -106,7 +110,7 @@
         );
       },
       async loadData() {
-        await axios.get("http://localhost:8080/static/testData/goods.json").then(res => {
+        await axios.get("http://192.168.0.110:8080//static/testData/goods.json").then(res => {
           console.log(res);
           if (res.status == 200) {
             this.tableData = res.data.goodsData
@@ -156,12 +160,38 @@
       },
       editRow(index, rows) {
         console.log("index", index)
-        console.log("rows", rows)
+        console.log("rows", rows[index])
+        this.$router.replace({
+          path: '/publishGood',
+          query: {
+            eidtData: rows[index]
+          }
+        })
       },
       //批量删除
       deleteChoosed() {
-        console.log(this.multipleSelection)
-        // rows.splice(index, 1);
+        if (this.multipleSelection.length > 0) {
+          this.$confirm('数据删除后将无法找回, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '请求后台接口删除数据，先暂且算作删除成功？'
+            });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除1'
+            });
+          });
+        } else {
+          this.$message({
+            type: 'info',
+            message: '您还没有选择数据，请先选择您要删除的数据？'
+          });
+        }
       },
       //改变上架状态
       changePutState(index, rows) {
@@ -185,6 +215,16 @@
 <style scoped lang="less">
   .el-table {
     font-size: 12px;
+  }
+
+  //商品名称
+  .goods-name-span {
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 
   // 列表中商品圈图片

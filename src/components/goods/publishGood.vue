@@ -20,10 +20,10 @@
       <!-- 产品名称+所属品牌 -->
       <div class="item-name-brand">
         <div class="item">产品名称：
-          <input type="text" placeholder="请输入商品名称">
+          <input type="text" placeholder="请输入商品名称" v-model="goodInfo.name">
         </div>
         <div class="item2">所属品牌：
-          <input type="text" placeholder="请输入商品名称">
+          <input type="text" placeholder="请输入商品品牌" v-model="goodInfo.brand">
         </div>
       </div>
       <!-- 产品规格： -->
@@ -140,9 +140,12 @@
     },
     data() {
       return {
+        isBack: true, //只有新增商品才能返回上一步
         limit: 5,
         //商品信息
         goodInfo: {
+          name: '', //商品名称
+          brand: '', //所属品牌
           chooseClassify: '', //选择的类目【拼接字符串】
           chosedData: [], //选择的类目
           chosedDegree: '', //选择的新旧程度
@@ -240,15 +243,32 @@
     },
     methods: {
       getParams() {
-        var chosedDataString = this.$route.query.chosedData
-        this.goodInfo.chosedData = JSON.parse(chosedDataString)
-        this.goodInfo.chooseClassify = this.goodInfo.chosedData[0].name
-        if (this.goodInfo.chosedData[1].name != '') {
-          this.goodInfo.chooseClassify += " > " + this.goodInfo.chosedData[1].name
-          if (this.goodInfo.chosedData[2].name != '') {
-            this.goodInfo.chooseClassify += " > " + this.goodInfo.chosedData[2].name
+        //添加商品  跳转过来 传递的数据
+        var chosedDataString = this.$route.query.chosedData //商品类别
+        if (chosedDataString != undefined) {
+          this.goodInfo.chosedData = JSON.parse(chosedDataString)
+          this.goodInfo.chooseClassify = this.goodInfo.chosedData[0].name
+          if (this.goodInfo.chosedData[1].name != '') {
+            this.goodInfo.chooseClassify += " > " + this.goodInfo.chosedData[1].name
+            if (this.goodInfo.chosedData[2].name != '') {
+              this.goodInfo.chooseClassify += " > " + this.goodInfo.chosedData[2].name
+            }
           }
         }
+        //编辑商品 跳转过来 传递的数据
+        var editGoodData = this.$route.query.eidtData //要编辑商品的数据
+        console.log(this.$route.query.eidtData)
+        if (editGoodData != undefined) {
+          this.isBack = false
+          this.goodInfo.chooseClassify = editGoodData.sort //商品类目
+          this.goodInfo.name = editGoodData.name //商品名称
+          this.goodInfo.brand = editGoodData.brand //商品品牌
+          this.$message({
+            type: 'info',
+            message: '此处应该根据商品ID去请求后端接口，获取商品数据，填充页面'
+          })
+        }
+
       },
       back() {
         this.$router.back()
@@ -265,12 +285,14 @@
       },
       //返回上一步
       preStep() {
-        this.$router.replace({
-          path: '/addGoods',
-          query: {
-            chosedData: JSON.stringify(this.goodInfo.chosedData)
-          }
-        })
+        if (this.isBack) {
+          this.$router.replace({
+            path: '/addGoods',
+            query: {
+              chosedData: JSON.stringify(this.goodInfo.chosedData)
+            }
+          })
+        }
       },
       // 图片可拖曳排序
       trialImgs(allList) {
@@ -361,6 +383,26 @@
         margin-right: 10px;
       }
 
+      /* WebKit browsers */
+      input::-webkit-input-placeholder {
+        color: #BBBBBB;
+      }
+
+      /* Mozilla Firefox 4 to 18 */
+      input:-moz-placeholder {
+        color: #BBBBBB;
+      }
+
+      /* Mozilla Firefox 19+ */
+      input::-moz-placeholder {
+        color: #BBBBBB;
+      }
+
+      /* Internet Explorer 10+ */
+      input:-ms-input-placeholder {
+        color: #BBBBBB;
+      }
+
       input {
         margin-left: 30px;
         width: 260px;
@@ -370,6 +412,11 @@
         border: 1px solid #EBEEF5;
         outline: none;
         box-sizing: border-box;
+        font-size: 12px;
+        font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+        font-weight: 400;
+        color: #333;
+        padding-left: 15px;
       }
 
       .item2 {
@@ -399,9 +446,7 @@
         border-radius: 4px 0px 0px 4px;
       }
 
-      .item:last-child {
-        border-radius: 0px 4px 4px 0px;
-      }
+     
 
       .item {
         width: 160px;
@@ -411,6 +456,7 @@
         justify-content: center;
         align-items: center;
         border: 1px solid #EBEEF5;
+        border-right: none;
         box-sizing: border-box;
 
         .title {
@@ -483,6 +529,10 @@
             box-sizing: border-box;
           }
         }
+      }
+      .item:last-child {
+        border-radius: 0px 4px 4px 0px;
+        border-right: 1px solid #EBEEF5;
       }
     }
   }
@@ -597,6 +647,13 @@
         background: #FFFFFF;
         border-radius: 4px 4px 4px 4px;
         border: 1px solid #EBEEF5;
+        outline: none;
+        box-sizing: border-box;
+        font-size: 12px;
+        font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+        font-weight: 400;
+        color: #333;
+        padding-left: 15px;
       }
 
       span {
@@ -651,7 +708,7 @@
 
       /deep/.el-switch.is-checked .el-switch__core:before {
         left: 100%;
-        margin-left: -30px;
+        margin-left: -27px;
         z-index: 2;
         width: 28px;
         height: 28px;
@@ -660,10 +717,16 @@
       /deep/.el-switch__core:after {
         width: 28px;
         height: 28px;
+        left: 0;
+        top: 0;
+      }
+
+      /deep/ .el-switch.is-checked .el-switch__core:after {
+        margin-left: 48px;
       }
 
       /deep/.el-switch.is-checked .el-switch__core::after {
-        margin-left: -30px;
+        // margin-left: -27px;
         top: 0px;
       }
 

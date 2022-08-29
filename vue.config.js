@@ -5,7 +5,7 @@
     devServer: {
       proxy: { //配置跨域
         '/api': {
-          target: '需要请求的url',
+          target: 'http://192.168.0.110:8080/#/',//这里填你项目真实的后端地址）
           pathRewrite: {
             '^/api': ''
           },

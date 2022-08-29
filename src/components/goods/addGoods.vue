@@ -103,7 +103,7 @@
     },
     methods: {
       async loadData() {
-        await axios.get("http://localhost:8080/static/testData/classifyData.json").then(res => {
+        await axios.get("http://192.168.0.110:8080/static/testData/classifyData.json").then(res => {
           console.log(res);
           if (res.status == 200) {
             this.linkageData = res.data.linkageData

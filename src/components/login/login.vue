@@ -24,7 +24,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="" class="form-label">
-            <el-input v-model="loginForm.password" placeholder="请输入密码" show-password @focus="hideEyes"
+            <el-input v-model="loginForm.password" placeholder="请输入密码" show-password @focus="isHide = true"
               @blur="isHide = false">
               <template #prefix>
                 <div class="prefix"><img src="../../../static/img/login/key.png" alt=""></div>
@@ -35,15 +35,14 @@
             <div class="login-code">
               <el-input v-model="loginForm.verCode" placeholder="请输入验证码" class="login-code-input"></el-input>
               <!-- <div id="v_container" class="v_container"></div> -->
-              <canvas id="canvas" width="100" height="43" @click="dj()"
-               style="border: 1px solid #ccc;border-radius: 5px;"></canvas>
+              <canvas id="canvas" width="100" height="40" @click="draw()" style="border-radius: 5px;"></canvas>
             </div>
           </el-form-item>
           <div class="eg-pass">
-            <el-radio label="记住密码"></el-radio>
+            <el-checkbox label="记住密码" v-model="isRememberPass"></el-checkbox>
             <ul>
-              <li>忘记密码？</li>
-              <li>立即注册</li>
+              <li @click="remberpass()">忘记密码？</li>
+              <li @click="register()">立即注册</li>
             </ul>
           </div>
           <el-button type="primary" round class="login-btn" @click="login">登录</el-button>
@@ -52,9 +51,9 @@
         <div class="other">
           <span>无需注册，选择一下方式登录</span>
           <ul>
-            <li><img src="../../../static/img/login/QQ.png" alt=""></li>
-            <li><img src="../../../static/img/login/weixin.png" alt=""></li>
-            <li><img src="../../../static/img/login/zfb.png" alt=""></li>
+            <li><img src="../../../static/img/login/QQ.png" alt="QQ登录" @click="otherLogin(1)"></li>
+            <li><img src="../../../static/img/login/weixin.png" alt="微信登录" @click="otherLogin(2)"></li>
+            <li><img src="../../../static/img/login/zfb.png" alt="支付宝登录" @click="otherLogin(3)"></li>
           </ul>
         </div>
 
@@ -67,31 +66,37 @@
   import {
     GVerify
   } from '../../assets/js/verifyCode.js'
-  // import {
-  //   draw
-  // } from '../../assets/js/verifyCode2.js'
   export default {
     data() {
       return {
+        isRememberPass: false, //记住密码
         isHide: false,
         loginForm: {
           username: '',
           password: '',
           verCode: ''
         },
-        verifyCode: ''
+        verifyCode: '',
+        show_num: ''
       }
     },
     mounted() {
-      // this.verifyCode = new GVerify('v_container')
+      this.draw();
+      this.getCookie()
+    },
+    created() {
+      //设置点击回车键直接登录
+      document.onkeydown = (e) => {
+        var e = event || window.event;
+        if (e && e.keyCode == 13) {
+          this.login();
+        }
+      }
     },
     methods: {
 
-      hideEyes() {
-        this.isHide = true
-      },
-      draw(show_num) {
-        var show_num = [];
+      draw() {
+        this.show_num = [];
         var canvas_width = document.getElementById('canvas').clientWidth;
         var canvas_height = document.getElementById('canvas').clientHeight;
         var canvas = document.getElementById("canvas"); //获取到canvas的对象，演员
@@ -107,7 +112,7 @@
           var j = Math.floor(Math.random() * aLength); //获取到随机的索引值
           var deg = Math.random() * 30 * Math.PI / 180; //产生0~30之间的随机弧度
           var txt = aCode[j]; //得到随机的一个内容
-          show_num[i] = txt;
+          this.show_num[i] = txt;
           var x = 10 + i * 20; //文字在canvas上的x坐标
           var y = 20 + Math.random() * 8; //文字在canvas上的y坐标
           context.font = "bold 23px 微软雅黑";
@@ -138,8 +143,8 @@
           context.stroke();
         }
       },
-
-      randomColor() { //得到随机的颜色值
+      //得到随机的颜色值
+      randomColor() {
         var r = Math.floor(Math.random() * 256);
         var g = Math.floor(Math.random() * 256);
         var b = Math.floor(Math.random() * 256);
@@ -151,14 +156,15 @@
           this.$message.error('请输入验证码！')
           return false
         }
-        var verifyFlag = this.verifyCode.validate(this.loginForm.verCode)
-        if (!verifyFlag) {
-          this.$message.error('验证码输入有误！')
-          this.verifyCode = new GVerify('v_container') // 更新验证码
-          this.loginForm.verCode = '' // 清空输入框
-          return false
-        } else {
+        var num = this.show_num.join("");
+        var val = this.loginForm.verCode;
+        if (val == num) {
           return true
+        } else {
+          this.$message.error('验证码输入错误！')
+          this.loginForm.verCode = '';
+          this.draw();
+          return false
         }
       },
       // 登录
@@ -170,6 +176,13 @@
         if (!this.checkCode()) {
           return ''
         }
+        //是否记住密码
+        if (this.isRememberPass) {
+          this.setCookie(this.loginForm.username, this.loginForm.password, 7)
+        } else {
+          this.clearCookie();
+        }
+
         // this.$http.post('login', this.loginForm).then(res => {
         //   console.log(res)
         //   // 对象结构赋值
@@ -210,8 +223,46 @@
             name: 'home'
           })
         }
+      },
+      getCookie() {
+        if (document.cookie.length > 0) {
+          var arr = document.cookie.split(";");
+          for (var i = 0; i < arr.length; i++) {
+            var userKey = arr[i].split("=");
+            if (userKey[0].trim() == "userName") {
+              this.loginForm.username = userKey[1];
+            } else if (userKey[0].trim() == "userPws") {
+              this.loginForm.password = userKey[1];
+            } else if (userKey[0].trim() == "isRemember") {
+              this.isRememberPass = Boolean(userKey[1]);
+            }
+          }
+        }
+      },
+      //存储
+      setCookie(userName, userPws, days) {
+        var curDate = new Date();
+        curDate.setTime(curDate.getTime() + 24 * 60 * 60 * 1000 * days); //设置cookie存储的有效时间
+        window.document.cookie = "userName" + "=" + userName + ";path=/;expires=" + curDate.toGMTString();
+        window.document.cookie = "userPws" + "=" + userPws + ";path=/;expires=" + curDate.toGMTString();
+        window.document.cookie = "isRemember" + "=" + this.isRemember + ";path=/;expires=" + curDate.toGMTString();
+      },
+      //如果用户不选择记住密码清除cookie
+      clearCookie() {
+        this.setCookie("", "", -1);
+      },
+      //忘记密码
+      remberpass() {
+        alert("正在做呢，催啥？？？");
+      },
+      //注册
+      register() {
+        alert("正在做呢，催啥？？？");
+      },
+      //其他方式登录
+      otherLogin(val) {
+        alert("催啥？点啥？走走走...")
       }
-
     }
   }
 </script>
@@ -242,6 +293,7 @@
       align-items: center;
 
       .login-content {
+        margin-top: 60px;
         position: relative;
         background: #FFFFFF;
         box-shadow: 0px 0px 43px 0px rgba(0, 0, 0, 0.08);
@@ -265,8 +317,6 @@
 
         /deep/ .el-input__inner {
           background-color: rgba(230, 247, 255, 0.3);
-          // background: #E6F7FF;
-          // border: 1px solid #E6F7FF;
           border: none;
           border-radius: 10px;
           font-size: 16px;
@@ -274,7 +324,8 @@
           font-weight: 400;
           color: #DBDBDB;
         }
-        /deep/ .el-input__inner:focus{
+
+        /deep/ .el-input__inner:focus {
           border: 1px solid #1890FF;
         }
 
@@ -306,7 +357,12 @@
             justify-content: space-between;
             align-items: center;
 
-            /deep/.el-radio {
+            /deep/ .el-checkbox__inner {
+              border-radius: 8px;
+            }
+
+            /deep/ .el-checkbox__label,
+            /deep/ .el-checkbox__input.is-checked+.el-checkbox__label {
               font-size: 12px;
               font-family: Microsoft YaHei;
               font-weight: 400;
@@ -326,7 +382,7 @@
                 font-weight: 400;
                 color: #1890FF;
                 border-right: 1px solid #EEEEEE;
-                ;
+                cursor: pointer;
               }
 
               li:last-child {
@@ -435,13 +491,20 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        ul{
+
+        ul {
           margin-top: 20px;
           display: flex;
           justify-content: center;
           align-items: center;
-          li{
+
+          li {
             margin: 0px 10px;
+
+            img {
+              cursor: pointer;
+            }
+
           }
         }
       }
