@@ -14,20 +14,24 @@
     <!-- 编辑商品区域 -->
     <div class="eidt-box">
       <!-- 产品类目 -->
-      <div class="classifyTitle">产品类目：
-        <span @click="preStep()">{{goodInfo.chooseClassify}}</span>
+      <div class="classifyTitle">
+        <span class="title-span">产品类目：</span>
+        <span @click="preStep()" class="chooseClassify-span">{{goodInfo.chooseClassify}}</span>
       </div>
       <!-- 产品名称+所属品牌 -->
       <div class="item-name-brand">
-        <div class="item">产品名称：
-          <input type="text" placeholder="请输入商品名称" v-model="goodInfo.name">
+        <div class="item">
+          <span class="title-span">产品名称：</span>
+          <input type="text" placeholder="请输入商品名称" v-model="goodInfo.name" maxlength="40">
         </div>
-        <div class="item2">所属品牌：
-          <input type="text" placeholder="请输入商品品牌" v-model="goodInfo.brand">
+        <div class="item2">
+          <span class="title-span">所属品牌：</span>
+          <input type="text" placeholder="请输入商品品牌" v-model="goodInfo.brand" maxlength="40">
         </div>
       </div>
       <!-- 产品规格： -->
-      <div class="product-specs">产品规格：
+      <div class="product-specs">
+        <span class="title-span">产品规格：</span>
         <div class="choose-item">
           <div class="item">
             <div class="title">销售类型</div>
@@ -53,7 +57,7 @@
           <div class="item">
             <div class="title">库存</div>
             <div class="content">
-              <input type="text" name="" id="" placeholder="请输入商品库存">
+              <input type="number" name="" id="" placeholder="请输入商品库存">
             </div>
           </div>
           <div class="item">
@@ -69,7 +73,7 @@
           <div class="item">
             <div class="title">保质期限</div>
             <div class="content shelf-life">
-              <input type="text" name="" id="" placeholder="请输入">
+              <input type="number" name="" id="" placeholder="请输入">
               <el-select v-model="goodInfo.chosedShelfLife" class="select-item" placeholder="请选择">
                 <el-option v-for="item in shelfLifeOptions" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
@@ -79,7 +83,8 @@
         </div>
       </div>
       <!-- 产品主图 -->
-      <div class="product-images">产品主图：
+      <div class="product-images">
+        <span class="title-span">产品主图：</span>
         <div label="图片可拖曳排序：" prop="trialImgs" class="content-images">
           <div class="row">
             <DragUpload :allList="ruleForm.trialImgs" v-on:allList="trialImgs" :limit="limit">
@@ -90,11 +95,12 @@
       </div>
       <!-- 产品详情 -->
       <div class="product-detail">
-        <span>产品详情：</span>
-        <edit class="edit"></edit>
+        <span class="title-span">产品详情：</span>
+        <edit class="edit" @getContent="getContentData"></edit>
       </div>
       <!-- 运费模板 -->
-      <div class="prodect-fare">运费模板：
+      <div class="prodect-fare">
+        <span class="title-span">运费模板：</span>
         <el-select v-model="goodInfo.chosedFare" class="select-item">
           <el-option v-for="item in fareOptions" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
@@ -102,14 +108,16 @@
         <button class="btn-fare-list">运费模板列表</button>
       </div>
       <!-- 商品标签 -->
-      <div class="prodect-tag">商品标签：
+      <div class="prodect-tag">
+        <span class="title-span">商品标签：</span>
         <div class="content">
-          <input type="text" name="" id="">
+          <input type="text" name="" id="" v-model="goodInfo.goodTags">
           <span>填写商品卖点，展示在移动端标题下方</span>
         </div>
       </div>
       <!-- 立即上架 -->
-      <div class="prodect-grounding">立即上架：
+      <div class="prodect-grounding">
+        <span class="title-span">立即上架：</span>
         <div class="content">
           <el-switch class="tableScopeSwitch" v-model="goodInfo.groundingValue" active-color="#1890FF">
           </el-switch>
@@ -120,8 +128,7 @@
         </div>
       </div>
       <div class="submit">
-
-        <button class="but-submit">提交</button>
+        <button class="but-submit" @click="submit">提交</button>
       </div>
 
     </div>
@@ -151,7 +158,9 @@
           chosedDegree: '', //选择的新旧程度
           chosedXS: '1', //选择的销售方式
           chosedShelfLife: '1', //选择的保质期【年、月、日】
+          content: '', //产品详情
           chosedFare: "1", //选择的运费模板
+          goodTags: '', //商品标签
           groundingValue: true, //是否立即上架
           recommendValue: false, //是否推荐
         },
@@ -247,17 +256,16 @@
         var chosedDataString = this.$route.query.chosedData //商品类别
         if (chosedDataString != undefined) {
           this.goodInfo.chosedData = JSON.parse(chosedDataString)
-          this.goodInfo.chooseClassify = this.goodInfo.chosedData[0].name
-          if (this.goodInfo.chosedData[1].name != '') {
-            this.goodInfo.chooseClassify += " > " + this.goodInfo.chosedData[1].name
-            if (this.goodInfo.chosedData[2].name != '') {
-              this.goodInfo.chooseClassify += " > " + this.goodInfo.chosedData[2].name
+          this.goodInfo.chooseClassify = this.goodInfo.chosedData[0].label
+          if (this.goodInfo.chosedData[1].label != '') {
+            this.goodInfo.chooseClassify += " > " + this.goodInfo.chosedData[1].label
+            if (this.goodInfo.chosedData[2].label != '') {
+              this.goodInfo.chooseClassify += " > " + this.goodInfo.chosedData[2].label
             }
           }
         }
         //编辑商品 跳转过来 传递的数据
         var editGoodData = this.$route.query.eidtData //要编辑商品的数据
-        console.log(this.$route.query.eidtData)
         if (editGoodData != undefined) {
           this.isBack = false
           this.goodInfo.chooseClassify = editGoodData.sort //商品类目
@@ -271,7 +279,7 @@
 
       },
       back() {
-        this.$router.back()
+         this.$router.replace("/goodsIndex")
       },
       //当选择“咨询议价”时，商品价格禁止输入
       isEditPrice() {
@@ -298,6 +306,17 @@
       trialImgs(allList) {
         this.ruleForm.trialImgs = allList
       },
+      getContentData(content) {
+        this.goodInfo.content = content
+        console.log(this.goodInfo)
+        console.log(this.ruleForm)
+      },
+      submit() {
+        console.log('商品信息', this.goodInfo)
+        console.log('图片信息', this.ruleForm)
+        alert("核对要提交给后台的数据后，再请求接口提交数据，暂定提交成功！")
+        this.$router.replace("/success")
+      }
 
     }
   }
@@ -356,11 +375,15 @@
     font-weight: 400;
     color: #333333;
 
+    .title-span {
+      width: 65px;
+    }
+
     // 产品类目
     .classifyTitle {
       margin-right: 30px;
 
-      span {
+      .chooseClassify-span {
         margin-left: 30px;
         color: #1890FF;
       }
@@ -405,7 +428,7 @@
 
       input {
         margin-left: 30px;
-        width: 260px;
+        width: 250px;
         height: 34px;
         background: #FFFFFF;
         border-radius: 4px 4px 4px 4px;
@@ -431,22 +454,21 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    box-sizing: border-box;
     font-size: 12px;
     font-family: Microsoft YaHei-Regular, Microsoft YaHei;
     font-weight: 400;
     color: #333333;
 
     .choose-item {
+      flex: 1;
       margin-left: 30px;
-      display: flex;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-
-      .item:first-child {
-        border-radius: 4px 0px 0px 4px;
-      }
-
-     
+      // display: flex;
+      // justify-content: flex-start;
+      // flex-wrap: wrap;
+      // box-sizing: border-box;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 160px);
 
       .item {
         width: 160px;
@@ -456,7 +478,6 @@
         justify-content: center;
         align-items: center;
         border: 1px solid #EBEEF5;
-        border-right: none;
         box-sizing: border-box;
 
         .title {
@@ -530,10 +551,15 @@
           }
         }
       }
+
+      .item:first-child {
+        border-radius: 4px 0px 0px 4px;
+      }
+
       .item:last-child {
         border-radius: 0px 4px 4px 0px;
-        border-right: 1px solid #EBEEF5;
       }
+
     }
   }
 
@@ -577,6 +603,7 @@
     }
 
     .edit {
+      flex: 1;
       margin-left: 30px;
       height: 366px;
     }
@@ -690,44 +717,18 @@
         border-radius: 60px;
       }
 
-      /deep/.el-switch__core:before {
-        position: absolute;
-        /*content: url("~@/assets/photo.png");*/
-        content: '';
-        top: 0px;
-        left: 1px;
-        font-size: 12px;
-        text-align: center;
-        border-radius: 100%;
-        -webkit-transition: all .3s;
-        transition: all .3s;
-        width: 0px;
-        height: 0px;
-        z-index: 2;
-      }
-
-      /deep/.el-switch.is-checked .el-switch__core:before {
-        left: 100%;
-        margin-left: -27px;
-        z-index: 2;
-        width: 28px;
-        height: 28px;
-      }
-
       /deep/.el-switch__core:after {
-        width: 28px;
-        height: 28px;
-        left: 0;
-        top: 0;
+        width: 26px;
+        height: 26px;
+        left: 1px;
       }
 
       /deep/ .el-switch.is-checked .el-switch__core:after {
-        margin-left: 48px;
+        margin-left: 49px;
       }
 
       /deep/.el-switch.is-checked .el-switch__core::after {
-        // margin-left: -27px;
-        top: 0px;
+        top: 1px;
       }
 
       /deep/.el-switch.is-checked .el-switch__core {

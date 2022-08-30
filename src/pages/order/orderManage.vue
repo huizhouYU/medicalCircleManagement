@@ -27,7 +27,7 @@
     <!-- 订单列表 -->
     <!-- 自定义表格 -->
     <div class="table-item">
-      <table border="0" cellspacing="0" cellpadding="0" width="100%">
+      <table border="1" cellspacing="0" cellpadding="0" width="100%">
         <thead>
           <!-- <th style="width: 2%;"> -->
           <!-- <input id="js-all-checkbox" type="checkbox" @click="checkAll(this)"> -->
@@ -60,14 +60,14 @@
                   <img :src="item.imgUrl" alt="">
                   <div class="name-no">
                     <span :title="item.name"> {{item.name}}</span>
-                    <span>编号: {{item.goodNo}}</span>
+                    <span :title="item.goodNo">编号: {{item.goodNo}}</span>
                   </div>
                 </div>
               </td>
-              <td>{{item.num}}</td>
-              <td>￥：{{item.price}}</td>
-              <td>{{item.buyer}}</td>
-              <td>
+              <td style="width: 12%;">{{item.num}}</td>
+              <td style="width: 12%;">￥：{{item.price}}</td>
+              <td style="width: 12%;">{{item.buyer}}</td>
+              <td style="width: 12%;">
                 <template v-if="item.OrderStatus==1">买家未付款
                   <div class="orderState-detail">订单详情</div>
                 </template>
@@ -83,13 +83,13 @@
                   <div class="orderState-detail">订单详情</div>
                 </template>
               </td>
-              <td>{{item.orderPrice}}
+              <td style="width: 12%;">{{item.orderPrice}}
                 <div>(免运费)</div>
                 <template v-if="item.OrderStatus==1">
                   <div class="orderState-detail">修改价格</div>
                 </template>
               </td>
-              <td><span class="evaluate">{{item.evaluate}}</span></td>
+              <td style="width: 15%;"><span class="evaluate">{{item.evaluate}}</span></td>
             </tr>
           </template>
         </tbody>
@@ -126,19 +126,19 @@
         // 订单状态
         orderStateOptions: [{
             value: '1',
-            label: '待付款'
+            label: '买家待付款'
           },
           {
             value: '2',
-            label: '待发货'
+            label: '买家已付款'
           },
           {
             value: '3',
-            label: '已发货'
+            label: '商品运输中'
           },
           {
             value: '4',
-            label: '已完成'
+            label: '订单已完成'
           }
         ],
         //选择的订单时间
@@ -255,12 +255,11 @@
         );
       },
       async loadData() {
-        await axios.get("http://localhost:8080/static/testData/orders.json").then(res => {
-          console.log(res);
+        await axios.get("http://192.168.0.110:8080/static/testData/orders.json").then(res => {
           if (res.status == 200) {
             this.tableData = res.data.ordersData
-            console.log(this.tableData)
-            console.log(this.tableData.length)
+            // console.log(this.tableData)
+            // console.log(this.tableData.length)
           } else {
             this.$message.error("数据请求失败，请稍后再试！")
           }
@@ -433,7 +432,6 @@
       font-size: 12px;
       table-layout: fixed;
       border-bottom: 1px solid #EBEEF5;
-
       //表头
       thead {
         border-bottom: 1px solid #EBEEF5;
@@ -469,8 +467,12 @@
 
       th,
       td {
-        border: none;
+        // border: none;
+        border:1px solid #fff;
         text-align: center;
+      }
+      tr:nth-child(odd) {
+        background-color: #eee;
       }
 
       .order-info {
@@ -491,7 +493,7 @@
           color:#333;
           cursor: pointer;
         }
-        
+
       }
 
       .order-detail:last-child {
@@ -512,6 +514,9 @@
         .img-name-no {
           display: flex;
           justify-content: flex-start;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
 
           img {
             width: 70px;

@@ -1,181 +1,181 @@
 {
   "linkageData": [{
-      "id": "1",
-      "name": "联影",
-      "child": [{
-          "id": "1-1",
-          "name": "PET CT/ PET MRI",
-          "parentId": 1,
-          "child": [{
-              "id": "1-1-1",
-              "name": "uEXPLORER",
-              "parentId": "1-1"
+      "value": "1",
+      "label": "联影",
+      "children": [{
+          "value": "1-1",
+          "label": "PET CT/ PET MRI",
+          "parentvalue": 1,
+          "children": [{
+              "value": "1-1-1",
+              "label": "uEXPLORER",
+              "parentvalue": "1-1"
             },
             {
-              "id": "1-2-2",
-              "name": "uEXPLORER",
-              "parentId": "1-1"
+              "value": "1-2-2",
+              "label": "uEXPLORER",
+              "parentvalue": "1-1"
             }
           ]
         },
         {
-          "id": "1-2",
-          "name": "PET CT/ PET MRI",
-          "parentId": 1,
-          "child": [{
-              "id": "1-1-1",
-              "name": "uEXPLORER2",
-              "parentId": "1-2"
+          "value": "1-2",
+          "label": "PET CT/ PET MRI",
+          "parentvalue": 1,
+          "children": [{
+              "value": "1-1-1",
+              "label": "uEXPLORER2",
+              "parentvalue": "1-2"
             },
             {
-              "id": "1-2-2",
-              "name": "uEXPLORER2",
-              "parentId": "1-2"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "2",
-      "name": "联影",
-      "child": [{
-          "id": "2-1",
-          "name": "PET CT2/ PET MRI",
-          "parentId": "2",
-          "child": [{
-              "id": "1-1-1",
-              "name": "uEXPLORER3",
-              "parentId": "2-1"
-            },
-            {
-              "id": "1-2-2",
-              "name": "uEXPLORER3",
-              "parentId": "2-1"
-            }
-          ]
-        },
-        {
-          "id": "2-2",
-          "name": "PET CT2/ PET MRI",
-          "parentId": "2"
-        }
-      ]
-    },
-    {
-      "id": "3",
-      "name": "联影",
-      "child": [{
-          "id": "3-1",
-          "name": "PET CT3/ PET MRI",
-          "parentId": "3"
-        },
-        {
-          "id": "3-2",
-          "name": "PET CT3/ PET MRI",
-          "parentId": "3"
-        }
-      ]
-    },
-    {
-      "id": "4",
-      "name": "联影",
-      "child": [{
-          "id": "4-1",
-          "name": "PET CT4/ PET MRI",
-          "parentId": "4"
-        },
-        {
-          "id": "4-2",
-          "name": "PET CT4/ PET MRI",
-          "parentId": "4"
-        }
-      ]
-    },
-    {
-      "id": "5",
-      "name": "联影",
-      "child": [{
-          "id": "5-1",
-          "name": "PET CT5/ PET MRI",
-          "parentId": "5"
-        },
-        {
-          "id": "5-2",
-          "name": "PET CT5/ PET MRI",
-          "parentId": "5"
-        }
-      ]
-    },
-    {
-      "id": "6",
-      "name": "网点",
-      "child": [{
-          "id": "6-1",
-          "name": "DEV/ 关于",
-          "parentId": 6,
-          "child": [{
-              "id": "6-1-1",
-              "name": "高新手术间",
-              "parentId": "6-1"
-            },
-            {
-              "id": "6-1-2",
-              "name": "消毒间",
-              "parentId": "6-1"
-            }
-          ]
-        },
-        {
-          "id": "6-2",
-          "name": "破烂渠口",
-          "parentId": 6,
-          "child": [{
-              "id": "6-2-1",
-              "name": "伏特加",
-              "parentId": "6-2"
-            },
-            {
-              "id": "6-2-2",
-              "name": "雀巢",
-              "parentId": "6-2"
+              "value": "1-2-2",
+              "label": "uEXPLORER2",
+              "parentvalue": "1-2"
             }
           ]
         }
       ]
     },
     {
-      "id": "7",
-      "name": "七分",
-      "child": [{
-          "id": "7-1",
-          "name": "没想法",
-          "parentId": 6,
-          "child": [{
-              "id": "7-1-1",
-              "name": "故事",
-              "parentId": "7-1"
+      "value": "2",
+      "label": "联影",
+      "children": [{
+          "value": "2-1",
+          "label": "PET CT2/ PET MRI",
+          "parentvalue": "2",
+          "children": [{
+              "value": "1-1-1",
+              "label": "uEXPLORER3",
+              "parentvalue": "2-1"
             },
             {
-              "id": "7-1-2",
-              "name": "太牛都黑",
-              "parentId": "7-1"
+              "value": "1-2-2",
+              "label": "uEXPLORER3",
+              "parentvalue": "2-1"
             }
           ]
         },
         {
-          "id": "7-2",
-          "name": "酒精",
-          "parentId": 7,
-          "child": [{
-              "id": "7-2-1",
-              "name": "伏特加",
-              "parentId": "7-2"
+          "value": "2-2",
+          "label": "PET CT2/ PET MRI",
+          "parentvalue": "2"
+        }
+      ]
+    },
+    {
+      "value": "3",
+      "label": "联影",
+      "children": [{
+          "value": "3-1",
+          "label": "PET CT3/ PET MRI",
+          "parentvalue": "3"
+        },
+        {
+          "value": "3-2",
+          "label": "PET CT3/ PET MRI",
+          "parentvalue": "3"
+        }
+      ]
+    },
+    {
+      "value": "4",
+      "label": "联影",
+      "children": [{
+          "value": "4-1",
+          "label": "PET CT4/ PET MRI",
+          "parentvalue": "4"
+        },
+        {
+          "value": "4-2",
+          "label": "PET CT4/ PET MRI",
+          "parentvalue": "4"
+        }
+      ]
+    },
+    {
+      "value": "5",
+      "label": "联影",
+      "children": [{
+          "value": "5-1",
+          "label": "PET CT5/ PET MRI",
+          "parentvalue": "5"
+        },
+        {
+          "value": "5-2",
+          "label": "PET CT5/ PET MRI",
+          "parentvalue": "5"
+        }
+      ]
+    },
+    {
+      "value": "6",
+      "label": "网点",
+      "children": [{
+          "value": "6-1",
+          "label": "DEV/ 关于",
+          "parentvalue": 6,
+          "children": [{
+              "value": "6-1-1",
+              "label": "高新手术间",
+              "parentvalue": "6-1"
             },
             {
-              "id": "7-2-2",
-              "name": "雀巢",
-              "parentId": "7-2"
+              "value": "6-1-2",
+              "label": "消毒间",
+              "parentvalue": "6-1"
+            }
+          ]
+        },
+        {
+          "value": "6-2",
+          "label": "破烂渠口",
+          "parentvalue": 6,
+          "children": [{
+              "value": "6-2-1",
+              "label": "伏特加",
+              "parentvalue": "6-2"
+            },
+            {
+              "value": "6-2-2",
+              "label": "雀巢",
+              "parentvalue": "6-2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "value": "7",
+      "label": "七分",
+      "children": [{
+          "value": "7-1",
+          "label": "没想法",
+          "parentvalue": 6,
+          "children": [{
+              "value": "7-1-1",
+              "label": "故事",
+              "parentvalue": "7-1"
+            },
+            {
+              "value": "7-1-2",
+              "label": "太牛都黑",
+              "parentvalue": "7-1"
+            }
+          ]
+        },
+        {
+          "value": "7-2",
+          "label": "酒精",
+          "parentvalue": 7,
+          "children": [{
+              "value": "7-2-1",
+              "label": "伏特加",
+              "parentvalue": "7-2"
+            },
+            {
+              "value": "7-2-2",
+              "label": "雀巢",
+              "parentvalue": "7-2"
             }
           ]
         }

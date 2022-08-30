@@ -5,8 +5,10 @@
     </el-header>
     <el-container>
       <!-- 左侧菜单栏 -->
-      <el-aside class="aside">
-        <MenusTree></MenusTree>
+      <!-- :class="[{password:isHide},'owl']" -->
+      <!-- :class="[{collapse-aside:isColl},'aside']" -->
+      <el-aside :class="[{collapseAside:isColl},'aside']">
+        <MenusTree :getIsCollapse="getCollapse"></MenusTree>
       </el-aside>
       <el-container>
         <el-main class="main">
@@ -39,6 +41,12 @@
     },
     data() {
       return {
+        isColl: false, //是否折叠菜单
+      }
+    },
+    methods: {
+      getCollapse(val) {
+        this.isColl = val
       }
     }
   }
@@ -58,18 +66,33 @@
     padding: 0;
     background-color: #fff;
   }
+
   // 头部下面的主体内容:左侧菜单栏+中间内容
   .el-aside {
-      height: calc(100vh - 90px);// 设置左侧 aside 高度
-  }
-  .el-main {
-      height: calc(100vh - 90px);// 设置左侧 aside 高度
+    height: calc(100vh - 90px); // 设置左侧 aside 高度
   }
 
-  // 左侧菜单栏
+  .el-main {
+    height: calc(100vh - 90px); // 设置左侧 aside 高度
+  }
+
+  // 左侧菜单栏 展开形式
   .aside {
-    width: 210px !important;
+    max-width: 210px;
     border-right: 1px solid #eee;
+  }
+
+  // 左侧菜单栏 收起形式
+  .collapseAside {
+    max-width: 65px;
+  }
+  /* 加过渡给侧边导航*/
+  .el-aside {
+    transition: width 0.25s;
+    -webkit-transition: width 0.25s;
+    -moz-transition: width 0.25s;
+    -webkit-transition: width 0.25s;
+    -o-transition: width 0.25s;
   }
 
   //中间主体区域

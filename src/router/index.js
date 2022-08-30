@@ -28,6 +28,12 @@ export default new Router({
           // title:'发布商品',
           name: 'publishGood',
           component: () => import("../components/goods/publishGood.vue"),
+        },
+        {
+          path: '/success',
+          // title:'发布商品成功',
+          name: 'success',
+          component: () => import("../pages/goods/success.vue"),
         }, {
           path: '/goods1',
           name: '上传图片',

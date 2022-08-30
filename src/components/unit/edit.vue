@@ -141,7 +141,10 @@ export default {
       editorButton.innerHTML = '<i class="el-icon-link" style="font-size: 18px;color:black"></i>'
     },
     // 失去焦点
-    onEditorBlur (editor) { },
+    onEditorBlur (editor) {
+      // console.log(this.formData.content)
+      this.$emit("getContent",this.formData.content)
+    },
     // 获得焦点
     onEditorFocus (editor) { },
     // 开始

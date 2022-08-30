@@ -1,26 +1,35 @@
 <template>
-  <el-menu :default-active="activeIndex" class="el-menu-vertical-demo" text-color="#999" :unique-opened="true"
-    @select="handleSelect" router active-text-color="#1890FF">
+  <div class="menus-div">
+    <div @click="changeCollapse()" class="collapse-div">
+      <i class="iconfont" v-show="!isCollapse" title="收起">&#xe661;</i>
+      <i class="iconfont" v-show="isCollapse" title="展开">&#xe662;</i>
+    </div>
+    <el-menu :default-active="activeIndex" class="el-menu-vertical-demo" text-color="#999" :unique-opened="true"
+      @open="handleOpen" @close="handleClose" @select="handleSelect" router active-text-color="#1890FF"
+      :collapse="isCollapse">
 
-    <template v-for="(item,index) in navMenuData">
-      <el-submenu :index="item.index">
-        <template slot="title">
-          <i :class="item.iconfont"></i>
-          <span>{{item.name}}</span>
-        </template>
-        <template v-for="item2 in item.child">
-          <el-menu-item :index="item2.index">{{item2.name}}</el-menu-item>
-        </template>
-      </el-submenu>
-    </template>
+      <template v-for="(item,index) in navMenuData">
+        <el-submenu :index="item.index">
+          <template slot="title">
+            <i :class="item.iconfont"></i>
+            <span>{{item.name}}</span>
+          </template>
+          <template v-for="item2 in item.child">
+            <el-menu-item :index="item2.index">{{item2.name}}</el-menu-item>
+          </template>
+        </el-submenu>
+      </template>
 
-  </el-menu>
+    </el-menu>
+  </div>
 </template>
 
 <script>
   export default {
+    props:['getIsCollapse'],
     data() {
       return {
+        isCollapse: false,
         activeIndex: "/goodsIndex",
         navMenuData: [{
             index: "1",
@@ -29,13 +38,15 @@
             child: [{
               index: "/goodsIndex",
               name: "商品列表"
-            }, {
-              index: "/goods1",
-              name: "上传图片"
-            }, {
-              index: "/goods2",
-              name: "富文本"
-            }]
+            }
+            // , {
+            //   index: "/goods1",
+            //   name: "上传图片"
+            // }, {
+            //   index: "/goods2",
+            //   name: "富文本"
+            // },
+            ]
           },
           {
             index: "2",
@@ -44,13 +55,12 @@
             child: [{
               index: "/orderManage",
               name: "订单管理"
-            }, {
-              index: "/timeSelect",
-              name: "时间选择器"
-            }, {
-              index: "3-3",
-              name: "选项3"
-            }]
+            }
+            // , {
+            //   index: "/timeSelect",
+            //   name: "时间选择器"
+            // }
+            ]
           },
           {
             index: "3",
@@ -59,12 +69,6 @@
             child: [{
               index: "/demandManage",
               name: "需求管理"
-            }, {
-              index: "3-2",
-              name: "选项2"
-            }, {
-              index: "3-3",
-              name: "选项3"
             }]
           },
           {
@@ -91,31 +95,54 @@
     methods: {
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
+      },
+      handleOpen(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      handleClose(key, keyPath) {
+        console.log(key, keyPath);
+      },
+      changeCollapse(){
+        this.isCollapse = !this.isCollapse
+        this.getIsCollapse(this.isCollapse)
       }
     },
     mounted() {
-      // console.log(this.activeIndex)
-      // console.log(this.$route.path)
       this.activeIndex = this.$route.path.substring(1, this.$route.path.length);
-
     }
   };
 </script>
 
 <style scoped lang="less">
-  .el-submenu .el-menu-item {
-    max-width: 210px;
+  //菜单栏上面的展开与收起
+  .collapse-div {
+    margin-right: 10px;
+    height: 30px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0px 10px;
+    color: #333;
+
+    i {
+      cursor: pointer;
+    }
+  }
+
+  .menus-div {
+    background-color: #fff;
+    height: 100%;
+  }
+
+  .el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 200px;
+    min-height: 400px;
   }
 
   .el-menu {
     border: none;
-    height: 100%;
-    padding: 10px 20px;
     box-sizing: border-box;
-  }
-
-  .el-submenu .el-menu-item {
-    min-width: 10px;
+     transition: all 10ms;
   }
 
   // 菜单栏选中的背景颜色

@@ -15,8 +15,11 @@
     <div class="searchSort">
       <span>类目搜索:</span>
       <div class="input-box">
-        <el-input v-model="inputKey" placeholder="可输入分类名称" class="input-search"></el-input>
-        <button class="btn-search">
+        <el-cascader v-model="inputKey" placeholder="可输入分类名称" :options="linkageData" @change="handleChange"
+          class="input-search" clearable  :show-all-levels="false"  :filterable="true" :visible-change="false">
+        </el-cascader>
+        <!-- <el-input v-model="inputKey" placeholder="可输入分类名称" class="input-search"></el-input> -->
+        <button class="btn-search" @click="position1()">
           <img src="../../assets/images/icon_search.png" alt="">
         </button>
       </div>
@@ -26,23 +29,23 @@
       <div class="module-uls">
         <!-- 一级菜单 -->
         <ul class="item-a" id="item-a">
-          <li v-for="(item,index) in linkageData" :key="item.id" :class="{'selected':selectIndex.item1 == item.id}"
-            @click="chooseItem1(index,item.id)">
-            {{item.name}} <i class="iconfont">&#xe62b;</i>
+          <li v-for="(item,index) in linkageData" :key="item.value"
+            :class="{'selected':selectIndex.item1 == item.value}" @click="chooseItem1(index,item.value)">
+            {{item.label}} <i class="iconfont">&#xe62b;</i>
           </li>
         </ul>
         <!-- 二级菜单 -->
         <ul class="item-b" v-show="isShowFlag2">
-          <li v-for="(item,index) in item2ChildData" :key="item.id" :class="{'selected':selectIndex.item2 == item.id}"
-            @click="chooseItem2(index,item.id)">
-            {{item.name}}<i class="iconfont">&#xe62b;</i>
+          <li v-for="(item,index) in item2ChildData" :key="item.value"
+            :class="{'selected':selectIndex.item2 == item.value}" @click="chooseItem2(index,item.value)">
+            {{item.label}}<i class="iconfont">&#xe62b;</i>
           </li>
         </ul>
         <!-- 三级菜单 -->
         <ul class="item-c" v-show="isShowFlag3">
-          <li v-for="(item,index) in item3ChildData" :key="item.id" :class="{'selected':selectIndex.item3 == item.id}"
-            @click="chooseItem3(index,item.id)">
-            {{item.name}}<i class="iconfont">&#xe62b;</i>
+          <li v-for="(item,index) in item3ChildData" :key="item.value"
+            :class="{'selected':selectIndex.item3 == item.value}" @click="chooseItem3(index,item.value)">
+            {{item.label}}<i class="iconfont">&#xe62b;</i>
           </li>
         </ul>
       </div>
@@ -81,14 +84,14 @@
         isNextFlag: false, //是否允许跳转下一步
         chooseClassify: "", //选中的类目 拼接
         chosedData: [{
-          id: '',
-          name: ''
+          value: '',
+          label: ''
         }, {
-          id: '',
-          name: ''
+          value: '',
+          label: ''
         }, {
-          id: '',
-          name: ''
+          value: '',
+          label: ''
         }], //选中的类目
         isShowFlag2: false, //二级菜单是否显示
         isShowFlag3: false, //三级菜单是否显示
@@ -124,27 +127,68 @@
       },
       // 给选择的类目赋值
       setData() {
-        this.chooseClassify = this.chosedData[0].name
-        if (this.chosedData[1].name != '') {
-          this.chooseClassify += " > " + this.chosedData[1].name
+        this.chooseClassify = this.chosedData[0].label
+        if (this.chosedData[1].label != '') {
+          this.chooseClassify += " > " + this.chosedData[1].label
           this.isNextFlag = true
-          if (this.chosedData[2].name != '') {
-            this.chooseClassify += " > " + this.chosedData[2].name
+          if (this.chosedData[2].label != '') {
+            this.chooseClassify += " > " + this.chosedData[2].label
           }
         } else {
           this.isNextFlag = false
         }
       },
+      position1() {
+        for (var i = 0; i < this.linkageData.length; i++) {
+          //循环一级菜单
+          if (this.inputKey[0] == this.linkageData[i].value) {
+            this.chosedData[0].value = this.inputKey[0]
+            this.chosedData[0].label = this.linkageData[i].label
+            this.selectIndex.item1 = this.inputKey[0]
+            this.isShowFlag2 = "true"
+            this.item2ChildData = this.linkageData[i].children
+            for (var j = 0; j < this.item2ChildData.length; j++) {
+              //循环二级菜单
+              if (this.inputKey[1] == this.item2ChildData[j].value) {
+                this.chosedData[1].value = this.inputKey[1]
+                this.chosedData[1].label = this.item2ChildData[j].label
+                this.selectIndex.item2 = this.inputKey[1]
+                this.item3ChildData = this.item2ChildData[j].children
+                //判断三级菜单有无内容
+                if (this.item3ChildData.length > 0) {
+                  this.isShowFlag3 = "true"
+                  if (this.inputKey.length == 3) {
+                    for (var x = 0; x < this.item3ChildData.length; x++) {
+                      //循环三级菜单
+                      if (this.inputKey[2] == this.item3ChildData[x].value) {
+                        this.chosedData[2].value = this.inputKey[2]
+                        this.chosedData[2].label = this.item3ChildData[x].label
+                        this.selectIndex.item3 = this.inputKey[2]
+                        this.setData()
+                        return
+                      }
+                    }
+                  }
+                }
+                this.setData()
+                return
+              }
+            }
+            return
+          }
+        }
+      },
       // 根据传值定位三级联动菜单
       position() {
+        console.log("this.inputKey", this.inputKey)
         console.log("定位")
-        this.selectIndex.item1 = this.chosedData[0].id
-        this.selectIndex.item2 = this.chosedData[1].id
-        this.selectIndex.item3 = this.chosedData[2].id
+        this.selectIndex.item1 = this.chosedData[0].value
+        this.selectIndex.item2 = this.chosedData[1].value
+        this.selectIndex.item3 = this.chosedData[2].value
         var a = document.getElementsByClassName("item-a")[0].offsetHeight
         //循环一级菜单
         for (var i = 0; i < this.linkageData.length; i++) {
-          if (this.linkageData[i].id == this.chosedData[0].id) {
+          if (this.linkageData[i].value == this.chosedData[0].value) {
 
             // if(i*32 > 170 ){
             //   console.log(i*32)
@@ -152,12 +196,12 @@
             //   document.getElementsByClassName("item-a")[0].scrollTop=200
             //   console.log(document.getElementsByClassName("item-a")[0].scrollTop)
             // }
-            this.item2ChildData = this.linkageData[i].child
+            this.item2ChildData = this.linkageData[i].children
             this.isShowFlag2 = true
             //循环二级菜单
             for (var j = 0; j < this.item2ChildData.length; j++) {
-              if (this.item2ChildData[j].id == this.chosedData[1].id) {
-                this.item3ChildData = this.item2ChildData[j].child
+              if (this.item2ChildData[j].value == this.chosedData[1].value) {
+                this.item3ChildData = this.item2ChildData[j].children
                 this.isShowFlag3 = true
                 return
               }
@@ -175,17 +219,17 @@
         this.selectIndex.item2 = "-1"
         this.selectIndex.item3 = "-1"
         // 将一级分类选中的数据赋值
-        this.chosedData[0].id = id
-        this.chosedData[0].name = this.linkageData[val].name
+        this.chosedData[0].value = id
+        this.chosedData[0].label = this.linkageData[val].label
         //清空二级和三级选中的数据
-        this.chosedData[1].id = ''
-        this.chosedData[1].name = ''
-        this.chosedData[2].id = ''
-        this.chosedData[2].name = ''
+        this.chosedData[1].value = ''
+        this.chosedData[1].label = ''
+        this.chosedData[2].value = ''
+        this.chosedData[2].label = ''
         //调用setData方法，将选中的类目拼接成字符串
         this.setData()
         //根据一级分类动态赋值二级分类
-        this.item2ChildData = this.linkageData[val].child
+        this.item2ChildData = this.linkageData[val].children
         //只有二级菜单有数据才会显示二级菜单
         if (this.item2ChildData != null && this.item2ChildData.length > 0) {
           this.isShowFlag2 = true
@@ -195,21 +239,20 @@
       },
       //选择二级分类
       chooseItem2(val, id) {
+        console.log(this.selectIndex)
         //将选中的一栏进行标记
         this.selectIndex.item2 = id
         // 将三级分类选中状态取消
         this.selectIndex.item3 = "-1"
         // 将二级分类选中的数据赋值
-        this.chosedData[1].id = id
-        this.chosedData[1].name = this.item2ChildData[val].name
+        this.chosedData[1].value = id
+        this.chosedData[1].label = this.item2ChildData[val].label
         //清空三级选中的数据
-        this.chosedData[2].id = ''
-        this.chosedData[2].name = ''
+        this.chosedData[2].value = ''
+        this.chosedData[2].label = ''
         //调用setData方法，将选中的类目拼接成字符串
         this.setData()
-        //解决的问题：二级菜单变换，一级菜单选中的菜单样式没变
-        this.selectIndex.item1 = this.item2ChildData[0].parentId
-        this.item3ChildData = this.item2ChildData[val].child
+        this.item3ChildData = this.item2ChildData[val].children
         //只有三级菜单有数据才会显示三级菜单
         if (this.item3ChildData != null && this.item3ChildData.length > 0) {
           this.isShowFlag3 = true
@@ -220,24 +263,27 @@
         //将选中的一栏进行标记
         this.selectIndex.item3 = id;
         // 将三级分类选中的数据赋值
-        this.chosedData[2].id = id
-        this.chosedData[2].name = this.item3ChildData[val].name
+        this.chosedData[2].value = id
+        this.chosedData[2].label = this.item3ChildData[val].label
         //调用setData方法，将选中的类目拼接成字符串
         this.setData()
-        //解决的问题：三级菜单变换，二级菜单选中的菜单样式没变
-        this.selectIndex.item2 = this.item3ChildData[0].parentId
-        //对应的一级菜单选中样式也得校验
-        this.selectIndex.item1 = this.item2ChildData[0].parentId
       },
       //下一步
       nextStep() {
         var chosedDataString = JSON.stringify(this.chosedData)
+        console.log(chosedDataString)
         this.$router.replace({
           path: '/publishGood',
           query: {
             chosedData: chosedDataString
           }
         })
+      },
+      handleChange(value) {
+        console.log(value);
+      },
+      hiddenDropdown() {
+        console.log("111")
       }
 
     }
@@ -340,7 +386,19 @@
         z-index: 1;
       }
     }
+
+    /deep/ .el-cascader {
+      line-height: 0px !important;
+    }
+
+    // /deep/ .el-cascader-panel {
+    //   display: none;
+    // }
+    // /deep/ .el-cascader-menu{
+    //   display: none;
+    // }
   }
+
 
   // 第三模块 多级联动
   .multistage-linkage {

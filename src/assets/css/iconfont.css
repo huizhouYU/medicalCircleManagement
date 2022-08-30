@@ -1,8 +1,9 @@
 @font-face {
-  font-family: "iconfont"; /* Project id 3594407 */
+  font-family: "iconfont";
+  /* Project id 3594407 */
   src: url('../iconfont/iconfont.woff2?t=1660718663877') format('woff2'),
-       url('../iconfont/iconfont.woff?t=1660718663877') format('woff'),
-       url('../iconfont/iconfont.ttf?t=1660718663877') format('truetype');
+    url('../iconfont/iconfont.woff?t=1660718663877') format('woff'),
+    url('../iconfont/iconfont.ttf?t=1660718663877') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +12,14 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-shuangjiantou-zuo:before {
+  content: "\e661";
+}
+
+.icon-shuangjiantou-you:before {
+  content: "\e662";
 }
 
 .icon-yangshi_icon_tongyong_flag:before {

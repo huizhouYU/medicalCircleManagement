@@ -11,12 +11,12 @@
           <img src="../../assets/images/img/brand03.jpg" alt="图片加载失败" class="item-img">
         </template>
       </el-table-column>
-      <el-table-column label="商品名称" width="150">
+      <el-table-column label="商品名称" width="200">
         <template slot-scope="scope">
           <span class="goods-name-span" :title="scope.row.name">{{scope.row.name}} </span>
         </template>
       </el-table-column>
-      <el-table-column prop="sort" label="商品分类" width="150"></el-table-column>
+      <el-table-column prop="sort" label="商品分类" width="200"></el-table-column>
       <el-table-column prop="brand" label="品牌" width="120"></el-table-column>
       <el-table-column prop="price" label="价格" width="100"></el-table-column>
       <el-table-column prop="stock" label="库存" width="100"></el-table-column>
