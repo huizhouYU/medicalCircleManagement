@@ -4,7 +4,7 @@
       <img src="../../../static/img/login/left-bg.png" alt="">
     </div>
     <div class="right">
-      <div class="login-content">
+      <div :class="[{flipLogin:isRegister},'login-content']">
         <div class="owl" id="owl" :class="[{password:isHide},'owl']">
           <div class="hand"></div>
           <div class="hand hand-r"></div>
@@ -14,7 +14,6 @@
           </div>
         </div>
         <span class="title">欢迎登录</span>
-
         <el-form label-position="top" label-width="80px" :model="loginForm" class="login-form">
           <el-form-item label="" class="form-label">
             <el-input v-model="loginForm.username" placeholder="请输入用户名" clearable>
@@ -57,8 +56,12 @@
           </ul>
         </div>
 
-      </div>
     </div>
+    <div :class="[{flipRegister:isRegister},'register-content']">
+      注册页面
+      <button @click="flipLogin">登录</button>
+    </div>
+  </div>
   </div>
 </template>
 
@@ -69,6 +72,7 @@
   export default {
     data() {
       return {
+        isRegister: false, //是否在注册页面
         isRememberPass: false, //记住密码
         isHide: false,
         loginForm: {
@@ -257,7 +261,11 @@
       },
       //注册
       register() {
-        alert("正在做呢，催啥？？？");
+        // alert("正在做呢，催啥？？？");
+        this.isRegister = true
+      },
+      flipLogin() {
+        this.isRegister = false
       },
       //其他方式登录
       otherLogin(val) {
@@ -291,18 +299,49 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
+
+      .register-content {
+        position: absolute;
+        margin-top: 60px;
+        background: #FFFFFF;
+        box-shadow: inset 0px 0px 43px 0px rgba(0, 0, 0, 0.08);
+        width: 400px;
+        height: 535px;
+        padding: 25px 30px 35px 30px;
+        box-sizing: border-box;
+        perspective: 1000px;
+        transition: 1.5s ease-in-out;
+        transform: rotateY(-180deg);
+        backface-visibility: hidden;
+        //毛玻璃效果
+        // background: rgba(255, 255, 255, .5);
+        // backdrop-filter: blur(30px);
+      }
+
+      .flipRegister {
+        transform: rotateY(-360deg);
+      }
+
+      .flipLogin {
+        transform: rotateY(180deg);
+      }
 
       .login-content {
+        position: absolute;
         margin-top: 60px;
         position: relative;
         background: #FFFFFF;
-        box-shadow: 0px 0px 43px 0px rgba(0, 0, 0, 0.08);
+        box-shadow: 0px 0px 54px 0px #eee inset;
+        // box-shadow: 0px 0px 43px 0px rgba(0, 0, 0, 0.08);
         width: 400px;
         height: 535px;
         padding: 25px 30px 35px 30px;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
+        perspective: 1000px;
+        transition: 1.5s ease-in-out;
 
         .title {
           font-size: 30px;
