@@ -1,9 +1,11 @@
 <template>
   <div class="content">
     <div class="left">
-      <img src="../../../static/img/login/left-bg.png" alt="">
+      <img src="../../../static/img/login/left-bg.png" alt="" :class="[{loginImg:isRegister},'loginBgImg']">
+      <img src="../../../static/img/login/register-bg.jpg" alt="" :class="[{registerImg:isRegister},'registerBgImg']">
     </div>
     <div class="right">
+      <!-- 登录 -->
       <div :class="[{flipLogin:isRegister},'login-content']">
         <div class="owl" id="owl" :class="[{password:isHide},'owl']">
           <div class="hand"></div>
@@ -37,14 +39,14 @@
               <canvas id="canvas" width="100" height="40" @click="draw()" style="border-radius: 5px;"></canvas>
             </div>
           </el-form-item>
-          <div class="eg-pass">
+          <div class="eg-pass public-checkBox">
             <el-checkbox label="记住密码" v-model="isRememberPass"></el-checkbox>
             <ul>
               <li @click="remberpass()">忘记密码？</li>
               <li @click="register()">立即注册</li>
             </ul>
           </div>
-          <el-button type="primary" round class="login-btn" @click="login">登录</el-button>
+          <el-button type="primary" round class="from-btn" @click="login">登录</el-button>
         </el-form>
         <!-- 选择一下方式登录 -->
         <div class="other">
@@ -56,12 +58,85 @@
           </ul>
         </div>
 
+      </div>
+      <!-- 注册 -->
+      <div :class="[{flipRegister:isRegister},'register-content']">
+        <span class="title">欢迎注册</span>
+        <el-steps :active="active" class="el-steps"></el-steps>
+        <el-form label-position="top" label-width="80px" :model="registerForm" class="register-form"
+          v-show="active == 1">
+          <el-form-item label="" class="form-label">
+            <el-input v-model="registerForm.username" placeholder="请输入用户名" clearable>
+              <template #prefix>
+                <div class="prefix"><img src="../../../static/img/login/user.png" alt=""></div>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="" class="form-label">
+            <el-input v-model="registerForm.password" placeholder="请输入密码" show-password @focus="isHide = true"
+              @blur="isHide = false">
+              <template #prefix>
+                <div class="prefix"><img src="../../../static/img/login/key.png" alt=""></div>
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="" class="form-label">
+            <el-input v-model="registerForm.surePassword" placeholder="再次确认密码" show-password @focus="isHide = true"
+              @blur="isHide = false">
+              <template #prefix>
+                <div class="prefix"><img src="../../../static/img/login/key.png" alt=""></div>
+              </template>
+            </el-input>
+          </el-form-item>
+          <div class="jump-login">
+            <span @click="flipLogin">
+              立即登录
+            </span>
+          </div>
+          <el-button type="primary" round class="from-btn" @click="nextStep">下一步</el-button>
+        </el-form>
+        <!-- 选择一下方式登录 -->
+        <div class="other" v-show="active == 1">
+          <span>无需注册，选择一下方式登录</span>
+          <ul>
+            <li><img src="../../../static/img/login/QQ.png" alt="QQ登录" @click="otherLogin(1)"></li>
+            <li><img src="../../../static/img/login/weixin.png" alt="微信登录" @click="otherLogin(2)"></li>
+            <li><img src="../../../static/img/login/zfb.png" alt="支付宝登录" @click="otherLogin(3)"></li>
+          </ul>
+        </div>
+        <div class="checking" v-show="active == 2">
+          <el-form label-position="top" label-width="80px" :model="registerForm" class="register-form">
+            <el-form-item label="" class="form-label">
+              <el-input v-model="registerForm.phone" placeholder="请输入手机号" clearable>
+                <template #prefix>
+                  <div class="prefix"><img src="../../../static/img/login/user.png" alt=""></div>
+                </template>
+              </el-input>
+            </el-form-item>
+            <div class="getCode-item">
+              <el-form-item label="" class="form-label">
+                <el-input v-model="registerForm.verCode" placeholder="请输入验证码" clearable>
+                  <template #prefix>
+                    <div class="prefix"><img src="../../../static/img/login/shield.png" alt=""></div>
+                  </template>
+                </el-input>
+              </el-form-item>
+              <span @click="getVCode">获取验证码</span>
+            </div>
+            <!-- 《用户服务协议》 -->
+            <div class="agree-item public-checkBox">
+              <div class="agree-left">
+                <el-checkbox label="我已阅读同意" v-model="isAgree"></el-checkbox>
+                <span class="agreement" @click="lookAgreement">《用户服务协议》</span>
+              </div>
+              <span class="login-left" @click="flipLogin">立即登录</span>
+            </div>
+             <el-button type="primary" round class="from-btn" @click="immedRegister">立即注册</el-button>
+
+          </el-form>
+        </div>
+      </div>
     </div>
-    <div :class="[{flipRegister:isRegister},'register-content']">
-      注册页面
-      <button @click="flipLogin">登录</button>
-    </div>
-  </div>
   </div>
 </template>
 
@@ -72,6 +147,7 @@
   export default {
     data() {
       return {
+        active: 1,
         isRegister: false, //是否在注册页面
         isRememberPass: false, //记住密码
         isHide: false,
@@ -80,8 +156,16 @@
           password: '',
           verCode: ''
         },
+        registerForm: {
+          username: '',
+          password: '',
+          surePassword: '',
+          phone: '',
+          verCode: ''
+        },
         verifyCode: '',
-        show_num: ''
+        show_num: '',
+        isAgree: false
       }
     },
     mounted() {
@@ -262,6 +346,7 @@
       //注册
       register() {
         // alert("正在做呢，催啥？？？");
+        this.active=1
         this.isRegister = true
       },
       flipLogin() {
@@ -270,6 +355,19 @@
       //其他方式登录
       otherLogin(val) {
         alert("催啥？点啥？走走走...")
+      },
+      nextStep() {
+        if (this.active++ > 3) this.active = 1
+      },
+      getVCode(){
+        alert("请求验证码")
+      },
+      //用户服务协议
+      lookAgreement() {
+        alert("看协议吗？给链接啊！！！")
+      },
+      immedRegister(){
+        alert("验证码填了吗？你就要注册？？？？")
       }
     }
   }
@@ -289,9 +387,33 @@
     }
 
     .left {
+      position: relative;
+      overflow: hidden;
+
       img {
         width: 100%;
         height: 100%;
+        left: 0px;
+        transition: 1.5s ease-in-out;
+        position: absolute;
+      }
+
+      .loginBgImg {
+        top: 0px;
+      }
+
+      .registerBgImg {
+        top: 1000px;
+      }
+
+      .loginImg {
+        top: -1000px;
+        opacity: 0;
+      }
+
+      .registerImg {
+        top: 0px;
+        opacity: 1;
       }
     }
 
@@ -301,11 +423,70 @@
       align-items: center;
       position: relative;
 
+      //登录  注册  都用到的标题
+      .title {
+        font-size: 30px;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: #333333;
+      }
+
+      //登录  注册 都用到的样式  start
+      .form-label {
+        margin-bottom: 30px;
+      }
+
+      /deep/ .el-input__prefix {
+        top: 2px !important;
+      }
+
+      /deep/ .el-input__inner {
+        background-color: rgba(230, 247, 255, 0.3);
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: #DBDBDB;
+      }
+
+      /deep/ .el-input__inner:focus {
+        border: 1px solid #1890FF;
+      }
+
+      // 登录 、 下一步 按钮
+      .from-btn {
+        width: 100%;
+        border-radius: 10px;
+        height: 50px;
+        background: #1890FF;
+        margin-top: 30px;
+        font-size: 16px;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: #FFFFFF;
+      }
+
+      .public-checkBox {
+        /deep/ .el-checkbox__inner {
+          border-radius: 8px;
+        }
+
+        /deep/ .el-checkbox__label,
+        /deep/ .el-checkbox__input.is-checked+.el-checkbox__label {
+          font-size: 12px;
+          font-family: Microsoft YaHei;
+          font-weight: 400;
+          color: #DBDBDB;
+        }
+      }
+
+      //登录  注册 都用到的样式  end
       .register-content {
         position: absolute;
         margin-top: 60px;
         background: #FFFFFF;
-        box-shadow: inset 0px 0px 43px 0px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 0 16px 0 rgba(0, 0, 0, .08);
         width: 400px;
         height: 535px;
         padding: 25px 30px 35px 30px;
@@ -317,6 +498,75 @@
         //毛玻璃效果
         // background: rgba(255, 255, 255, .5);
         // backdrop-filter: blur(30px);
+
+        //注册表单
+        .register-form {
+          margin-top: 35px;
+
+          //立即登录
+          .jump-login {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+            span {
+              font-size: 12px;
+              font-family: Microsoft YaHei;
+              font-weight: 400;
+              color: #1890FF;
+              cursor: pointer;
+            }
+          }
+        }
+
+        .getCode-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 30px;
+
+          /deep/.form-label {
+            margin-bottom: 0px;
+          }
+
+
+          span {
+            cursor: pointer;
+            font-size: 12px;
+            font-family: Microsoft YaHei;
+            font-weight: 400;
+            color: #1890FF;
+          }
+        }
+
+        // 用户服务协议 + 立即登录
+        .agree-item {
+          margin-top: 100px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .agree-left {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            .agreement {
+              font-size: 12px;
+              font-family: Microsoft YaHei;
+              font-weight: 400;
+              color: #1890FF;
+              cursor: pointer;
+            }
+          }
+          .login-left{
+            cursor: pointer;
+            font-size: 12px;
+            font-family: Microsoft YaHei;
+            font-weight: 400;
+            color: #1890FF;
+          }
+        }
       }
 
       .flipRegister {
@@ -332,8 +582,7 @@
         margin-top: 60px;
         position: relative;
         background: #FFFFFF;
-        box-shadow: 0px 0px 54px 0px #eee inset;
-        // box-shadow: 0px 0px 43px 0px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 0 16px 0 rgba(0, 0, 0, .08);
         width: 400px;
         height: 535px;
         padding: 25px 30px 35px 30px;
@@ -343,37 +592,9 @@
         perspective: 1000px;
         transition: 1.5s ease-in-out;
 
-        .title {
-          font-size: 30px;
-          font-family: Microsoft YaHei;
-          font-weight: 400;
-          color: #333333;
-        }
-
-        /deep/ .el-input__prefix {
-          top: 2px !important;
-        }
-
-        /deep/ .el-input__inner {
-          background-color: rgba(230, 247, 255, 0.3);
-          border: none;
-          border-radius: 10px;
-          font-size: 16px;
-          font-family: Microsoft YaHei;
-          font-weight: 400;
-          color: #DBDBDB;
-        }
-
-        /deep/ .el-input__inner:focus {
-          border: 1px solid #1890FF;
-        }
-
+        //登录表单
         .login-form {
           margin-top: 35px;
-
-          .form-label {
-            margin-bottom: 30px;
-          }
 
           //输入验证码
           .login-code {
@@ -395,18 +616,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-
-            /deep/ .el-checkbox__inner {
-              border-radius: 8px;
-            }
-
-            /deep/ .el-checkbox__label,
-            /deep/ .el-checkbox__input.is-checked+.el-checkbox__label {
-              font-size: 12px;
-              font-family: Microsoft YaHei;
-              font-weight: 400;
-              color: #DBDBDB;
-            }
 
             ul {
               display: flex;
@@ -430,18 +639,6 @@
             }
           }
 
-          // 登录
-          .login-btn {
-            width: 100%;
-            border-radius: 10px;
-            height: 50px;
-            background: #1890FF;
-            margin-top: 30px;
-            font-size: 16px;
-            font-family: Microsoft YaHei;
-            font-weight: 400;
-            color: #FFFFFF;
-          }
 
         }
 

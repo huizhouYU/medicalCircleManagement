@@ -116,6 +116,8 @@
 <style scoped lang="less">
   //菜单栏上面的展开与收起
   .collapse-div {
+    z-index: 1;
+    position: absolute;
     margin-right: 10px;
     height: 30px;
     display: flex;
@@ -124,12 +126,17 @@
     padding: 0px 10px;
     color: #333;
 
+
     i {
+      border: 1px solid #333;
+      padding: 10px;
+      border-radius: 50%;
       cursor: pointer;
     }
   }
 
   .menus-div {
+    position: relative;
     background-color: #fff;
     height: 100%;
   }
