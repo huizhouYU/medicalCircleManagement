@@ -14,6 +14,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-shanchu:before {
+  content: "\e630";
+}
 .icon-shuangjiantou-zuo:before {
   content: "\e661";
 }

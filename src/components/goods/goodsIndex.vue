@@ -15,10 +15,6 @@
         <el-cascader v-model="sortValue" placeholder="商品分类" :options="options" @change="handleChange"
           class="choose-store-sort" clearable :filterable="true">
         </el-cascader>
-        <!-- <el-select v-model="sortValue" placeholder="商品分类" class="choose-store-sort">
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-          </el-option>
-        </el-select> -->
         <!-- 商品状态 -->
         <el-select v-model="value" placeholder="商品状态" class="choose-shop-state" clearable>
           <el-option v-for="item in shopStateOptions" :key="item.value" :label="item.label" :value="item.value">
@@ -26,6 +22,10 @@
         </el-select>
         <!-- input 输入关键字  -->
         <div class="input-box">
+          <el-select v-model="inputKeyType" class="key-selectType">
+            <el-option v-for="item in inputKeyOptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
           <el-input v-model="inputKey" placeholder="请输入商品名称/关键字" class="input-search"></el-input>
           <button class="btn-search" @click="selectData()">
             <img src="../../assets/images/icon_search.png" alt="">
@@ -254,6 +254,15 @@
           value: '2',
           label: '下架'
         }],
+        //商品状态
+        inputKeyOptions: [{
+          value: '1',
+          label: '产品编码'
+        }, {
+          value: '2',
+          label: '产品名称'
+        }],
+        inputKeyType: '1', //搜索的关键字的类型
         inputKey: '', //输入商品名称/关键字
         value: '',
         sortValue: '', //选择的商品分类
@@ -383,14 +392,38 @@
         align-items: center;
         box-sizing: border-box;
 
+        //输入的关键字的类型
+        .key-selectType {
+          height: 34px;
+          width: 140px;
+          box-sizing: border-box;
+          font-size: 12px;
+          margin-left: -1px;
+
+          //下拉框的样式修改
+          /deep/ .el-input__inner {
+            height: 34px;
+            line-height: 34px;
+            font-size: 12px;
+            border-radius: 4px 0px 0px 4px;
+          }
+
+          //下拉框的箭头修改
+          /deep/ .el-input__icon {
+            line-height: 34px;
+          }
+        }
+
         // input 输入框
         .input-search {
           width: 320px;
           height: 34px;
+          margin-left: -1px;
 
           /deep/ .el-input__inner {
             height: 34px;
             line-height: 34px;
+            border-radius: 0px;
           }
 
         }

@@ -1,11 +1,11 @@
 <template>
   <div class="header-box">
     <div class="img-box">
-      <img src="../../assets/images/logo.png" alt="">
+      <!-- <img src="../../assets/images/logo.png" alt=""> -->
     </div>
     <div class="header-right">
       <span :title="username">{{username}}</span>
-      <img src="../../assets/images/icon_logout.png" alt="" title="退出">
+      <img src="../../assets/images/icon_logout.png" alt="" title="退出" @click="unLogin">
     </div>
   </div>
 </template>
@@ -15,6 +15,12 @@
     data(){
       return{
         username:'欢迎您，迅即影像网络'
+      }
+    },
+    methods:{
+      unLogin(){
+        localStorage.removeItem("token");
+        this.$router.replace("/Login")
       }
     }
   }

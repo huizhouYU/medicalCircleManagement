@@ -15,56 +15,90 @@
             <div class="arm arm-r"></div>
           </div>
         </div>
-        <span class="title">欢迎登录</span>
-        <el-form label-position="top" label-width="80px" :model="loginForm" class="login-form">
-          <el-form-item label="" class="form-label">
-            <el-input v-model="loginForm.username" placeholder="请输入用户名" clearable>
-              <template #prefix>
-                <div class="prefix"><img src="../../../static/img/login/user.png" alt=""></div>
-              </template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="" class="form-label">
-            <el-input v-model="loginForm.password" placeholder="请输入密码" show-password @focus="isHide = true"
-              @blur="isHide = false">
-              <template #prefix>
-                <div class="prefix"><img src="../../../static/img/login/key.png" alt=""></div>
-              </template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="" class="form-label">
-            <div class="login-code">
-              <el-input v-model="loginForm.verCode" placeholder="请输入验证码" class="login-code-input"></el-input>
-              <!-- <div id="v_container" class="v_container"></div> -->
-              <canvas id="canvas" width="100" height="40" @click="draw()" style="border-radius: 5px;"></canvas>
+        <!-- <span class="title">欢迎登录</span> -->
+        <ul class="loginWay-div">
+          <li :class="loginWay==1?'chosedWay':''" @click="loginWay=1">密码登录</li>
+          <li :class="loginWay==2?'chosedWay':''" @click="loginWay=2">验证码登录</li>
+        </ul>
+        <!-- 密码登录 -->
+        <div v-show="loginWay == 1">
+          <el-form label-position="top" label-width="80px" :model="loginForm" class="login-form">
+            <el-form-item label="" class="form-label">
+              <el-input v-model="loginForm.username" placeholder="请输入用户名" clearable>
+                <template #prefix>
+                  <div class="prefix"><img src="../../../static/img/login/user.png" alt=""></div>
+                </template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="" class="form-label">
+              <el-input v-model="loginForm.password" placeholder="请输入密码" show-password @focus="isHide = true"
+                @blur="isHide = false">
+                <template #prefix>
+                  <div class="prefix"><img src="../../../static/img/login/key.png" alt=""></div>
+                </template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="" class="form-label">
+              <div class="login-code">
+                <el-input v-model="loginForm.verCode" placeholder="请输入验证码" class="login-code-input"></el-input>
+                <!-- <div id="v_container" class="v_container"></div> -->
+                <canvas id="canvas" width="100" height="40" @click="draw()" style="border-radius: 5px;"></canvas>
+              </div>
+            </el-form-item>
+            <div class="eg-pass public-checkBox">
+              <el-checkbox label="记住密码" v-model="isRememberPass"></el-checkbox>
+              <ul>
+                <li @click="remberpass()">忘记密码？</li>
+                <li @click="register()">立即注册</li>
+              </ul>
             </div>
-          </el-form-item>
-          <div class="eg-pass public-checkBox">
-            <el-checkbox label="记住密码" v-model="isRememberPass"></el-checkbox>
+            <el-button type="primary" round class="from-btn" @click="login">登录</el-button>
+          </el-form>
+          <!-- 选择一下方式登录 -->
+          <div class="other">
+            <span>无需注册，选择一下方式登录</span>
             <ul>
-              <li @click="remberpass()">忘记密码？</li>
-              <li @click="register()">立即注册</li>
+              <li><img src="../../../static/img/login/QQ.png" alt="QQ登录" @click="otherLogin(1)"></li>
+              <li><img src="../../../static/img/login/weixin.png" alt="微信登录" @click="otherLogin(2)"></li>
+              <li><img src="../../../static/img/login/zfb.png" alt="支付宝登录" @click="otherLogin(3)"></li>
             </ul>
           </div>
-          <el-button type="primary" round class="from-btn" @click="login">登录</el-button>
-        </el-form>
-        <!-- 选择一下方式登录 -->
-        <div class="other">
-          <span>无需注册，选择一下方式登录</span>
-          <ul>
-            <li><img src="../../../static/img/login/QQ.png" alt="QQ登录" @click="otherLogin(1)"></li>
-            <li><img src="../../../static/img/login/weixin.png" alt="微信登录" @click="otherLogin(2)"></li>
-            <li><img src="../../../static/img/login/zfb.png" alt="支付宝登录" @click="otherLogin(3)"></li>
-          </ul>
         </div>
+        <!-- 验证码登录 -->
+        <div v-show="loginWay == 2">
+          <el-form label-position="top" label-width="80px" :model="loginForm" class="login-form">
+            <el-form-item label="" class="form-label">
+              <el-input v-model="loginForm.phone" placeholder="请输入手机号" clearable>
+                <template #prefix>
+                  <div class="prefix"><img src="../../../static/img/login/user.png" alt=""></div>
+                </template>
+              </el-input>
+            </el-form-item>
+            <div class="getCode-item">
+              <el-form-item label="" class="form-label">
+                <el-input v-model="loginForm.verCode" placeholder="请输入验证码" clearable>
+                  <template #prefix>
+                    <div class="prefix"><img src="../../../static/img/login/shield.png" alt=""></div>
+                  </template>
+                </el-input>
+              </el-form-item>
+              <span v-show="showLoginGetVCode" @click="getVCode">获取验证码</span>
+              <span v-show="!showLoginGetVCode" class="countDown">{{loginCount}} s</span>
+            </div>
+            <div class="login-to-register">
+              <span @click="register()">立即注册</span>
+            </div>
 
+            <button class="from-btn code-login" @click="login">登录</button>
+          </el-form>
+        </div>
       </div>
       <!-- 注册 -->
       <div :class="[{flipRegister:isRegister},'register-content']">
         <span class="title">欢迎注册</span>
         <el-steps :active="active" class="el-steps"></el-steps>
         <el-form label-position="top" label-width="80px" :model="registerForm" class="register-form"
-          v-show="active == 1">
+          v-show="active == 0">
           <el-form-item label="" class="form-label">
             <el-input v-model="registerForm.username" placeholder="请输入用户名" clearable>
               <template #prefix>
@@ -96,7 +130,7 @@
           <el-button type="primary" round class="from-btn" @click="nextStep">下一步</el-button>
         </el-form>
         <!-- 选择一下方式登录 -->
-        <div class="other" v-show="active == 1">
+        <div class="other" v-show="active == 0">
           <span>无需注册，选择一下方式登录</span>
           <ul>
             <li><img src="../../../static/img/login/QQ.png" alt="QQ登录" @click="otherLogin(1)"></li>
@@ -104,7 +138,7 @@
             <li><img src="../../../static/img/login/zfb.png" alt="支付宝登录" @click="otherLogin(3)"></li>
           </ul>
         </div>
-        <div class="checking" v-show="active == 2">
+        <div class="checking" v-show="active == 1">
           <el-form label-position="top" label-width="80px" :model="registerForm" class="register-form">
             <el-form-item label="" class="form-label">
               <el-input v-model="registerForm.phone" placeholder="请输入手机号" clearable>
@@ -121,7 +155,8 @@
                   </template>
                 </el-input>
               </el-form-item>
-              <span @click="getVCode">获取验证码</span>
+              <span v-show="showRegisterGetVCode" @click="getVCode">获取验证码</span>
+              <span v-show="!showRegisterGetVCode" class="countDown">{{registerCount}} s</span>
             </div>
             <!-- 《用户服务协议》 -->
             <div class="agree-item public-checkBox">
@@ -131,7 +166,7 @@
               </div>
               <span class="login-left" @click="flipLogin">立即登录</span>
             </div>
-             <el-button type="primary" round class="from-btn" @click="immedRegister">立即注册</el-button>
+            <el-button type="primary" round class="from-btn" @click="immedRegister">立即注册</el-button>
 
           </el-form>
         </div>
@@ -147,6 +182,11 @@
   export default {
     data() {
       return {
+        loginCount: '', //获取验证码倒计时【登录页】
+        showLoginGetVCode: true, //是否显示获取验证码【登录页】
+        registerCount: '', //获取验证码倒计时【注册页】
+        showRegisterGetVCode: true, //是否显示获取验证码【注册页】
+        loginWay: 1, //登录方式【1：密码登录，2：短信登录】
         active: 1,
         isRegister: false, //是否在注册页面
         isRememberPass: false, //记住密码
@@ -154,6 +194,8 @@
         loginForm: {
           username: '',
           password: '',
+          verCode: '',
+          phone: '',
           verCode: ''
         },
         registerForm: {
@@ -255,20 +297,43 @@
           return false
         }
       },
+      //在登录之前先进行数据检查
+      checkLoginInfo() {
+        //密码登录
+        if (this.loginWay == 1) {
+          if (this.loginForm.username === '' && this.loginForm.password === '') {
+            this.$message.error('用户名和密码不能为空！')
+            return false
+          }
+          if (!this.checkCode()) {
+            return false
+          }
+          //是否记住密码
+          if (this.isRememberPass) {
+            this.setCookie(this.loginForm.username, this.loginForm.password, 7)
+          } else {
+            this.clearCookie();
+          }
+          return true
+        } else if (this.loginWay == 2) {
+          //验证码登录
+          if (this.loginForm.phone === '' && this.loginForm.verCode === '') {
+            this.$message.error('请先填写短信验证码！')
+            return false
+          }
+          return true
+        }
+        return false
+      },
       // 登录
       login() {
-        if (this.loginForm.username === '' && this.loginForm.password === '') {
-          this.$message.error('用户名和密码不能为空！')
-          return ''
-        }
-        if (!this.checkCode()) {
-          return ''
-        }
-        //是否记住密码
-        if (this.isRememberPass) {
-          this.setCookie(this.loginForm.username, this.loginForm.password, 7)
-        } else {
-          this.clearCookie();
+        if (this.checkLoginInfo()) {
+          // 假设用户名和密码正确
+          localStorage.setItem('token', '11111') //保存一个token值
+          // 登录成功 跳转首页
+          this.$router.push({
+            name: 'home'
+          })
         }
 
         // this.$http.post('login', this.loginForm).then(res => {
@@ -282,12 +347,7 @@
         //     })
         //   }
         // })
-        // 假设用户名和密码正确
-        localStorage.setItem('token', '11111') //保存一个token值
-        // 登录成功 跳转首页
-        this.$router.push({
-          name: 'home'
-        })
+
       },
       async newlogin() {
         if (this.loginForm.username === '' && this.loginForm.password === '') {
@@ -346,11 +406,24 @@
       //注册
       register() {
         // alert("正在做呢，催啥？？？");
-        this.active=1
+        this.active = 1
         this.isRegister = true
+        //还原登录页和注册页 获取短信验证码等信息
+        this.clearData()
       },
       flipLogin() {
         this.isRegister = false
+        //还原登录页和注册页 获取短信验证码等信息
+        this.clearData()
+      },
+      //还原登录页和注册页 获取短信验证码等信息
+      clearData() {
+        clearInterval(this.timer);
+        this.timer = null;
+        this.loginCount = ''
+        this.showLoginGetVCode = true
+        this.registerCount = ''
+        this.showRegisterGetVCode = true
       },
       //其他方式登录
       otherLogin(val) {
@@ -359,14 +432,48 @@
       nextStep() {
         if (this.active++ > 3) this.active = 1
       },
-      getVCode(){
-        alert("请求验证码")
+      getVCode() {
+        //登录页获取倒计时
+        if (!this.isRegister) {
+          //axios请求
+          console.log(this.loginForm.phone)
+          // 验证码倒计时
+          if (!this.timer) {
+            this.loginCount = 60;
+            this.showLoginGetVCode = false;
+            this.timer = setInterval(() => {
+              if (this.loginCount > 0 && this.loginCount <= 60) {
+                this.loginCount--;
+              } else {
+                this.showLoginGetVCode = true;
+                clearInterval(this.timer);
+                this.timer = null;
+              }
+            }, 1000);
+          }
+        } else {
+          //axios请求
+          // 验证码倒计时
+          if (!this.timer) {
+            this.registerCount = 60;
+            this.showRegisterGetVCode = false;
+            this.timer = setInterval(() => {
+              if (this.registerCount > 0 && this.registerCount <= 60) {
+                this.registerCount--;
+              } else {
+                this.showRegisterGetVCode = true;
+                clearInterval(this.timer);
+                this.timer = null;
+              }
+            }, 1000);
+          }
+        }
       },
       //用户服务协议
       lookAgreement() {
         alert("看协议吗？给链接啊！！！")
       },
-      immedRegister(){
+      immedRegister() {
         alert("验证码填了吗？你就要注册？？？？")
       }
     }
@@ -431,6 +538,8 @@
         color: #333333;
       }
 
+
+
       //登录  注册 都用到的样式  start
       .form-label {
         margin-bottom: 30px;
@@ -465,6 +574,10 @@
         font-family: Microsoft YaHei;
         font-weight: 400;
         color: #FFFFFF;
+        letter-spacing: 4px;
+        border: none;
+        outline: none;
+
       }
 
       .public-checkBox {
@@ -481,7 +594,78 @@
         }
       }
 
+      //填写手机验证码
+      .getCode-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+
+        /deep/.form-label {
+          margin-bottom: 0px;
+        }
+
+
+        span {
+          cursor: pointer;
+          font-size: 12px;
+          font-family: Microsoft YaHei;
+          font-weight: 400;
+          color: #4ebaff;
+        }
+
+        //获取验证码倒计时
+        .countDown {
+          color: #DBDBDB;
+        }
+      }
+
       //登录  注册 都用到的样式  end
+      //登录方式
+      .loginWay-div {
+        display: flex;
+        align-items: center;
+
+        li {
+          font-size: 14px;
+          font-family: Microsoft YaHei;
+          font-weight: 400;
+          color: #DBDBDB;
+          margin: 0px 10px;
+          cursor: pointer;
+          padding-bottom: 5px;
+        }
+
+        .chosedWay {
+          color: #06b4fd;
+          font-weight: 600;
+          border-bottom: 1px solid #06b4fd;
+
+        }
+      }
+
+      //验证码登录【立即注册】
+      .login-to-register {
+        margin-top: 80px;
+        box-sizing: border-box;
+        padding: 0 5px;
+        font-size: 12px;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: #06b4fd;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        span {
+          cursor: pointer;
+        }
+      }
+      //验证码登录【登录按钮】
+      .code-login{
+        margin-top:10px;
+      }
+
       .register-content {
         position: absolute;
         margin-top: 60px;
@@ -519,25 +703,7 @@
           }
         }
 
-        .getCode-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 30px;
 
-          /deep/.form-label {
-            margin-bottom: 0px;
-          }
-
-
-          span {
-            cursor: pointer;
-            font-size: 12px;
-            font-family: Microsoft YaHei;
-            font-weight: 400;
-            color: #1890FF;
-          }
-        }
 
         // 用户服务协议 + 立即登录
         .agree-item {
@@ -559,7 +725,8 @@
               cursor: pointer;
             }
           }
-          .login-left{
+
+          .login-left {
             cursor: pointer;
             font-size: 12px;
             font-family: Microsoft YaHei;

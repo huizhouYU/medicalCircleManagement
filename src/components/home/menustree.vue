@@ -1,8 +1,10 @@
 <template>
   <div class="menus-div">
     <div @click="changeCollapse()" class="collapse-div">
-      <i class="iconfont" v-show="!isCollapse" title="收起">&#xe661;</i>
-      <i class="iconfont" v-show="isCollapse" title="展开">&#xe662;</i>
+      <img src="../../assets/images/logo.png" alt="" v-show="!isCollapse">
+      <img src="../../assets/images/logo_img.png" alt="" v-show="isCollapse">
+      <!-- <i class="iconfont" v-show="!isCollapse" title="收起">&#xe661;</i>
+      <i class="iconfont" v-show="isCollapse" title="展开">&#xe662;</i> -->
     </div>
     <el-menu :default-active="activeIndex" class="el-menu-vertical-demo" text-color="#999" :unique-opened="true"
       @open="handleOpen" @close="handleClose" @select="handleSelect" router active-text-color="#1890FF"
@@ -26,7 +28,7 @@
 
 <script>
   export default {
-    props:['getIsCollapse'],
+    props: ['getIsCollapse'],
     data() {
       return {
         isCollapse: false,
@@ -36,16 +38,19 @@
             name: "商品",
             iconfont: "el-icon-location",
             child: [{
-              index: "/goodsIndex",
-              name: "商品列表"
-            }
-            // , {
-            //   index: "/goods1",
-            //   name: "上传图片"
-            // }, {
-            //   index: "/goods2",
-            //   name: "富文本"
-            // },
+                index: "/goodsIndex",
+                name: "商品列表"
+              }, {
+                index: '/goodsRecovery',
+                name: "商品回收站"
+              }
+              // , {
+              //   index: "/goods1",
+              //   name: "上传图片"
+              // }, {
+              //   index: "/goods2",
+              //   name: "富文本"
+              // },
             ]
           },
           {
@@ -53,13 +58,13 @@
             name: "订单",
             iconfont: "el-icon-menu",
             child: [{
-              index: "/orderManage",
-              name: "订单管理"
-            }
-            // , {
-            //   index: "/timeSelect",
-            //   name: "时间选择器"
-            // }
+                index: "/orderManage",
+                name: "订单管理"
+              }
+              // , {
+              //   index: "/timeSelect",
+              //   name: "时间选择器"
+              // }
             ]
           },
           {
@@ -102,7 +107,7 @@
       handleClose(key, keyPath) {
         console.log(key, keyPath);
       },
-      changeCollapse(){
+      changeCollapse() {
         this.isCollapse = !this.isCollapse
         this.getIsCollapse(this.isCollapse)
       }
@@ -117,15 +122,15 @@
   //菜单栏上面的展开与收起
   .collapse-div {
     z-index: 1;
-    position: absolute;
+    // position: absolute;
+
     margin-right: 10px;
-    height: 30px;
+    height: 90px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
     padding: 0px 10px;
     color: #333;
-
 
     i {
       border: 1px solid #333;
@@ -137,8 +142,13 @@
 
   .menus-div {
     position: relative;
-    background-color: #fff;
+    // background-color: #fff;
+    background-color: #222020;
     height: 100%;
+  }
+
+  /deep/ .el-menu {
+    background-color: #222020;
   }
 
   .el-menu-vertical-demo:not(.el-menu--collapse) {
@@ -149,7 +159,7 @@
   .el-menu {
     border: none;
     box-sizing: border-box;
-     transition: all 10ms;
+    transition: all 10ms;
   }
 
   // 菜单栏选中的背景颜色

@@ -16,7 +16,7 @@
       <span>类目搜索:</span>
       <div class="input-box">
         <el-cascader v-model="inputKey" placeholder="可输入分类名称" :options="linkageData" @change="handleChange"
-          class="input-search" clearable  :show-all-levels="false"  :filterable="true" :visible-change="false">
+          class="input-search" clearable :filterable="true">
         </el-cascader>
         <!-- <el-input v-model="inputKey" placeholder="可输入分类名称" class="input-search"></el-input> -->
         <button class="btn-search" @click="position1()">
@@ -130,8 +130,9 @@
         this.chooseClassify = this.chosedData[0].label
         if (this.chosedData[1].label != '') {
           this.chooseClassify += " > " + this.chosedData[1].label
-          this.isNextFlag = true
+          this.isNextFlag = false
           if (this.chosedData[2].label != '') {
+            this.isNextFlag = true
             this.chooseClassify += " > " + this.chosedData[2].label
           }
         } else {
@@ -270,14 +271,17 @@
       },
       //下一步
       nextStep() {
-        var chosedDataString = JSON.stringify(this.chosedData)
-        console.log(chosedDataString)
-        this.$router.replace({
-          path: '/publishGood',
-          query: {
-            chosedData: chosedDataString
-          }
-        })
+        if (this.isNextFlag) {
+          var chosedDataString = JSON.stringify(this.chosedData)
+          console.log(chosedDataString)
+          this.$router.replace({
+            path: '/publishGood',
+            query: {
+              chosedData: chosedDataString
+            }
+          })
+        }
+
       },
       handleChange(value) {
         console.log(value);
@@ -389,7 +393,22 @@
 
     /deep/ .el-cascader {
       line-height: 0px !important;
+      font-size: 12px;
     }
+
+    /deep/.el-input__icon {
+      line-height: 34px;
+    }
+
+    // /deep/.el-cascader__dropdown .el-cascader-panel {
+    //   font-size: 12px;
+    //   display: none !important;
+    // }
+
+    // /deep/.el-cascader-menu{
+    //   font-size: 12px;
+    //   display: none !important;
+    // }
 
     // /deep/ .el-cascader-panel {
     //   display: none;

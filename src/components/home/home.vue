@@ -1,8 +1,8 @@
 <template>
   <el-container class="content">
-    <el-header class="header">
+   <!-- <el-header class="header">
       <home-header></home-header>
-    </el-header>
+    </el-header> -->
     <el-container>
       <!-- 左侧菜单栏 -->
       <!-- :class="[{password:isHide},'owl']" -->
@@ -11,6 +11,9 @@
         <MenusTree :getIsCollapse="getCollapse"></MenusTree>
       </el-aside>
       <el-container>
+        <el-header class="header">
+          <home-header></home-header>
+        </el-header>
         <el-main class="main">
           <router-view></router-view>
         </el-main>
@@ -69,7 +72,8 @@
 
   // 头部下面的主体内容:左侧菜单栏+中间内容
   .el-aside {
-    height: calc(100vh - 90px); // 设置左侧 aside 高度
+    // height: calc(100vh - 90px); // 设置左侧 aside 高度
+    height: calc(100vh);
   }
 
   .el-main {

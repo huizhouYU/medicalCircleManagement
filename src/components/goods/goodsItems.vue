@@ -20,22 +20,35 @@
       <el-table-column prop="brand" label="品牌" width="120"></el-table-column>
       <el-table-column prop="price" label="价格" width="100"></el-table-column>
       <el-table-column prop="stock" label="库存" width="100"></el-table-column>
-      <el-table-column label="上架" width="90">
+      <el-table-column label="上架" width="100">
         <template slot-scope="scope">
-          <div class="check-div" :class="scope.row.isPut?'checked-put':'unchecked-put'"
-            @click="changePutState(scope.$index, currentPageData)"></div>
+          <el-switch
+            style="display: block"
+            v-model="scope.row.isPut"
+            active-color="#13ce66"
+            inactive-color="#ff4949"></el-switch>
+          <!-- <div class="check-div" :class="scope.row.isPut?'checked-put':'unchecked-put'"
+            @click="changePutState(scope.$index, currentPageData)"></div> -->
         </template>
       </el-table-column>
-      <el-table-column label="推荐" width="90">
+      <el-table-column label="推荐" width="100">
         <template slot-scope="scope">
-          <div class="check-div" :class="scope.row.isRecommend?'checked-put':'unchecked-put'"
-            @click="changeRecommendState(scope.$index, currentPageData)"></div>
+          <el-switch
+            v-model="scope.row.isRecommend">
+          </el-switch>
+          <!-- <div class="check-div" :class="scope.row.isRecommend?'checked-put':'unchecked-put'"
+            @click="changeRecommendState(scope.$index, currentPageData)"></div> -->
         </template>
       </el-table-column>
-      <el-table-column prop="isForbid" label="禁售" width="90">
+      <el-table-column prop="isForbid" label="禁售" width="100">
         <template slot-scope="scope">
-          <div class="check-div" :class="scope.row.isForbid?'checked-forbid':'unchecked-forbid'"
-            @click="changeForbidState(scope.$index, currentPageData)"></div>
+          <el-switch
+            style="display: block"
+            v-model="scope.row.isForbid"
+            active-color="#13ce66"
+            inactive-color="#ff4949"></el-switch>
+          <!-- <div class="check-div" :class="scope.row.isForbid?'checked-forbid':'unchecked-forbid'"
+            @click="changeForbidState(scope.$index, currentPageData)"></div> -->
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="120">

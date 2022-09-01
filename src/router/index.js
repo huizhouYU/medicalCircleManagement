@@ -34,7 +34,13 @@ export default new Router({
           // title:'发布商品成功',
           name: 'success',
           component: () => import("../pages/goods/success.vue"),
-        }, {
+        },
+        {
+          path: '/goodsRecovery',
+          name: '商品回收站',
+          component: () => import("../pages/goods/goodsRecovery.vue"),
+        },
+        {
           path: '/goods1',
           name: '上传图片',
           component: () => import("../components/goods/goods1.vue"),

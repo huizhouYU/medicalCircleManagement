@@ -24,10 +24,16 @@
           <span class="title-span">产品名称：</span>
           <input type="text" placeholder="请输入商品名称" v-model="goodInfo.name" maxlength="40">
         </div>
-        <div class="item2">
+        <div class="item2 item-brand">
           <span class="title-span">所属品牌：</span>
-          <input type="text" placeholder="请输入商品品牌" v-model="goodInfo.brand" maxlength="40">
+          <el-select v-model="goodInfo.brand" class="select-brand" v-show="!customBrand">
+            <el-option v-for="item in brandsOptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+          <input type="text" placeholder="请输入商品品牌" v-model="goodInfo.brand" maxlength="40" v-show="customBrand">
+          <el-checkbox v-model="customBrand" @change='goodInfo.brand= ""'>自定义品牌</el-checkbox>
         </div>
+
       </div>
       <!-- 产品规格： -->
       <div class="product-specs">
@@ -98,31 +104,44 @@
         <span class="title-span">产品详情：</span>
         <edit class="edit" @getContent="getContentData"></edit>
       </div>
-      <!-- 运费模板 -->
+      <!-- 交易方式 -->
       <div class="prodect-fare">
-        <span class="title-span">运费模板：</span>
+        <span class="title-span">交易方式：</span>
         <el-select v-model="goodInfo.chosedFare" class="select-item">
           <el-option v-for="item in fareOptions" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
-        <button class="btn-fare-list">运费模板列表</button>
       </div>
       <!-- 商品标签 -->
       <div class="prodect-tag">
         <span class="title-span">商品标签：</span>
         <div class="content">
-          <input type="text" name="" id="" v-model="goodInfo.goodTags">
-          <span>填写商品卖点，展示在移动端标题下方</span>
+          <!-- <input type="text" name="" id="" v-model="goodInfo.goodTags"> -->
+          <div class="tags-content">
+            <el-tag :key="tag" v-for="tag in goodInfo.tagList" closable :disable-transitions="false"
+              @close="handleClose(tag)">
+              {{tag}}
+            </el-tag>
+            <!-- <ul>
+              <li v-for="(item,index) in goodInfo.tagList">
+                <span>{{item}}</span>
+                <i class="iconfont" @click="deletTag(index)">&#xe630;</i>
+              </li>
+            </ul> -->
+            <input class="tags-input" placeholder="添加标签" v-model="goodTag" @keyup.enter="addTag()"
+              v-show="inputVisible">
+          </div>
+          <span>最多可填写5个商品标签,每个标签最多4个字</span>
         </div>
       </div>
       <!-- 立即上架 -->
       <div class="prodect-grounding">
         <span class="title-span">立即上架：</span>
         <div class="content">
-          <el-switch class="tableScopeSwitch" v-model="goodInfo.groundingValue" active-color="#1890FF">
+          <el-switch v-model="goodInfo.groundingValue" active-color="#13ce66">
           </el-switch>
           <span class="isRecommend">是否推荐：</span>
-          <el-switch class="tableScopeSwitch" v-model="goodInfo.recommendValue" active-color="#1890FF">
+          <el-switch v-model="goodInfo.recommendValue" active-color="#13ce66">
           </el-switch>
           <span class="remarks">被推荐的商品会显示在店铺首页</span>
         </div>
@@ -147,6 +166,9 @@
     },
     data() {
       return {
+        inputVisible: true,
+        goodTag: '', //添加的商品标签
+        customBrand: false, //是否自定义品牌
         isBack: true, //只有新增商品才能返回上一步
         limit: 5,
         //商品信息
@@ -159,20 +181,21 @@
           chosedXS: '1', //选择的销售方式
           chosedShelfLife: '1', //选择的保质期【年、月、日】
           content: '', //产品详情
-          chosedFare: "1", //选择的运费模板
-          goodTags: '', //商品标签
+          chosedFare: "1", //选择的交易方式
+          tagList: ['模板一', '模板二'], //商品标签
           groundingValue: true, //是否立即上架
           recommendValue: false, //是否推荐
         },
+        brandsOptions: [],
         //是否允许输入价格
         isEditPriceFlag: true,
-        //运费模板
+        //交易方式
         fareOptions: [{
           value: '1',
           label: '当面交易'
         }, {
           value: '2',
-          label: '线上交易'
+          label: '物流发货'
         }],
         // 销售类型
         xsOptions: [{
@@ -279,7 +302,7 @@
 
       },
       back() {
-         this.$router.replace("/goodsIndex")
+        this.$router.replace("/goodsIndex")
       },
       //当选择“咨询议价”时，商品价格禁止输入
       isEditPrice() {
@@ -316,6 +339,33 @@
         console.log('图片信息', this.ruleForm)
         alert("核对要提交给后台的数据后，再请求接口提交数据，暂定提交成功！")
         this.$router.replace("/success")
+      },
+      deletTag(index) {
+        this.goodInfo.tagList.splice(index, 1)
+        if (this.goodInfo.tagList.length < 5) {
+          this.inputVisible = true
+        } else {
+          this.inputVisible = false
+        }
+      },
+      addTag() {
+        if (this.goodInfo.tagList.length < 5) {
+          this.goodInfo.tagList.push(this.goodTag.substring(0, 4))
+        }
+        if (this.goodInfo.tagList.length < 5) {
+          this.inputVisible = true
+        } else {
+          this.inputVisible = false
+        }
+        this.goodTag = ''
+      },
+      handleClose(key) {
+        this.goodInfo.tagList.splice(this.goodInfo.tagList.indexOf(key), 1);
+        if (this.goodInfo.tagList.length < 5) {
+          this.inputVisible = true
+        } else {
+          this.inputVisible = false
+        }
       }
 
     }
@@ -390,13 +440,14 @@
     }
 
     .item-name-brand {
-      margin-top: 30px;
+
       display: flex;
       justify-content: flex-start;
-      // flex-wrap: wrap;
+      flex-wrap: wrap;
 
       .item,
       .item2 {
+        margin-top: 30px;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -404,6 +455,27 @@
 
       .item2 {
         margin-right: 10px;
+
+        //所属品牌的下拉款
+        .select-brand {
+          margin-left: 30px;
+
+          /deep/ .el-input__inner {
+            height: 34px;
+            width: 250px;
+            font-size: 12px;
+          }
+
+          /deep/ .el-input__icon {
+            line-height: 34px;
+          }
+        }
+      }
+
+      .item-brand {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
       }
 
       /* WebKit browsers */
@@ -442,8 +514,20 @@
         padding-left: 15px;
       }
 
-      .item2 {
-        margin-left: 100px;
+      .item {
+        margin-right: 100px;
+      }
+
+      //自定义品牌
+      /deep/.el-checkbox {
+        display: flex;
+        align-items: center;
+        margin-left: 15px;
+      }
+
+      /deep/ .el-checkbox__label {
+        font-size: 12px;
+        color: #333;
       }
     }
   }
@@ -463,10 +547,6 @@
     .choose-item {
       flex: 1;
       margin-left: 30px;
-      // display: flex;
-      // justify-content: flex-start;
-      // flex-wrap: wrap;
-      // box-sizing: border-box;
       display: grid;
       grid-template-columns: repeat(auto-fill, 160px);
 
@@ -609,7 +689,7 @@
     }
   }
 
-  // 运费模板
+  // 交易方式
   .prodect-fare {
     margin-top: 30px;
     display: flex;
@@ -622,7 +702,7 @@
 
     .el-select {
       margin-left: 30px;
-      width: 260px;
+      width: 250px;
       height: 34px;
       box-sizing: border-box;
 
@@ -636,19 +716,6 @@
       }
     }
 
-    .btn-fare-list {
-      width: 104px;
-      height: 34px;
-      background: #1890FF;
-      border-radius: 4px;
-      margin-left: 60px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      outline: none;
-      color: #FFFFFF;
-      border: none;
-    }
   }
 
   // 商品标签
@@ -668,12 +735,46 @@
       flex-direction: column;
       margin-left: 30px;
 
+      .el-tag {
+        margin-bottom: 15px;
+      }
+
+      .el-tag+.el-tag {
+        margin-left: 10px;
+      }
+
+      // .tags-content {
+      //   border: 1px solid #D9D9D9;
+      //   border-radius: 4px;
+      //   font-size: 14px;
+      //   color: #333;
+
+      //   ul {
+      //     display: flex;
+      //     justify-content: flex-start;
+      //     align-items: center;
+      //     padding: 5px;
+
+      //     li {
+      //       padding: 2px;
+      //       background-color: #F5F5F5;
+      //       margin-right: 20px;
+
+      //       i {
+      //         font-size: 10px;
+      //         transform: scale(0.83);
+      //         cursor: pointer;
+      //       }
+      //     }
+      //   }
+      // }
+
       input {
         width: 424px;
         height: 34px;
         background: #FFFFFF;
         border-radius: 4px 4px 4px 4px;
-        border: 1px solid #EBEEF5;
+        border: 1px solid #D9D9D9;
         outline: none;
         box-sizing: border-box;
         font-size: 12px;
@@ -703,38 +804,6 @@
 
     .content {
       margin-left: 30px;
-
-      /deep/.el-switch {
-        height: 30px;
-        width: 78px;
-        line-height: 30px;
-      }
-
-      /deep/.el-switch__core {
-        width: 80px !important;
-        height: 30px;
-        line-height: 30px;
-        border-radius: 60px;
-      }
-
-      /deep/.el-switch__core:after {
-        width: 26px;
-        height: 26px;
-        left: 1px;
-      }
-
-      /deep/ .el-switch.is-checked .el-switch__core:after {
-        margin-left: 49px;
-      }
-
-      /deep/.el-switch.is-checked .el-switch__core::after {
-        top: 1px;
-      }
-
-      /deep/.el-switch.is-checked .el-switch__core {
-        border-color: #7297FF;
-        background-color: #7297FF;
-      }
 
       .isRecommend {
         margin-left: 280px;
