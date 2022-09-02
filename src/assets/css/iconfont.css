@@ -14,9 +14,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-beizhu:before {
+  content: "\e615";
+}
+
 .icon-shanchu:before {
   content: "\e630";
 }
+
 .icon-shuangjiantou-zuo:before {
   content: "\e661";
 }

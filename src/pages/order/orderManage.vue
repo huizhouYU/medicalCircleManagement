@@ -10,19 +10,27 @@
     <!-- 搜索栏 -->
     <div class="search-box">
       <!-- 订单状态下拉框 -->
-      <el-select v-model="orderStateValue" placeholder="订单状态" class="orderState-div">
+      <el-select v-model="orderStateValue" placeholder="订单状态" class="orderState-div public-interval">
         <el-option v-for="item in orderStateOptions" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
       <!-- 下单时间 -->
-      <div class="order-time">
+      <div class="order-time public-interval">
         <span>下单时间：</span>
         <el-date-picker class="el-date-editor-div" v-model="orderTime" type="daterange" align="right" unlink-panels
           start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
         </el-date-picker>
       </div>
-      <el-input v-model="inputKey" placeholder="请输入订单编号/收货人" class="input-search"></el-input>
-      <button class="but-search">查询</button>
+      <!-- 输入关键字 -->
+      <el-input placeholder="请输入订单编号/收货人" v-model="inputKey"
+        class="input-with-select search-select-input public-interval">
+        <el-select v-model="inputKeyType" slot="prepend" placeholder="请选择">
+          <el-option v-for="item in inputKeyOptions" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+      </el-input>
+      <!-- 查询按钮 -->
+      <button class="but-search public-interval">查询</button>
     </div>
     <!-- 订单列表 -->
     <!-- 自定义表格 -->
@@ -37,21 +45,31 @@
           <th style="width: 22%;" colspan="2">商品名称</th>
           <th style="width: 12%;">数量</th>
           <th style="width: 12%;">价格</th>
-          <th style="width: 12%;">买家</th>
+          <th style="width: 12%;">收货人</th>
           <th style="width: 12%;">订单状态</th>
           <th style="width: 12%;">实付金额</th>
-          <th style="width: 15%;">评价</th>
+          <th style="width: 15%;">操作</th>
 
         </thead>
         <tbody>
           <template v-for="(item,index) in currentPageData">
             <tr class="order-info">
               <td colspan="8">
-                <el-checkbox v-model="item.checked" @change="clickCheckbox(index)"></el-checkbox>
-                <span>订单编号: {{item.number}}</span>
-                <span>下单时间: {{item.orderTime}}</span>
-                <span class="payWay-span">支付方式: {{item.payWay}}</span>
-                <i class="iconfont">&#xe675;</i>
+                <div class="order-info-title">
+                  <div class="order-info-title-left">
+                    <!-- <el-checkbox v-model="item.checked" @change="clickCheckbox(index)"></el-checkbox> -->
+                    <span>订单编号: {{item.number}}</span>
+                    <span>下单时间: {{item.orderTime}}</span>
+                    <span>买家: {{item.buyer}}</span>
+                    <span class="payWay-span">支付方式: {{item.payWay}}</span>
+                  </div>
+                  <span class="order-info-title-right" @click="openNotesDialog(item.number)">
+                    <i class="iconfont">&#xe615;</i>备注
+                  </span>
+                </div>
+
+
+                <!-- <i class="iconfont">&#xe675;</i> -->
               </td>
             </tr>
             <tr class="order-detail">
@@ -66,42 +84,57 @@
               </td>
               <td style="width: 12%;">{{item.num}}</td>
               <td style="width: 12%;">￥：{{item.price}}</td>
-              <td style="width: 12%;">{{item.buyer}}</td>
               <td style="width: 12%;">
-                <template v-if="item.OrderStatus==1">买家未付款
-                  <div class="orderState-detail">订单详情</div>
+                <template>
+                  <div class="info-span-interval">{{item.consignee}}</div>
+                  <div class="info-span-interval">{{item.phone}}</div>
                 </template>
-                <template v-else-if="item.OrderStatus==2">买家已付款
-                  <div class="orderState-detail">订单详情</div>
-                  <div class="orderState-detail">发货</div>
-                </template>
-                <template v-else-if="item.OrderStatus==3">商品运输中
-                  <div class="orderState-detail">订单详情</div>
-                  <div class="orderState-detail">修改发货信息</div>
-                </template>
-                <template v-else-if="item.OrderStatus==4">交易已完成
-                  <div class="orderState-detail">订单详情</div>
-                </template>
+              </td>
+              <td style="width: 12%;">
+                <template v-if="item.OrderStatus==1"><span class="info-span-interval">商家待审核</span></template>
+                <template v-else-if="item.OrderStatus==2"><span class="info-span-interval">买家待付款</span></template>
+                <template v-else-if="item.OrderStatus==3"><span class="info-span-interval">买家已付款</span></template>
+                <template v-else-if="item.OrderStatus==4"><span class="info-span-interval">商品运输中</span></template>
+                <template v-else-if="item.OrderStatus==5"><span class="info-span-interval">订单已完成</span></template>
+                <template v-else-if="item.OrderStatus==6"><span class="info-span-interval">订单已取消</span></template>
+                <template v-else-if="item.OrderStatus==7"><span class="info-span-interval">订单已关闭</span></template>
+                <div class="orderState-detail info-span-interval">订单详情</div>
               </td>
               <td style="width: 12%;">{{item.orderPrice}}
                 <div>(免运费)</div>
-                <template v-if="item.OrderStatus==1">
-                  <div class="orderState-detail">修改价格</div>
+                <template v-if="item.OrderStatus==1 || item.OrderStatus==2">
+                  <div class="orderState-detail" @click="openPirceDialog(item.number)">修改价格</div>
                 </template>
               </td>
-              <td style="width: 15%;"><span class="evaluate">{{item.evaluate}}</span></td>
+              <td style="width: 15%;">
+                <template v-if="item.OrderStatus==1">
+                  <!-- <div class="orderState-detail info-span-interval">审核</div> -->
+                  <el-button type="success" plain size="mini" icon="el-icon-edit" class="info-span-interval"
+                    @click="openExamineDialog(item.number)">审核</el-button>
+                  <el-button type="info" plain size="mini" icon="el-icon-delete" class="info-span-interval"
+                    @click="cancelOrder(item.number)">取消</el-button>
+                  <!-- <div class="orderState-detail info-span-interval">取消订单</div> -->
+                </template>
+                <template v-else-if="item.OrderStatus==2">
+                  <el-button type="info" plain size="mini" icon="el-icon-delete" class="info-span-interval"
+                    @click="cancelOrder(item.number)">取消</el-button>
+                  <!-- <div class="orderState-detail info-span-interval">取消订单</div> -->
+                </template>
+                <template v-else-if="item.OrderStatus==3">
+                  <el-button type="primary" plain size="mini" icon="el-icon-edit" class="info-span-interval"
+                    @click="openDeliverDialog(item.number)">发货</el-button>
+                  <!-- <div class="orderState-detail info-span-interval">发货</div> -->
+                </template>
+                <template v-else>
+                  <el-button type="info" size="mini" plain disabled>无</el-button>
+                  <!-- <div class="orderState-other">无</div> -->
+                </template>
+              </td>
             </tr>
           </template>
         </tbody>
       </table>
       <div class="bottoms-box">
-        <div class="left">
-          <el-checkbox v-model="isAddAllTerminalStatus" @change="allSelectTerminal">全选</el-checkbox>
-          <button @click="deleteChoosed" class="pl-delete-btn">
-            取消订单
-          </button>
-        </div>
-
         <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
           :page-sizes="[1,5,10, 15, 20, 25]" :page-size="pageSize" :current-page.sync="currentPage" :pager-count="5"
           :background="false" layout="total, sizes, prev, pager, next, jumper" :total="totalNum">
@@ -109,7 +142,61 @@
 
       </div>
     </div>
-
+    <!-- 修改价格 或者 审核 -->
+    <el-dialog :title="pirceDialogTitle" :close-on-click-modal="false" :visible.sync="pirceDialogVisible" width="500px"
+      center class="el-dialog-box">
+      <el-form :model="orderPirceForm" label-position="left">
+        <el-form-item label="订单价格:" :label-width="formLabelWidth">
+          <el-input placeholder="--" v-model="orderPirceForm.oldPrice" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="新价格:" :label-width="formLabelWidth">
+          <el-input v-model="orderPirceForm.newPrice" autocomplete="off" size="medium"></el-input>
+          <span class="dialog-notes">{{notes}}</span>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="medium" @click="closePirceDialog">取 消</el-button>
+        <el-button size="medium" type="primary" @click="surePirceDialog">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 发货 弹框 -->
+    <el-dialog title="发货信息" :close-on-click-modal="false" :visible.sync="deliverDialogVisible" width="500px" center
+      class="el-dialog-box el-dialog-deliver">
+      <el-form :model="orderDeliverForm" label-position="left">
+        <el-radio-group v-model="orderDeliverForm.deliverWay" @change="clearDeliverForm">
+          <el-radio :label="1">物流发货</el-radio>
+          <el-radio :label="2">商家自配</el-radio>
+        </el-radio-group>
+        <el-form-item label="物流公司:" :label-width="formLabelWidth">
+          <el-input placeholder="" v-model="orderDeliverForm.logisticsCompany"
+            :disabled="orderDeliverForm.deliverWay == 2"></el-input>
+        </el-form-item>
+        <el-form-item label="快递单号:" :label-width="formLabelWidth">
+          <el-input v-model="orderDeliverForm.expressNo" autocomplete="off" size="medium"
+            :disabled="orderDeliverForm.deliverWay == 2"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="medium" @click="closeDeliverDialog">取 消</el-button>
+        <el-button size="medium" type="primary" @click="sureDeliverDialog">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 备注 弹框 -->
+    <el-dialog title="备注信息" :close-on-click-modal="false" :visible.sync="notesDialogVisible" width="500px" center
+      class="el-dialog-box">
+      <el-form :model="orderNotesForm" label-position="left">
+        <el-form-item label="买家备注:" :label-width="formLabelWidth">
+          <el-input placeholder="" v-model="orderNotesForm.mNotes" type="textarea" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="商家备注:" :label-width="formLabelWidth">
+          <el-input v-model="orderNotesForm.sNotes" autocomplete="off" size="medium" type="textarea"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="medium" @click="closeNotesDialog">取 消</el-button>
+        <el-button size="medium" type="primary" @click="sureNotesDialog">确 定</el-button>
+      </span>
+    </el-dialog>
 
   </div>
 </template>
@@ -119,26 +206,55 @@
   export default {
     data() {
       return {
+        notes: '', //修改价格弹框备注
+        pirceDialogTitle: '', //审核和修改价格是同一个弹框，用标题区分是什么操作
+        pirceDialogVisible: false, //修改价格弹框
+        deliverDialogVisible: false, //发货弹框
+        notesDialogVisible: false, //备注弹框
+        ///搜索关键字类型
+        inputKeyOptions: [{
+          value: '1',
+          label: '订单编号'
+        }, {
+          value: '2',
+          label: '收货人'
+        }],
+        inputKeyType: '', //选择的搜索关键字类型
         //输入的订单编号/收货人
         inputKey: '',
         //选择的订单状态
         orderStateValue: '',
         // 订单状态
         orderStateOptions: [{
+            value: '0',
+            label: '全部订单'
+          },
+          {
             value: '1',
+            label: '商家待审核'
+          }, {
+            value: '2',
             label: '买家待付款'
           },
           {
-            value: '2',
+            value: '3',
             label: '买家已付款'
           },
           {
-            value: '3',
+            value: '4',
             label: '商品运输中'
           },
           {
-            value: '4',
+            value: '5',
             label: '订单已完成'
+          },
+          {
+            value: '6',
+            label: '订单已取消'
+          },
+          {
+            value: '7',
+            label: '订单已关闭'
           }
         ],
         //选择的订单时间
@@ -181,6 +297,25 @@
         pageSize: 10, //当前显示条数
         currentPageData: [], //当前页显示内容
         multipleSelection: [], //选择的订单编号
+        formLabelWidth: '100px',
+        //要修改价格的订单信息
+        orderPirceForm: {
+          id: '', //订单唯一标识
+          oldPrice: '100', //订单原来的价格
+          newPrice: '' //新的价格
+        },
+        //要发货的订单信息
+        orderDeliverForm: {
+          id: '', //订单唯一标识
+          deliverWay: 1, //发货方式
+          logisticsCompany: '', //物流公司
+          expressNo: '' //快递单号
+        },
+        orderNotesForm: {
+          id: '', //订单唯一标识
+          mNotes: '买家备注，无法更改', //买家备注
+          sNotes: '' //商家备注
+        },
 
       }
     },
@@ -214,7 +349,7 @@
       },
       //删除
       deleteChoosed() {
-        if(this.multipleSelection.length>0){
+        if (this.multipleSelection.length > 0) {
           this.$confirm('数据删除后将无法找回, 是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -230,7 +365,7 @@
               message: '已取消删除'
             });
           });
-        }else{
+        } else {
           this.$message({
             type: 'error',
             message: '请先选择要删除的订单!'
@@ -272,6 +407,75 @@
       },
       handleCurrentChange(val) {
         this.setCurrentPageData();
+      },
+      openPirceDialog(val) {
+        //传过来的值应该是订单编号，根据订单编号，请求后端接口，获取改订单的价格，放到弹框对应的位置中
+        this.pirceDialogTitle = "修改价格"
+        this.notes = ""
+        this.pirceDialogVisible = true
+      },
+      openExamineDialog(val) {
+        //传过来的值应该是订单编号，根据订单编号，请求后端接口，获取改订单的价格，放到弹框对应的位置中
+        this.pirceDialogTitle = "审核"
+        this.notes = "注：默认修改价格成功后，审核通过！"
+        this.pirceDialogVisible = true
+      },
+      closePirceDialog() {
+        this.pirceDialogTitle = ""
+        this.notes = ""
+        this.pirceDialogVisible = false
+      },
+      surePirceDialog() {
+        //请求后端接口数据，保存信息
+        this.closePirceDialog()
+      },
+      closeDeliverDialog() {
+        this.deliverDialogVisible = false
+      },
+      sureDeliverDialog() {
+        //请求后端接口数据，保存信息
+        this.closeDeliverDialog()
+      },
+      closeNotesDialog() {
+        this.notesDialogVisible = false
+      },
+      sureNotesDialog() {
+        //请求后端接口数据，保存信息
+        this.closeNotesDialog()
+      },
+      //取消订单
+      cancelOrder(val) {
+        console.log("取消订单")
+        //根据传值给的订单唯一标识，请求后端接口
+        this.$confirm('是否取消该订单?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '模拟数据取消成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: ''
+          });
+        });
+      },
+      openDeliverDialog(val) {
+        //传过来的值应该是订单编号，根据订单编号，请求后端接口，获取改订单的信息，放到弹框对应的位置中
+        this.deliverDialogVisible = true
+      },
+      clearDeliverForm() {
+        if (this.orderDeliverForm.deliverWay == 2) {
+          this.orderDeliverForm.logisticsCompany = ""
+          this.orderDeliverForm.expressNo = ""
+        }
+      },
+      openNotesDialog(val) {
+        //传过来的值应该是订单编号，根据订单编号，请求后端接口，获取改订单的信息，放到弹框对应的位置中
+        this.notesDialogVisible = true
       },
 
     }
@@ -319,7 +523,7 @@
   // 搜索栏
   .search-box {
     margin-top: 15px;
-    height: 74px;
+    // height: 74px;
     background-color: #fff;
     box-shadow: 0px 2px 10px 1px rgba(0, 0, 0, 0.06);
     border-radius: 6px;
@@ -328,10 +532,16 @@
     align-items: center;
     padding-left: 15px;
     box-sizing: border-box;
+    flex-wrap: wrap;
     font-size: 12px;
     font-family: Microsoft YaHei-Regular, Microsoft YaHei;
     font-weight: 400;
     color: #333333;
+
+    //公共上下间距
+    .public-interval {
+      margin: 20px 0px;
+    }
 
     /deep/ .el-input__inner {
       height: 34px;
@@ -347,12 +557,10 @@
       width: 112px;
       height: 34px;
       border-radius: 6px 6px 6px 6px;
-      border: 1px solid #EBEEF5;
       outline: none;
       box-shadow: 0px;
       box-sizing: border-box;
-
-
+      margin-right: 25px;
 
       /deep/ .el-input__icon {
         line-height: 34px;
@@ -362,10 +570,10 @@
 
     // 下单时间
     .order-time {
-      margin-left: 25px;
+      margin-right: 25px;
 
       .el-date-editor-div {
-        margin-left: 30px;
+        margin-left: 10px;
         width: 250px;
       }
 
@@ -390,10 +598,57 @@
     }
 
     // 请输入订单编号/收货人
-    .input-search {
-      width: 220px;
-      margin-left: 25px;
+    .search-select-input {
+      width: 370px;
+
+      // display: flex;
+      // justify-content: flex-start;
+      // align-items: center;
+      /deep/.el-input {
+        width: 110px;
+      }
+
+      /deep/ .el-input__icon {
+        line-height: 34px;
+      }
+
+      //输入的关键字的类型
+      .key-selectType {
+        height: 34px;
+        width: 140px;
+        box-sizing: border-box;
+        font-size: 12px;
+        margin-left: -1px;
+
+        //下拉框的样式修改
+        /deep/ .el-input__inner {
+          height: 34px;
+          line-height: 34px;
+          font-size: 12px;
+          border-radius: 6px 0px 0px 6px;
+        }
+
+        //下拉框的箭头修改
+        /deep/ .el-input__icon {
+          line-height: 34px;
+        }
+      }
+
+      // input 输入框
+      .input-search {
+        width: 320px;
+        height: 34px;
+        margin-left: -1px;
+
+        /deep/ .el-input__inner {
+          height: 34px;
+          line-height: 34px;
+          border-radius: 0px 6px 6px 0px;
+        }
+
+      }
     }
+
 
     .but-search {
       margin-left: 40px;
@@ -432,8 +687,10 @@
       font-size: 12px;
       table-layout: fixed;
       border-bottom: 1px solid #EBEEF5;
+
       //表头
       thead {
+        padding-left: 6px;
         border-bottom: 1px solid #EBEEF5;
         height: 55px;
         box-sizing: border-box;
@@ -467,10 +724,10 @@
 
       th,
       td {
-        // border: none;
-        border:1px solid #fff;
+        border: 1px solid #fff;
         text-align: center;
       }
+
       tr:nth-child(odd) {
         background-color: #eee;
       }
@@ -482,16 +739,40 @@
           text-align: left;
         }
 
-        span {
-          margin-right: 30px;
-        }
-        .payWay-span{
-          margin-right: 10px;
-        }
-        i{
-          font-size: 12px;
-          color:#333;
-          cursor: pointer;
+        .order-info-title {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin: 0px 10px;
+
+          //左边基本信息
+          .order-info-title-left {
+            span {
+              margin-right: 30px;
+            }
+
+            .payWay-span {
+              // margin-right: 10px;
+            }
+          }
+
+          //右边备注
+          .order-info-title-right {
+            cursor: pointer;
+            margin-right: 10px;
+
+            span {
+              display: flex;
+              align-items: center;
+              color: #666;
+
+              i {
+                font-size: 12px;
+                color: #666;
+                margin-right: 5px;
+              }
+            }
+          }
         }
 
       }
@@ -540,6 +821,12 @@
           }
         }
 
+        // 上下信息间距
+        .info-span-interval+.info-span-interval {
+          margin-top: 10px;
+        }
+
+        //各种操作
         .orderState-detail {
           margin: 5px;
           cursor: pointer;
@@ -547,6 +834,14 @@
           font-family: Microsoft YaHei-Regular, Microsoft YaHei;
           font-weight: 400;
           color: #1890FF;
+        }
+
+        //无操作
+        .orderState-other {
+          ont-size: 12px;
+          font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+          font-weight: 400;
+          color: #999;
         }
 
         // 评价
@@ -563,20 +858,34 @@
     .bottoms-box {
       height: 60px;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
 
-      .pl-delete-btn {
-        margin-left: 20px;
-        width: 72px;
-        height: 24px;
-        background: #FF7575;
-        border: none;
-        font-size: 12px;
-        font-family: Microsoft YaHei-Regular, Microsoft YaHei;
-        font-weight: 400;
-        color: #FFFFFF;
-      }
+    }
+  }
+
+
+  .el-dialog-box {
+    font-size: 14px;
+  }
+
+  /deep/ .el-dialog__header {
+    font-size: 14px;
+    letter-spacing: 4px;
+    font-weight: 700;
+    color: #333;
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  .dialog-notes {
+    display: inline-block;
+    font-size: 12px;
+    color: #999;
+  }
+
+  .el-dialog-deliver {
+    /deep/ .el-form-item {
+      margin-top: 20px;
     }
   }
 </style>

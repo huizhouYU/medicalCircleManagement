@@ -13,27 +13,24 @@
       <div class="search">
         <!-- 商品分类 -->
         <el-cascader v-model="sortValue" placeholder="商品分类" :options="options" @change="handleChange"
-          class="choose-store-sort" clearable :filterable="true">
+          class="choose-store-sort public-interval" clearable :filterable="true">
         </el-cascader>
         <!-- 商品状态 -->
-        <el-select v-model="value" placeholder="商品状态" class="choose-shop-state" clearable>
+        <el-select v-model="value" placeholder="商品状态" class="choose-shop-state public-interval" clearable>
           <el-option v-for="item in shopStateOptions" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
         <!-- input 输入关键字  -->
-        <div class="input-box">
-          <el-select v-model="inputKeyType" class="key-selectType">
+        <el-input placeholder="请输入关键字" v-model="inputKey" class="input-with-select search-select-input public-interval">
+          <el-select v-model="inputKeyType" slot="prepend" placeholder="请选择">
             <el-option v-for="item in inputKeyOptions" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
-          <el-input v-model="inputKey" placeholder="请输入商品名称/关键字" class="input-search"></el-input>
-          <button class="btn-search" @click="selectData()">
-            <img src="../../assets/images/icon_search.png" alt="">
-          </button>
-        </div>
+          <el-button slot="append" icon="el-icon-search" @click="selectData()"></el-button>
+        </el-input>
       </div>
       <!-- 添加商品 -->
-      <button class="btn-add" @click="toAddGoods">添加商品 </button>
+      <button class="btn-add " @click="toAddGoods">添加商品 </button>
     </div>
     <!-- 模块三 商品列表 -->
     <goods-items class="items"></goods-items>
@@ -254,7 +251,7 @@
           value: '2',
           label: '下架'
         }],
-        //商品状态
+        //搜索关键字类型
         inputKeyOptions: [{
           value: '1',
           label: '产品编码'
@@ -329,6 +326,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+
+    //公共上下间距
+    .public-interval {
+      margin: 20px 0px;
+    }
 
     // 搜索部分
     .search {
@@ -336,6 +339,10 @@
       justify-content: flex-start;
       align-items: center;
 
+      /deep/ .el-input__inner {
+        height: 34px;
+        line-height: 34px;
+      }
 
       // 本店分类
       // 商品状态
@@ -345,14 +352,8 @@
         height: 34px;
         margin: 20px 25px 20px 15px;
         border-radius: 6px 6px 6px 6px;
-        // border: 1px solid #EBEEF5;
         box-sizing: border-box;
         font-size: 12px;
-
-        /deep/ .el-input__inner {
-          height: 34px;
-          line-height: 34px;
-        }
 
         /deep/.el-select-dropdown__item span {
           font-size: 12px;
@@ -381,16 +382,17 @@
       }
 
       // 请输入商品名称/关键字
-      .input-box {
-        width: 380px;
-        height: 34px;
-        background: #FFFFFF;
-        border-radius: 6px 6px 6px 6px;
-        border: 1px solid #EBEEF5;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-sizing: border-box;
+      .search-select-input {
+        width: 430px;
+        overflow: hidden;
+
+        /deep/.el-input {
+          width: 120px;
+        }
+
+        /deep/ .el-input__icon {
+          line-height: 34px;
+        }
 
         //输入的关键字的类型
         .key-selectType {
@@ -405,7 +407,7 @@
             height: 34px;
             line-height: 34px;
             font-size: 12px;
-            border-radius: 4px 0px 0px 4px;
+            border-radius: 6px 0px 0px 6px;
           }
 
           //下拉框的箭头修改
@@ -423,29 +425,23 @@
           /deep/ .el-input__inner {
             height: 34px;
             line-height: 34px;
-            border-radius: 0px;
+            border-radius: 0px 6px 6px 0px;
           }
-
         }
 
-        // 搜索按钮
-        .btn-search {
-          width: 60px;
-          height: 34px;
-          background: #1890FF;
-          border-radius: 0px 6px 6px 0px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border: none;
-          margin-left: -2px;
-          z-index: 1;
-          cursor: pointer;
+        //搜索按钮
+        /deep/.el-input-group__append button.el-button {
+          background-color: #1890FF;
+          border-color: #1890FF;
+          color: #fff;
+        }
 
-          img {
-            width: 20px;
-            height: 20px;
-          }
+        /deep/.el-input-group__append {
+          border-color: #1890FF;
+        }
+
+        /deep/.el-button {
+          line-height: unset;
         }
       }
     }
@@ -457,7 +453,7 @@
       background: #1890FF;
       border-radius: 6px 6px 6px 6px;
       border: none;
-      margin-right: 20px;
+      margin: 20px 20px 20px 15px;
       box-sizing: border-box;
       font-size: 12px;
       font-family: Microsoft YaHei-Regular, Microsoft YaHei;
