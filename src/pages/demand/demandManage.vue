@@ -17,13 +17,15 @@
           </el-option>
         </el-select>
 
-        <!-- input 输入关键字-->
-        <div class="input-box">
-          <el-input v-model="inputKey" placeholder="请输入设备型号、关键字" class="input-search"></el-input>
-          <button class="btn-search">
-            <img src="../../assets/images/icon_search.png" alt="">
-          </button>
-        </div>
+        <!-- 输入关键字 -->
+        <el-input placeholder="请输入标题/设备型号关键字" v-model="inputKey"
+          class="input-with-select search-select-input public-interval">
+          <el-select v-model="inputKeyType" slot="prepend" placeholder="请选择">
+            <el-option v-for="item in inputKeyOptions" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+          <el-button slot="append" icon="el-icon-search"></el-button>
+        </el-input>
 
       </div>
       <!-- 添加商品 -->
@@ -42,10 +44,20 @@
     },
     data() {
       return {
+        ///搜索关键字类型
+        inputKeyOptions: [{
+          value: '1',
+          label: '标题'
+        }, {
+          value: '2',
+          label: '设备型号'
+        }],
+        inputKeyType: '', //选择的搜索关键字类型
+        //输入的标题/设备型号 关键字
+        inputKey: '',
         //选择的信息类型
         infoValue: '',
-        // 输入的设备型号、关键字
-        inputKey: '',
+        //信息类型
         infoOptions: [{
             value: '1',
             label: '类型一'
@@ -103,7 +115,7 @@
 
   }
 
-  // 模块二 搜索条件 + 添加商品
+  // 模块二 搜索条件 + 发布需求
   .search-add {
     margin-top: 15px;
     background-color: #fff;
@@ -119,6 +131,10 @@
       justify-content: flex-start;
       align-items: center;
 
+      /deep/.el-input__icon {
+        line-height: 34px;
+      }
+
       // 本店分类
       // 商品状态
       .choose-store-sort {
@@ -126,7 +142,6 @@
         height: 34px;
         margin: 20px 25px 20px 15px;
         border-radius: 6px 6px 6px 6px;
-        border: 1px solid #EBEEF5;
         box-sizing: border-box;
 
         /deep/ .el-input__inner {
@@ -135,50 +150,52 @@
         }
       }
 
-      .choose-shop-state {
-        margin-left: 0px;
-      }
+      // 请输入标题/设备型号关键字
+      .search-select-input {
+        width: 400px;
 
-      // 请输入商品名称/关键字
-      .input-box {
-        width: 380px;
-        height: 34px;
-        background: #FFFFFF;
-        border-radius: 6px 6px 6px 6px;
-        border: 1px solid #EBEEF5;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-sizing: border-box;
+        /deep/.el-input {
+          width: 110px;
+        }
+
+        /deep/ .el-input__icon {
+          line-height: 34px;
+        }
+
+        //输入的关键字的类型
+        .key-selectType {
+          height: 34px;
+          width: 140px;
+          box-sizing: border-box;
+          font-size: 12px;
+          margin-left: -1px;
+
+          //下拉框的样式修改
+          /deep/ .el-input__inner {
+            height: 34px;
+            line-height: 34px;
+            font-size: 12px;
+            border-radius: 6px 0px 0px 6px;
+          }
+
+          //下拉框的箭头修改
+          /deep/ .el-input__icon {
+            line-height: 34px;
+          }
+        }
 
         // input 输入框
         .input-search {
           width: 320px;
           height: 34px;
+          margin-left: -1px;
 
           /deep/ .el-input__inner {
             height: 34px;
             line-height: 34px;
+            border-radius: 0px 6px 6px 0px;
           }
-        }
 
-        // 搜索按钮
-        .btn-search {
-          width: 60px;
-          height: 34px;
-          background: #1890FF;
-          border-radius: 0px 6px 6px 0px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border: none;
-          margin-left: -2px;
-          z-index: 1;
-
-          img {
-            width: 20px;
-            height: 20px;
-          }
         }
       }
     }

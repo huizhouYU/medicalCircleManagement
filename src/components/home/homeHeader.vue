@@ -61,7 +61,6 @@
       }
     }
 
-
     span {
       display: inline-block;
       width: 105px;

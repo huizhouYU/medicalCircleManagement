@@ -98,7 +98,7 @@
                 <template v-else-if="item.OrderStatus==5"><span class="info-span-interval">订单已完成</span></template>
                 <template v-else-if="item.OrderStatus==6"><span class="info-span-interval">订单已取消</span></template>
                 <template v-else-if="item.OrderStatus==7"><span class="info-span-interval">订单已关闭</span></template>
-                <div class="orderState-detail info-span-interval">订单详情</div>
+                <div class="orderState-detail info-span-interval" @click="toDetail(item.number)">订单详情</div>
               </td>
               <td style="width: 12%;">{{item.orderPrice}}
                 <div>(免运费)</div>
@@ -477,7 +477,14 @@
         //传过来的值应该是订单编号，根据订单编号，请求后端接口，获取改订单的信息，放到弹框对应的位置中
         this.notesDialogVisible = true
       },
-
+      toDetail(val) {
+        this.$router.push({
+          path: '/orderDetail',
+          query: {
+            id: val
+          }
+        })
+      }
     }
 
 

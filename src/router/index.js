@@ -56,6 +56,11 @@ export default new Router({
           component: () => import("../pages/order/orderManage.vue"),
         },
         {
+          path: '/orderDetail',
+          name: '订单详情',
+          component: () => import("../pages/order/orderDetail.vue"),
+        },
+        {
           path: '/timeSelect',
           name: '时间选择器',
           component: () => import("../pages/order/timeSelect.vue"),
