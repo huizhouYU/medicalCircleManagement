@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "21429827",
+      "name": "不通过",
+      "font_class": "butongguo",
+      "unicode": "e6cd",
+      "unicode_decimal": 59085
+    },
+    {
+      "icon_id": "21429831",
+      "name": "审核中",
+      "font_class": "shenhezhong1",
+      "unicode": "e6ce",
+      "unicode_decimal": 59086
+    },
+    {
+      "icon_id": "21430332",
+      "name": "已审核",
+      "font_class": "yishenhe",
+      "unicode": "e6d1",
+      "unicode_decimal": 59089
+    },
+    {
       "icon_id": "1167131",
       "name": "备注",
       "font_class": "beizhu",

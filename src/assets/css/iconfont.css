@@ -14,6 +14,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-butongguo:before {
+  content: "\e6cd";
+}
+
+.icon-shenhezhong1:before {
+  content: "\e6ce";
+}
+
+.icon-yishenhe:before {
+  content: "\e6d1";
+}
+
 .icon-beizhu:before {
   content: "\e615";
 }

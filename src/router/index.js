@@ -61,6 +61,15 @@ export default new Router({
           component: () => import("../pages/order/orderDetail.vue"),
         },
         {
+          path: '/refundOrder',
+          name: '退款订单',
+          component: () => import("../pages/order/refundOrder.vue"),
+        }, {
+          path: '/refundOrderDetail',
+          name: '退款详情',
+          component: () => import("../pages/order/refundOrderDetail.vue"),
+        },
+        {
           path: '/timeSelect',
           name: '时间选择器',
           component: () => import("../pages/order/timeSelect.vue"),

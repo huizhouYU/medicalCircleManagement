@@ -2,7 +2,7 @@
   <div class="box">
 
     <!-- 第一步:定义出4个步骤 -->
-    <div class="steps-content">
+    <div class="steps-content" v-show="!isLook">
       <el-steps :active="active" class="el-steps">
         <el-step title="认证信息" />
         <el-step title="证明材料" />
@@ -10,71 +10,63 @@
       </el-steps>
     </div>
 
-
     <!-- 第二步:定义form表单 -->
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="100px"
       class="el-form-content ">
-
+      <div class="sign" v-show="isLook">
+        <i class="iconfont" style="color: #FF7575" v-show="examineResult == '0'">&#xe6cd;</i>
+        <i class="iconfont" style="color: #40A9FF" v-show="examineResult == '-1'">&#xe6ce;</i>
+        <i class="iconfont" style="color: #13ce66" v-show="examineResult == '1'">&#xe6d1;</i>
+      </div>
       <!-- 认证信息 -->
-      <div v-show="active == 1" class="rz-info public-step">
+      <div v-show="active == 1 || isLook" :class="[{publicStepHeight:!isLook},'rz-info','public-step']">
         <div class="item-title">认证信息</div>
         <!-- 主体类型 -->
         <div class="item-both">
-          <el-form-item label="主体类型" prop="shopType" class="item-left item-type">
-            <el-select v-model="ruleForm.shopType" placeholder="请选择主体类型">
-              <el-option v-for="item in shopTypeOption" :key="item.value" :label="item.label" :value="item.value">
+          <el-form-item label="主体类型" prop="shopType">
+            <el-select v-model="ruleForm.shopType" placeholder="请选择主体类型" @change="adjustLayout">
+              <el-option v-for="item in shopTypeOption" :key="item.value" :label="item.label" :value="item.value" :disabled="isLook">
               </el-option>
             </el-select>
           </el-form-item>
-          <div class="item-right tip">注：主体类型设置后无法更改</div>
+          <div class="tip">注：主体类型设置后无法更改</div>
         </div>
-        <!-- 真实姓名+身份证号码 -->
-        <div class="item-both">
-          <el-form-item label="真实姓名" prop="username" class="item-left">
-            <el-input v-model="ruleForm.username"></el-input>
+        <div class="inpout-content">
+          <el-form-item label="真实姓名" prop="name" class="item-left" v-show="ruleForm.shopType == 1">
+            <el-input v-model="ruleForm.name" :disabled="isLook"></el-input>
           </el-form-item>
-          <el-form-item label="身份证号码" prop="idNo" class="item-right">
-            <el-input v-model="ruleForm.idNo"></el-input>
+          <el-form-item label="企业名称" prop="name" class="item-left" v-show="ruleForm.shopType == 2">
+            <el-input v-model="ruleForm.name" placeholder="请与营业执照的公司名称保持一致" :disabled="isLook"></el-input>
           </el-form-item>
-        </div>
-        <!-- 店铺名称+所属分类 -->
-        <div class="item-both">
+          <el-form-item label="身份证号码" prop="idNo" class="item-right" v-show="ruleForm.shopType == 1">
+            <el-input v-model="ruleForm.engineer.idNo" :disabled="isLook"></el-input>
+          </el-form-item>
           <el-form-item label="店铺名称" prop="shopName" class="item-left">
-            <el-input v-model="ruleForm.shopName"></el-input>
+            <el-input v-model="ruleForm.shopName" :disabled="isLook"></el-input>
           </el-form-item>
           <el-form-item label="所属分类" prop="shopSort" class="item-right">
             <el-select v-model="ruleForm.shopSort" placeholder="请选择所属分类">
-              <el-option v-for="item in shopSortOption" :key="item.value" :label="item.label" :value="item.value">
+              <el-option v-for="item in shopSortOption" :key="item.value" :label="item.label" :value="item.value" :disabled="isLook">
               </el-option>
             </el-select>
           </el-form-item>
-        </div>
-        <!-- 所属地区+邮政编码 -->
-        <div class="item-both">
           <el-form-item label="所属地区" prop="area" class="item-left">
-            <el-select v-model="ruleForm.area" placeholder="请选择活动区域">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
-            </el-select>
+            <el-cascader v-model="ruleForm.areaValue" :options="cities" :disabled="isLook"></el-cascader>
           </el-form-item>
           <el-form-item label="邮政编码" prop="postalCode" class="item-right">
-            <el-input v-model="ruleForm.postalCode"></el-input>
+            <el-input v-model="ruleForm.postalCode" :disabled="isLook"></el-input>
           </el-form-item>
-        </div>
-        <!-- 详细地址 -->
-        <div class="item-one">
           <el-form-item label="详细地址" prop="address" class="address-input">
-            <el-input v-model="ruleForm.address"></el-input>
+            <el-input v-model="ruleForm.address" :disabled="isLook"></el-input>
           </el-form-item>
         </div>
         <!-- 下一步 -->
-        <div class="item-btn">
+        <div class="item-btn" v-show="!isLook">
           <el-button @click="next" class="next-but" type="primary" plain>下一步</el-button>
         </div>
-
       </div>
       <!-- 证明材料 -->
-      <div v-show="active == 2" class="zm-info public-step">
+      <div v-show="active == 2  || isLook" :class="[{publicStepHeight:!isLook},'zm-info','public-step']">
         <div class="item-title">证明材料</div>
         <!-- 上传证件 -->
         <el-form-item label="上传证件" prop="name" class="">
@@ -87,51 +79,62 @@
             <upload-one-img :mrSrc="cardBack.cardImg" :title="cardBack.cardTitle" :remark="cardBack.cardRemark">
             </upload-one-img>
             <!-- 手持身份证 -->
-            <upload-one-img :mrSrc="cardHold.cardImg" :title="cardHold.cardTitle" :remark="cardHold.cardRemark">
+            <upload-one-img :mrSrc="cardHold.cardImg" :title="cardHold.cardTitle" :remark="cardHold.cardRemark"
+              v-show="ruleForm.shopType == 1">
             </upload-one-img>
             <!-- 其他证件 -->
-            <upload-one-img :mrSrc="cardOther.cardImg" :title="cardOther.cardTitle" :remark="cardOther.cardRemark">
+            <upload-one-img :mrSrc="cardOther.cardImg" :title="cardOther.cardTitle" :remark="cardOther.cardRemark"
+              v-show="ruleForm.shopType == 1">
+            </upload-one-img>
+            <!-- 营业执照 -->
+            <upload-one-img :mrSrc="businessLicense.cardImg" :title="businessLicense.cardTitle"
+              :remark="businessLicense.cardRemark" v-show="ruleForm.shopType == 2">
+            </upload-one-img>
+            <!-- 医疗器械生产许可证 -->
+            <upload-one-img :mrSrc="licenceOne.cardImg" :title="licenceOne.cardTitle" :remark="licenceOne.cardRemark"
+              v-show="ruleForm.shopType == 2">
+            </upload-one-img>
+            <!-- 医疗器械生产许可证 -->
+            <upload-one-img :mrSrc="licenceTwo.cardImg" :title="licenceTwo.cardTitle" :remark="licenceTwo.cardRemark"
+              v-show="ruleForm.shopType == 2">
             </upload-one-img>
 
           </div>
         </el-form-item>
         <!-- 上一步 下一步 -->
-        <div class="item-btn zm-btn-pre-next">
+        <div class="item-btn zm-btn-pre-next" v-show="!isLook">
           <el-button @click="pre" class="pre-but">上一步</el-button>
           <el-button @click="next" class="next-but" type="primary" plain>下一步</el-button>
         </div>
 
       </div>
       <!-- 联系信息 -->
-      <div v-show="active == 3" class="lx-info public-step">
+      <div v-show="active == 3 || isLook" :class="[{publicStepHeight:!isLook},'lx-info','public-step']">
         <div class="item-title">联系信息</div>
         <!-- 联系电话 -->
         <el-form-item label="联系电话" prop="phone" class="phone-input">
-          <el-input v-model="ruleForm.phone"></el-input>
+          <el-input v-model="ruleForm.phone" placeholder="请与身份证姓名保持一致" :disabled="isLook"></el-input>
         </el-form-item>
         <!-- 验证码 -->
-        <el-form-item label="验证码" prop="vCode" class="vcode-input">
-          <el-input v-model="ruleForm.vCode"></el-input>
+        <el-form-item label="验证码" prop="vCode" class="vcode-input" v-show="!isLook">
+          <el-input v-model="ruleForm.vCode" placeholder="请填写"></el-input>
           <el-button @click="getVcode" class="getVcode-btn" type="primary" plain :disabled="!show">
             <span v-show="show">获取验证码</span>
             <span v-show="!show" class="count">{{count}} s</span>
           </el-button>
-
         </el-form-item>
-
         <!-- 上一步 下一步 -->
-        <div class="item-btn lx-btn-pre-sub">
+        <div class="item-btn lx-btn-pre-sub" v-show="!isLook">
           <el-button @click="pre" class="pre-but">上一步</el-button>
           <el-button @click="submitForm" class="submit-but" type="primary" plain>确认提交</el-button>
         </div>
       </div>
     </el-form>
-
-
   </div>
 </template>
 
 <script>
+  import axios from 'axios'
   import UploadOneImg from '../shop/uploadOneImg.vue'
   export default {
     components: {
@@ -150,6 +153,9 @@
         }
       };
       return {
+        examineResult:'-1',//审核状态
+        cities: [],
+        isLook: false, //是否查看
         show: true,
         count: '',
         cardFront: {
@@ -172,17 +178,32 @@
           cardTitle: '其他证件',
           cardRemark: '请上传证件原件图',
         },
+        businessLicense: {
+          cardImg: "../../../static/img/sjrz/pic_card_other.png",
+          cardTitle: '营业执照',
+          cardRemark: '请上传企业营业执照原件图',
+        },
+        licenceOne: {
+          cardImg: "../../../static/img/sjrz/pic_card_other.png",
+          cardTitle: '医疗器械生产许可证',
+          cardRemark: '请上传企业医疗器械生产许可证原件图，如果是医疗器械生产企业必传',
+        },
+        licenceTwo: {
+          cardImg: "../../../static/img/sjrz/pic_card_other.png",
+          cardTitle: '医疗器械生产许可证',
+          cardRemark: '请上传企业医疗器械生产许可证原件图，如果是医疗器械生产企业必传',
+        },
 
         isShowCardFrontDiv: false, //是否展示【身份证正面】隐藏div
         active: 1,
         // 主体类型选项
         shopTypeOption: [{
             value: '1',
-            label: '类型一'
+            label: '个人工程师'
           },
           {
             value: '2',
-            label: '类型二'
+            label: '企业'
           }
         ],
         // 所属分类选项
@@ -196,22 +217,27 @@
           }
         ],
         ruleForm: {
-          shopType: '', //主体类型
-          username: '', //姓名
-          idNo: '', //身份证号码
+          shopType: '1', //主体类型
+          name: '', //个人工程师：姓名；企业：企业姓名
           shopName: '', //店铺名称
           shopSort: '', //所属分类
-          area: '', //所属地区
+          areaValue: [], //所在地区
           postalCode: '', //邮政编码
           address: '', //详细地址
           cardFront: '1', //身份证正面
           cardBack: '', //身份证反面
-          cardHold: '', //手持身份证
-          cardOther: '', //其他证件
+          engineer: {
+            idNo: '', //身份证号码
+            cardHold: '', //手持身份证
+            cardOther: '', //其他证件
+          },
+          business: {
+            businessLicense: '', //营业执照
+            licenceOne: '', //许可证
+            licenceTwo: '', //许可证
+          },
           phone: '', //联系电话
           vCode: '', //验证码
-
-
         },
         rules: {
           shopType: [{
@@ -219,7 +245,7 @@
             message: '请选择主体类型',
             trigger: 'change'
           }],
-          username: [{
+          name: [{
             required: true,
             message: '请输入真实姓名',
             trigger: 'blur'
@@ -255,7 +281,22 @@
         }
       }
     },
+    mounted() {
+      axios.get("../../../static/testData/citys.json").then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          this.cities = res.data
+        } else {
+          this.$message.error("数据请求失败，请稍后再试！")
+        }
+      })
+    },
     methods: {
+      //根据选择的主体类型不同，显示不同的信息
+      adjustLayout() {
+        // if(this.ruleForm.shopType == 1){
+        // }
+      },
       isCellPhone(val) {
         if (!/^1(3|4|5|6|7|8)\d{9}$/.test(val)) {
           return false;
@@ -356,15 +397,34 @@
 
   //表单
   .el-form-content {
+    position: relative;
     width: 100%;
     margin-top: 20px;
     height: calc(100% - 80px);
     font-size: 12px;
     font-family: Microsoft YaHei-Bold, Microsoft YaHei;
 
+    //审核章
+    .sign {
+      width: 80px;
+      height: 80px;
+      position: absolute;
+      top: 40px;
+      left: 670px;
+      z-index: 2;
+
+      .iconfont {
+        font-size: 50px;
+      }
+    }
+
+
+    .publicStepHeight {
+      height: calc(100% - 20px);
+    }
+
     // 分步公共样式[高度,背景颜色]
     .public-step {
-      height: calc(100% - 20px);
       background-color: #fff;
       border-radius: 6px;
       box-sizing: border-box;
@@ -389,6 +449,7 @@
 
     // 分步公共的修改input输入框的字体大小和颜色
     /deep/ .el-input {
+      width: 270px;
       font-size: 12px;
       font-family: Microsoft YaHei-Bold, Microsoft YaHei;
       color: #333333;
@@ -396,6 +457,7 @@
 
     // 分步公共的"上一步","下一步"按钮
     .item-btn {
+      margin-top: 100px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -405,11 +467,6 @@
       }
 
       .next-but {}
-    }
-
-    // 解决  主体类型  下拉框长度和其他输入框不一致问题
-    .item-type {
-      padding-right: 82px !important;
     }
 
     // 认证信息
@@ -427,7 +484,12 @@
       }
 
       .address-input /deep/ .el-input {
-        width: 500px;
+        width: 380px;
+      }
+
+      .inpout-content {
+        display: grid;
+        grid-template-columns: repeat(2, 398px);
       }
 
       // 一行放两个输入框
@@ -439,10 +501,14 @@
           width: 100%;
         }
 
-        .item-right,
+
         .item-left {
           flex: 1;
-          padding-right: 70px;
+          box-sizing: border-box;
+        }
+
+        .item-right {
+          flex: 2;
           box-sizing: border-box;
         }
 
@@ -462,11 +528,6 @@
           margin-bottom: 28px;
           box-sizing: border-box;
         }
-      }
-
-      .item-one,
-      .item-both {
-        margin-top: 20px;
       }
 
     }

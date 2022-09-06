@@ -2,10 +2,14 @@
   <div class="">
     <!-- 头部页面标题 -->
     <div class="header-title">
-      <div class="back">
+      <div class="back" @click="back()">
         <i class="iconfont">&#xe610;</i>
       </div>
-      <div class="title">订单管理</div>
+      <div class="title">
+        订单管理
+        <i class="iconfont">&#xe62b;</i>
+        退款订单
+      </div>
     </div>
     <!-- 搜索栏 -->
     <div class="search-box">
@@ -37,19 +41,13 @@
     <div class="table-item">
       <table border="1" cellspacing="0" cellpadding="0" width="100%">
         <thead>
-          <!-- <th style="width: 2%;"> -->
-          <!-- <input id="js-all-checkbox" type="checkbox" @click="checkAll(this)"> -->
-          <!-- </th> -->
-          <!-- <th style="width: 2%;">
-          </th> -->
           <th style="width: 22%;" colspan="2">商品名称</th>
-          <th style="width: 12%;">数量</th>
-          <th style="width: 12%;">价格</th>
-          <th style="width: 12%;">收货人</th>
-          <th style="width: 12%;">订单状态</th>
-          <th style="width: 12%;">实付金额</th>
-          <th style="width: 15%;">操作</th>
-
+          <th style="width: 12%;">交易金额</th>
+          <th style="width: 12%;">退款金额</th>
+          <th style="width: 12%;">买家</th>
+          <th style="width: 12%;">退款原因</th>
+          <th style="width: 12%;">退款状态</th>
+          <th style="width: 15%;">售后</th>
         </thead>
         <tbody>
           <template v-for="(item,index) in currentPageData">
@@ -57,14 +55,13 @@
               <td colspan="8">
                 <div class="order-info-title">
                   <div class="order-info-title-left">
-                    <!-- <el-checkbox v-model="item.checked" @change="clickCheckbox(index)"></el-checkbox> -->
-                    <span>订单编号: {{item.number}}</span>
-                    <span>下单时间: {{item.orderTime}}</span>
-                    <span>买家: {{item.buyer}}</span>
-                    <span class="payWay-span">支付方式: {{item.payWay}}</span>
+                    <span>订单编号: {{item.orderNo}}</span>
+                    <span>退款编号: {{item.refundNo}}</span>
+                    <span>申请时间: {{item.refundTime}}</span>
+                    <span>用户昵称: {{item.buyer}}</span>
                   </div>
                   <span class="order-info-title-right" @click="openNotesDialog(item.number)">
-                    备注<i class="iconfont">&#xe675;</i>
+                    备注 <i class="iconfont">&#xe675;</i>
                   </span>
                 </div>
               </td>
@@ -79,65 +76,28 @@
                   </div>
                 </div>
               </td>
-              <td style="width: 12%;">{{item.num}}</td>
-              <td style="width: 12%;">￥：{{item.price}}</td>
+              <td style="width: 12%;">￥：{{item.orderPrice}}</td>
+              <td style="width: 12%;">￥：{{item.refundPrice}}</td>
               <td style="width: 12%;">
                 <template>
                   <div class="info-span-interval">{{item.consignee}}</div>
                   <div class="info-span-interval">{{item.phone}}</div>
                 </template>
               </td>
+              <td style="width: 12%;"> {{item.reason}} </td>
               <td style="width: 12%;">
-                <template v-if="item.OrderStatus==1"><span class="info-span-interval">商家待审核</span></template>
-                <template v-else-if="item.OrderStatus==2"><span class="info-span-interval">买家待付款</span></template>
-                <template v-else-if="item.OrderStatus==3"><span class="info-span-interval">买家已付款</span></template>
-                <template v-else-if="item.OrderStatus==4"><span class="info-span-interval">商品运输中</span></template>
-                <template v-else-if="item.OrderStatus==5"><span class="info-span-interval">订单退款中</span></template>
-                <template v-else-if="item.OrderStatus==6"><span class="info-span-interval">订单已退款</span></template>
-                <template v-else-if="item.OrderStatus==7"><span class="info-span-interval">订单已完成</span></template>
-                <template v-else-if="item.OrderStatus==8"><span class="info-span-interval">订单已取消</span></template>
-                <template v-else-if="item.OrderStatus==9"><span class="info-span-interval">订单已关闭</span></template>
-                <!-- <div class="orderState-detail info-span-interval" @click="toDetail(item.number)">订单详情</div> -->
-              </td>
-              <td style="width: 12%;">{{item.orderPrice}}
-                <div>(免运费)</div>
-                <template v-if="item.OrderStatus==2">
-                  <div class="orderState-detail" @click="openPirceDialog(item.number)">修改价格</div>
-                </template>
+                <template v-if="item.OrderStatus==1"><span class="info-span-interval">待处理</span></template>
+                <template v-else-if="item.OrderStatus==2"><span class="info-span-interval">退款中</span></template>
+                <template v-else-if="item.OrderStatus==3"><span class="info-span-interval">退款成功</span></template>
+                <template v-else-if="item.OrderStatus==4"><span class="info-span-interval">退款失败</span></template>
               </td>
               <td style="width: 15%;">
                 <div class="operation-content">
-                  <div class="orderState-detail info-span-interval" @click="toDetail(item.number)">订单详情</div>
+                  <div class="orderState-detail info-span-interval" @click="toRefundDetail(item.refundNo)">退款详情</div>
+                  <div class="orderState-detail info-span-interval" @click="toOrderDetail(item.orderNo)">订单详情</div>
                   <template v-if="item.OrderStatus==1">
-                    <div class="orderState-detail info-span-interval" @click="openExamineDialog(item.number)">审核</div>
-                    <!-- <el-button type="success" plain size="mini" icon="el-icon-edit" class="info-span-interval"
-                    @click="openExamineDialog(item.number)">审核</el-button> -->
-                    <!-- <el-button type="info" plain size="mini" icon="el-icon-delete" class="info-span-interval"
-                    @click="cancelOrder(item.number)">取消</el-button> -->
-                    <div class="orderState-detail info-span-interval" @click="cancelOrder(item.number)">取消</div>
+                    <div class="orderState-detail info-span-interval" @click="openRefundDialog(item.refundNo)">退款</div>
                   </template>
-                  <template v-else-if="item.OrderStatus==2">
-                    <!-- <el-button type="info" plain size="mini" icon="el-icon-delete" class="info-span-interval"
-                    @click="cancelOrder(item.number)">取消</el-button> -->
-                    <div class="orderState-detail info-span-interval" @click="cancelOrder(item.number)">取消</div>
-                  </template>
-                  <template v-else-if="item.OrderStatus==3">
-                    <!-- <el-button type="primary" plain size="mini" icon="el-icon-edit" class="info-span-interval"
-                    @click="openDeliverDialog(item.number)">发货</el-button> -->
-                    <div class="orderState-detail info-span-interval" @click="openDeliverDialog(item.number)">发货</div>
-                  </template>
-                  <template v-else-if="item.OrderStatus==5 || item.OrderStatus==6">
-                    <!-- <el-button type="primary" plain size="mini" icon="el-icon-edit" class="info-span-interval"
-                    @click="toRefundDetail(item.number)">退款详情</el-button> -->
-                    <div class="orderState-detail info-span-interval" @click="toRefundDetail(item.number)">退款详情</div>
-                  </template>
-                  <template v-else-if="item.OrderStatus==3">
-                    <!-- <el-button type="primary" plain size="mini" icon="el-icon-edit" class="info-span-interval"
-                    @click="openDeliverDialog(item.number)">发货</el-button> -->
-                    <div class="orderState-detail info-span-interval" @click="openDeliverDialog(item.number)">发货</div>
-                  </template>
-
-
                 </div>
               </td>
             </tr>
@@ -152,43 +112,23 @@
 
       </div>
     </div>
-    <!-- 修改价格 或者 审核 -->
-    <el-dialog :title="pirceDialogTitle" :close-on-click-modal="false" :visible.sync="pirceDialogVisible" width="500px"
-      center class="el-dialog-box">
-      <el-form :model="orderPirceForm" label-position="left">
-        <el-form-item label="订单价格:" :label-width="formLabelWidth">
-          <el-input placeholder="--" v-model="orderPirceForm.oldPrice" :disabled="true"></el-input>
-        </el-form-item>
-        <el-form-item label="新价格:" :label-width="formLabelWidth">
-          <el-input v-model="orderPirceForm.newPrice" autocomplete="off" size="medium"></el-input>
-          <span class="dialog-notes">{{notes}}</span>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="closePirceDialog">取 消</el-button>
-        <el-button size="medium" type="primary" @click="surePirceDialog">确 定</el-button>
-      </span>
-    </el-dialog>
+
     <!-- 发货 弹框 -->
-    <el-dialog title="发货信息" :close-on-click-modal="false" :visible.sync="deliverDialogVisible" width="500px" center
+    <el-dialog title="退款审核" :close-on-click-modal="false" :visible.sync="refundDialogVisible" width="500px" center
       class="el-dialog-box el-dialog-deliver">
-      <el-form :model="orderDeliverForm" label-position="left">
-        <el-radio-group v-model="orderDeliverForm.deliverWay" @change="clearDeliverForm">
-          <el-radio :label="1">物流发货</el-radio>
-          <el-radio :label="2">商家自配</el-radio>
+      <el-form :model="refundDeliverForm" label-position="left">
+        <el-radio-group v-model="refundDeliverForm.decision" @change="clearRefundForm">
+          <el-radio :label="1">同意</el-radio>
+          <el-radio :label="2">拒绝</el-radio>
         </el-radio-group>
-        <el-form-item label="物流公司:" :label-width="formLabelWidth">
-          <el-input placeholder="" v-model="orderDeliverForm.logisticsCompany"
-            :disabled="orderDeliverForm.deliverWay == 2"></el-input>
-        </el-form-item>
-        <el-form-item label="快递单号:" :label-width="formLabelWidth">
-          <el-input v-model="orderDeliverForm.expressNo" autocomplete="off" size="medium"
-            :disabled="orderDeliverForm.deliverWay == 2"></el-input>
+        <el-form-item label="拒绝原因:" :label-width="formLabelWidth">
+          <el-input placeholder="" v-model="refundDeliverForm.refuseReason"
+            :disabled="refundDeliverForm.decision == 1"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="closeDeliverDialog">取 消</el-button>
-        <el-button size="medium" type="primary" @click="sureDeliverDialog">确 定</el-button>
+        <el-button size="medium" @click="closeRefundDialog">取 消</el-button>
+        <el-button size="medium" type="primary" @click="sureRefundDialog">确 定</el-button>
       </span>
     </el-dialog>
     <!-- 备注 弹框 -->
@@ -216,10 +156,7 @@
   export default {
     data() {
       return {
-        notes: '', //修改价格弹框备注
-        pirceDialogTitle: '', //审核和修改价格是同一个弹框，用标题区分是什么操作
-        pirceDialogVisible: false, //修改价格弹框
-        deliverDialogVisible: false, //发货弹框
+        refundDialogVisible: false, //退款弹框
         notesDialogVisible: false, //备注弹框
         ///搜索关键字类型
         inputKeyOptions: [{
@@ -241,38 +178,18 @@
           },
           {
             value: '1',
-            label: '商家待审核'
+            label: '待处理'
           }, {
             value: '2',
-            label: '买家待付款'
+            label: '退款中'
           },
           {
             value: '3',
-            label: '买家已付款'
+            label: '退款成功'
           },
           {
             value: '4',
-            label: '商品运输中'
-          },
-          {
-            value: '5',
-            label: '订单退款中'
-          },
-          {
-            value: '6',
-            label: '订单已退款'
-          },
-          {
-            value: '7',
-            label: '订单已完成'
-          },
-          {
-            value: '8',
-            label: '订单已取消'
-          },
-          {
-            value: '9',
-            label: '订单已关闭'
+            label: '退款失败'
           }
         ],
         //选择的订单时间
@@ -316,18 +233,11 @@
         currentPageData: [], //当前页显示内容
         multipleSelection: [], //选择的订单编号
         formLabelWidth: '100px',
-        //要修改价格的订单信息
-        orderPirceForm: {
+        //要退款的订单信息
+        refundDeliverForm: {
           id: '', //订单唯一标识
-          oldPrice: '100', //订单原来的价格
-          newPrice: '' //新的价格
-        },
-        //要发货的订单信息
-        orderDeliverForm: {
-          id: '', //订单唯一标识
-          deliverWay: 1, //发货方式
-          logisticsCompany: '', //物流公司
-          expressNo: '' //快递单号
+          decision: 1, //1：同意，2：拒绝
+          refuseReason: '', //拒绝原因
         },
         orderNotesForm: {
           id: '', //订单唯一标识
@@ -341,6 +251,9 @@
       this.loadData()
     },
     methods: {
+      back() {
+        this.$router.replace("/orderManage")
+      },
       //选择某一个订单
       clickCheckbox(val) {
         if (this.currentPageData[val].checked) {
@@ -408,7 +321,7 @@
         );
       },
       async loadData() {
-        await axios.get("http://192.168.0.110:8080/static/testData/orders.json").then(res => {
+        await axios.get("../../../static/testData/refundOrders.json").then(res => {
           if (res.status == 200) {
             this.tableData = res.data.ordersData
             // console.log(this.tableData)
@@ -426,33 +339,23 @@
       handleCurrentChange(val) {
         this.setCurrentPageData();
       },
-      openPirceDialog(val) {
-        //传过来的值应该是订单编号，根据订单编号，请求后端接口，获取改订单的价格，放到弹框对应的位置中
-        this.pirceDialogTitle = "修改价格"
-        this.notes = ""
-        this.pirceDialogVisible = true
+      //打开退款弹框
+      openRefundDialog(val) {
+        //传过来的值应该是订单编号，根据订单编号，请求后端接口，获取改订单的信息，放到弹框对应的位置中
+        this.refundDialogVisible = true
       },
-      openExamineDialog(val) {
-        //传过来的值应该是订单编号，根据订单编号，请求后端接口，获取改订单的价格，放到弹框对应的位置中
-        this.pirceDialogTitle = "审核"
-        this.notes = "注：默认修改价格成功后，审核通过！"
-        this.pirceDialogVisible = true
+      clearRefundForm() {
+        if (this.refundDeliverForm.decision == 1) {
+          this.refundDeliverForm.refuseReason = ""
+        }
       },
-      closePirceDialog() {
-        this.pirceDialogTitle = ""
-        this.notes = ""
-        this.pirceDialogVisible = false
-      },
-      surePirceDialog() {
-        //请求后端接口数据，保存信息
-        this.closePirceDialog()
-      },
-      closeDeliverDialog() {
-        this.deliverDialogVisible = false
+      //关闭退款弹框
+      closeRefundDialog() {
+        this.refundDialogVisible = false
       },
       sureDeliverDialog() {
         //请求后端接口数据，保存信息
-        this.closeDeliverDialog()
+        this.closeRefundDialog()
       },
       closeNotesDialog() {
         this.notesDialogVisible = false
@@ -461,41 +364,12 @@
         //请求后端接口数据，保存信息
         this.closeNotesDialog()
       },
-      //取消订单
-      cancelOrder(val) {
-        console.log("取消订单")
-        //根据传值给的订单唯一标识，请求后端接口
-        this.$confirm('是否取消该订单?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '模拟数据取消成功!'
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: ''
-          });
-        });
-      },
-      openDeliverDialog(val) {
-        //传过来的值应该是订单编号，根据订单编号，请求后端接口，获取改订单的信息，放到弹框对应的位置中
-        this.deliverDialogVisible = true
-      },
-      clearDeliverForm() {
-        if (this.orderDeliverForm.deliverWay == 2) {
-          this.orderDeliverForm.logisticsCompany = ""
-          this.orderDeliverForm.expressNo = ""
-        }
-      },
+
       openNotesDialog(val) {
         //传过来的值应该是订单编号，根据订单编号，请求后端接口，获取改订单的信息，放到弹框对应的位置中
         this.notesDialogVisible = true
       },
-      toDetail(val) {
+      toOrderDetail(val) {
         this.$router.push({
           path: '/orderDetail',
           query: {
@@ -798,7 +672,10 @@
               display: flex;
               align-items: center;
               color: #666;
+
+
             }
+
             .iconfont {
               font-size: 12px !important;
               color: #999;

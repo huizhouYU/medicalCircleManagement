@@ -179,7 +179,7 @@
       }
     },
     mounted() {
-      axios.get("http://192.168.0.110:8080//static/testData/citys.json").then(res => {
+      axios.get("../../../static/testData/citys.json").then(res => {
         console.log(res);
         if (res.status == 200) {
           this.cities = res.data
