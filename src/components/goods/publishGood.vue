@@ -425,6 +425,10 @@
     font-weight: 400;
     color: #333333;
 
+    /deep/ .el-input {
+      width: auto;
+    }
+
     .title-span {
       width: 65px;
     }

@@ -131,13 +131,6 @@
                     @click="toRefundDetail(item.number)">退款详情</el-button> -->
                     <div class="orderState-detail info-span-interval" @click="toRefundDetail(item.number)">退款详情</div>
                   </template>
-                  <template v-else-if="item.OrderStatus==3">
-                    <!-- <el-button type="primary" plain size="mini" icon="el-icon-edit" class="info-span-interval"
-                    @click="openDeliverDialog(item.number)">发货</el-button> -->
-                    <div class="orderState-detail info-span-interval" @click="openDeliverDialog(item.number)">发货</div>
-                  </template>
-
-
                 </div>
               </td>
             </tr>

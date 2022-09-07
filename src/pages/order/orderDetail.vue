@@ -350,9 +350,6 @@
       },
     },
 
-
-
-
   }
 </script>
 
@@ -495,7 +492,7 @@
         .detail-module-item::-webkit-scrollbar-track {
           box-shadow: inset 0 0 0px rgba(0, 0, 0, 0.2);
           border-radius: 0;
-          background: rgba(0, 0, 0, 0.1);
+          background: rgba(0, 0, 0, 0);
         }
 
         //更改物流信息的时间线的字体大小 颜色等样式
@@ -601,6 +598,8 @@
 
           .order-price-item {
             margin-bottom: 15px;
+            display: flex;
+            justify-content: flex-end;
           }
         }
 
