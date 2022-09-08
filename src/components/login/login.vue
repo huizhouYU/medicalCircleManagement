@@ -97,16 +97,16 @@
         <!-- 忘记密码 -->
         <div class="forgot-password-content" v-show="isForgotPassword">
           <div class="form-title">忘记密码</div>
-          <el-form label-position="top" label-width="80px" :model="registerForm" class="modular-form">
+          <el-form label-position="top" label-width="80px" :model="forgotForm" class="modular-form">
             <el-form-item label="">
-              <el-input v-model="registerForm.phone" placeholder="请输入手机号" clearable>
+              <el-input v-model="forgotForm.phone" placeholder="请输入手机号" clearable>
                 <template #prefix>
                   <div class="prefix"><img src="../../../static/img/login/user.png" alt=""></div>
                 </template>
               </el-input>
             </el-form-item>
             <el-form-item label="">
-              <el-input v-model="loginForm.password" placeholder="请输入新密码" show-password @focus="isHide = true"
+              <el-input v-model="forgotForm.newPassword" placeholder="请输入新密码" show-password @focus="isHide = true"
                 @blur="isHide = false">
                 <template #prefix>
                   <div class="prefix"><img src="../../../static/img/login/key.png" alt=""></div>
@@ -114,7 +114,7 @@
               </el-input>
             </el-form-item>
             <el-form-item label="">
-              <el-input v-model="loginForm.password" placeholder="再次确认密码" show-password @focus="isHide = true"
+              <el-input v-model="forgotForm.againPassword" placeholder="再次确认密码" show-password @focus="isHide = true"
                 @blur="isHide = false">
                 <template #prefix>
                   <div class="prefix"><img src="../../../static/img/login/key.png" alt=""></div>
@@ -123,14 +123,14 @@
             </el-form-item>
             <div class="getCode-item">
               <el-form-item label="" class="">
-                <el-input v-model="registerForm.verCode" placeholder="请输入验证码" clearable>
+                <el-input v-model="forgotForm.verCode" placeholder="请输入验证码" clearable>
                   <template #prefix>
                     <div class="prefix"><img src="../../../static/img/login/shield.png" alt=""></div>
                   </template>
                 </el-input>
               </el-form-item>
-              <span v-show="showRegisterGetVCode" @click="getVCode">获取验证码</span>
-              <span v-show="!showRegisterGetVCode" class="countDown">{{registerCount}} s</span>
+              <span v-show="showForgetGetVCode" @click="getVCode">获取验证码</span>
+              <span v-show="!showForgetGetVCode" class="countDown">{{forgetCount}} s</span>
             </div>
             <!-- 立即登录 -->
             <div class="toLogin-item">
@@ -188,11 +188,13 @@
   export default {
     data() {
       return {
-        isForgotPassword: true, //是否忘记密码
+        isForgotPassword: false, //是否忘记密码
         loginCount: '', //获取验证码倒计时【登录页】
         showLoginGetVCode: true, //是否显示获取验证码【登录页】
         registerCount: '', //获取验证码倒计时【注册页】
         showRegisterGetVCode: true, //是否显示获取验证码【注册页】
+        forgetCount: '', //获取验证码倒计时【忘记密码】
+        showForgetGetVCode: true, //是否显示获取验证码【忘记密码】
         loginWay: 1, //登录方式【1：密码登录，2：短信登录】
         active: 1,
         isRegister: false, //是否在注册页面
@@ -210,6 +212,12 @@
           password: '',
           surePassword: '',
           phone: '',
+          verCode: ''
+        },
+        forgotForm: {
+          phone: '',
+          newPassword: '',
+          againPassword: '',
           verCode: ''
         },
         verifyCode: '',
@@ -408,7 +416,8 @@
       },
       //忘记密码
       remberpass() {
-        alert("正在做呢，催啥？？？");
+        this.isForgotPassword = true
+        // alert("正在做呢，催啥？？？");
       },
       //注册
       register() {
@@ -419,6 +428,7 @@
         this.clearData()
       },
       flipLogin() {
+        this.isForgotPassword = false
         this.isRegister = false
         //还原登录页和注册页 获取短信验证码等信息
         this.clearData()
@@ -444,20 +454,40 @@
         if (!this.isRegister) {
           //axios请求
           console.log(this.loginForm.phone)
-          // 验证码倒计时
-          if (!this.timer) {
-            this.loginCount = 60;
-            this.showLoginGetVCode = false;
-            this.timer = setInterval(() => {
-              if (this.loginCount > 0 && this.loginCount <= 60) {
-                this.loginCount--;
-              } else {
-                this.showLoginGetVCode = true;
-                clearInterval(this.timer);
-                this.timer = null;
-              }
-            }, 1000);
+
+          if (!this.isForgotPassword) {
+            // 验证码倒计时
+            if (!this.timer) {
+              this.loginCount = 60;
+              this.showLoginGetVCode = false;
+              this.timer = setInterval(() => {
+                if (this.loginCount > 0 && this.loginCount <= 60) {
+                  this.loginCount--;
+                } else {
+                  this.showLoginGetVCode = true;
+                  clearInterval(this.timer);
+                  this.timer = null;
+                }
+              }, 1000);
+            }
+          } else { //忘记密码
+            // 验证码倒计时
+            if (!this.timer) {
+              this.forgetCount = 60;
+              this.showForgetGetVCode = false;
+              this.timer = setInterval(() => {
+                if (this.forgetCount > 0 && this.forgetCount <= 60) {
+                  this.forgetCount--;
+                } else {
+                  this.showForgetGetVCode = true;
+                  clearInterval(this.timer);
+                  this.timer = null;
+                }
+              }, 1000);
+            }
           }
+
+
         } else {
           //axios请求
           // 验证码倒计时
@@ -729,8 +759,10 @@
           }
         }
       }
+
       //忘记密码
-      .forgot-password-content{
+      .forgot-password-content {
+
         //验证码登录【立即注册】
         .toLogin-item {
           box-sizing: border-box;
@@ -816,6 +848,11 @@
           border-color: #fff;
         }
 
+        /deep/.el-input__inner:focus {
+          border-color: #1890FF;
+        }
+
+
         /deep/ .el-input__prefix {
           height: 50px;
           display: flex;
@@ -850,8 +887,12 @@
           display: flex;
           justify-content: space-between;
           align-items: center;
+          margin-bottom: 22px;
 
-          /deep/.form-label {
+          // /deep/.form-label {
+          //   margin-bottom: 0px;
+          // }
+          /deep/ .el-form-item{
             margin-bottom: 0px;
           }
 

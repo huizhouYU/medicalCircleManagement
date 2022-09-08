@@ -116,18 +116,11 @@
       <div class="prodect-tag">
         <span class="title-span">商品标签：</span>
         <div class="content">
-          <!-- <input type="text" name="" id="" v-model="goodInfo.goodTags"> -->
           <div class="tags-content">
             <el-tag :key="tag" v-for="tag in goodInfo.tagList" closable :disable-transitions="false"
               @close="handleClose(tag)">
               {{tag}}
             </el-tag>
-            <!-- <ul>
-              <li v-for="(item,index) in goodInfo.tagList">
-                <span>{{item}}</span>
-                <i class="iconfont" @click="deletTag(index)">&#xe630;</i>
-              </li>
-            </ul> -->
             <input class="tags-input" placeholder="添加标签" v-model="goodTag" @keyup.enter="addTag()"
               v-show="inputVisible">
           </div>
@@ -138,7 +131,7 @@
       <div class="prodect-grounding">
         <span class="title-span">立即上架：</span>
         <div class="content">
-          <el-switch v-model="goodInfo.groundingValue" active-color="#13ce66">
+          <el-switch v-model="goodInfo.groundingValue" active-color="#1890FF">
           </el-switch>
           <span class="isRecommend">是否推荐：</span>
           <el-switch v-model="goodInfo.recommendValue" active-color="#13ce66">
@@ -149,9 +142,7 @@
       <div class="submit">
         <button class="but-submit" @click="submit">提交</button>
       </div>
-
     </div>
-
   </div>
   </div>
 </template>

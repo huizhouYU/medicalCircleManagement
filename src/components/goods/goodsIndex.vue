@@ -339,11 +339,6 @@
       justify-content: flex-start;
       align-items: center;
 
-      /deep/ .el-input__inner {
-        height: 34px;
-        line-height: 34px;
-      }
-
       // 本店分类
       // 商品状态
       .choose-store-sort,
@@ -359,13 +354,8 @@
           font-size: 12px;
         }
 
-        /deep/ .el-select-dropdown__empty,
-        /deep/.el-input__inner {
+        /deep/ .el-select-dropdown__empty {
           font-size: 12px !important;
-        }
-
-        /deep/ .el-input__icon {
-          line-height: 34px;
         }
       }
 
@@ -373,25 +363,16 @@
         margin-left: 0px;
       }
 
-      .choose-store-sort {
-        width: 200px;
-      }
-
       /deep/ .el-cascader {
         line-height: 0px !important;
       }
 
-      // 请输入商品名称/关键字
+      // 输入关键字
       .search-select-input {
-        width: 430px;
-        overflow: hidden;
+        width: 400px;
 
         /deep/.el-input {
-          width: 120px;
-        }
-
-        /deep/ .el-input__icon {
-          line-height: 34px;
+          width: 110px;
         }
 
         //输入的关键字的类型
@@ -404,15 +385,7 @@
 
           //下拉框的样式修改
           /deep/ .el-input__inner {
-            height: 34px;
-            line-height: 34px;
-            font-size: 12px;
             border-radius: 6px 0px 0px 6px;
-          }
-
-          //下拉框的箭头修改
-          /deep/ .el-input__icon {
-            line-height: 34px;
           }
         }
 
@@ -423,8 +396,6 @@
           margin-left: -1px;
 
           /deep/ .el-input__inner {
-            height: 34px;
-            line-height: 34px;
             border-radius: 0px 6px 6px 0px;
           }
         }
@@ -438,6 +409,7 @@
 
         /deep/.el-input-group__append {
           border-color: #1890FF;
+          overflow: hidden;
         }
 
         /deep/.el-button {

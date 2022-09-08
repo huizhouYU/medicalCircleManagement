@@ -3,10 +3,8 @@
     <div @click="changeCollapse()" class="collapse-div">
       <img src="../../assets/images/logo.png" alt="" v-show="!isCollapse">
       <img src="../../assets/images/logo_img.png" alt="" v-show="isCollapse">
-      <!-- <i class="iconfont" v-show="!isCollapse" title="收起">&#xe661;</i>
-      <i class="iconfont" v-show="isCollapse" title="展开">&#xe662;</i> -->
     </div>
-    <el-menu :default-active="activeIndex" class="el-menu-vertical-demo" text-color="#999" :unique-opened="true"
+    <el-menu default-active="/goodsIndex" class="el-menu-vertical-demo" text-color="#999" :unique-opened="true"
       @open="handleOpen" @close="handleClose" @select="handleSelect" router active-text-color="#1890FF"
       :collapse="isCollapse">
 
@@ -36,7 +34,7 @@
         navMenuData: [{
             index: "1",
             name: "商品",
-            iconfont: "el-icon-location",
+            iconfont: "el-icon-goods",
             child: [{
                 index: "/goodsIndex",
                 name: "商品列表"
@@ -60,9 +58,9 @@
             child: [{
                 index: "/orderManage",
                 name: "订单管理"
-              },{
-                index:'/refundOrder',
-                name:'退款订单'
+              }, {
+                index: '/refundOrder',
+                name: '退款订单'
               }
               // , {
               //   index: "/timeSelect",
@@ -126,7 +124,6 @@
   .collapse-div {
     z-index: 1;
     // position: absolute;
-
     margin-right: 10px;
     height: 90px;
     display: flex;
@@ -145,13 +142,13 @@
 
   .menus-div {
     position: relative;
-    // background-color: #fff;
-    background-color: #222020;
+    background-color: #fff;
+    // background-color: #222020;
     height: 100%;
   }
 
   /deep/ .el-menu {
-    background-color: #222020;
+    // background-color: #222020;
   }
 
   .el-menu-vertical-demo:not(.el-menu--collapse) {
@@ -168,6 +165,12 @@
   // 菜单栏选中的背景颜色
   .el-menu-item.is-active {
     background-color: #E6F7FF !important;
+  }
+
+  // //对应子级，父级的样式
+  /deep/.el-submenu.is-active>.el-submenu__title ,
+  /deep/.el-submenu.is-active>.el-submenu__title i{
+    color: #1890FF !important;
   }
 
   // 一级菜单文字颜色

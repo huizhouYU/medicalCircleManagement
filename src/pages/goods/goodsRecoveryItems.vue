@@ -119,6 +119,7 @@
 <style scoped lang="less">
   .el-table {
     font-size: 12px;
+    color: #333333;
   }
 
   //商品名称
@@ -137,7 +138,6 @@
     height: 50px;
   }
 
-
   // 列表底部的部分
   .bottoms-box {
     padding: 20px 50px 25px 15px;
@@ -145,12 +145,15 @@
     font-size: 12px;
     display: flex;
     justify-content: flex-end;
-
   }
 
   //修改页码样式
   .el-pagination.is-background .el-pager li {
     background-color: #fff !important;
     border: 1px solid #f4f4f5;
+  }
+  .el-pagination span{
+    font-size: 12px;
+    color: #777777;
   }
 </style>

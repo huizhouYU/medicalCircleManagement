@@ -20,7 +20,7 @@ import 'quill/dist/quill.bubble.css';
 import Quill from "quill";
 
 const toolbarOptions = [
-  ['insertMetric'],
+  // ['insertMetric'],
   ['bold', 'italic', 'underline', 'strike'],        // 加粗，斜体，下划线，删除线
   ['blockquote', 'code-block'],                     //引用，代码块
   [{ 'header': 1 }, { 'header': 2 }],               // 几级标题
@@ -39,7 +39,7 @@ const toolbarOptions = [
 
 // toolbar标题
 const titleConfig = [
-  { Choice: '.ql-insertMetric', title: '跳转配置' },
+  // { Choice: '.ql-insertMetric', title: '跳转配置' },
   { Choice: '.ql-bold', title: '加粗' },
   { Choice: '.ql-italic', title: '斜体' },
   { Choice: '.ql-underline', title: '下划线' },
@@ -161,9 +161,9 @@ export default {
 
 <style lang='less'>
   .ql-toolbar.ql-snow{
-    background-color: #d3d3d3;
+    background-color: #F0F0EE;
   }
   .quill-editor ,.editor{
-    height: 200px;
+    height: 366px;
   }
 </style>

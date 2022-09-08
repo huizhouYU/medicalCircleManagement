@@ -7,13 +7,17 @@
       </div>
       <div class="title">商品回收站</div>
     </div>
-    <!-- 模块二 搜索条件 + 添加商品 -->
-    <!-- <div class="search-add"> -->
     <!-- 搜索部分 -->
     <div class="search">
-
       <!-- input 输入关键字  -->
-      <div class="input-box">
+      <el-input placeholder="请输入关键字" v-model="inputKey" class="input-with-select search-select-input public-interval">
+        <el-select v-model="inputKeyType" slot="prepend" placeholder="请选择">
+          <el-option v-for="item in inputKeyOptions" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+        <el-button slot="append" icon="el-icon-search" @click="selectData()"></el-button>
+      </el-input>
+      <!-- <div class="input-box">
         <el-select v-model="inputKeyType" class="key-selectType">
           <el-option v-for="item in inputKeyOptions" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
@@ -22,9 +26,9 @@
         <button class="btn-search" @click="selectData()">
           <img src="../../assets/images/icon_search.png" alt="">
         </button>
-      </div>
+      </div> -->
     </div>
-    <goods-recovery-items class="items"></goods-recovery-items> 
+    <goods-recovery-items class="items"></goods-recovery-items>
   </div>
 </template>
 
@@ -36,7 +40,6 @@
     },
     data() {
       return {
-
         //商品状态
         inputKeyOptions: [{
           value: '1',
@@ -66,7 +69,6 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-
     // 返回按钮
     .back {
       width: 34px;
@@ -78,7 +80,6 @@
       line-height: 34px;
       cursor: pointer;
     }
-
     //标题
     .title {
       margin-left: 20px;
@@ -93,7 +94,6 @@
       text-align: center;
       line-height: 34px;
     }
-
   }
 
   // 模块二 搜索条件
@@ -106,19 +106,19 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    padding-left: 15px;
 
-    // 请输入商品名称/关键字
-    .input-box {
-      margin-left: 15px;
-      width: 380px;
-      height: 34px;
-      background: #FFFFFF;
-      border-radius: 6px 6px 6px 6px;
-      border: 1px solid #EBEEF5;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-sizing: border-box;
+    // 输入关键字
+    .search-select-input {
+      width: 400px;
+
+      /deep/.el-input {
+        width: 110px;
+      }
+
+      /deep/.el-input-group__prepend .el-input {
+        font-size: 12px;
+      }
 
       //输入的关键字的类型
       .key-selectType {
@@ -130,19 +130,9 @@
 
         //下拉框的样式修改
         /deep/ .el-input__inner {
-          height: 34px;
-          line-height: 34px;
-          font-size: 12px;
-          border-radius: 4px 0px 0px 4px;
+          border-radius: 6px 0px 0px 6px;
         }
-
-        //下拉框的箭头修改
-        /deep/ .el-input__icon {
-          line-height: 34px;
-        }
-
       }
-
 
       // input 输入框
       .input-search {
@@ -151,33 +141,26 @@
         margin-left: -1px;
 
         /deep/ .el-input__inner {
-          height: 34px;
-          line-height: 34px;
-          border-radius: 0px;
+          border-radius: 0px 6px 6px 0px;
         }
       }
 
-      // 搜索按钮
-      .btn-search {
-        width: 60px;
-        height: 34px;
-        background: #1890FF;
-        border-radius: 0px 6px 6px 0px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border: none;
-        margin-left: -2px;
-        z-index: 1;
-        cursor: pointer;
+      //搜索按钮
+      /deep/.el-input-group__append button.el-button {
+        background-color: #1890FF;
+        border-color: #1890FF;
+        color: #fff;
+      }
 
-        img {
-          width: 20px;
-          height: 20px;
-        }
+      /deep/.el-input-group__append {
+        border-color: #1890FF;
+        overflow: hidden;
+      }
+
+      /deep/.el-button {
+        line-height: unset;
       }
     }
-
   }
 
   // 模块三 商品列表

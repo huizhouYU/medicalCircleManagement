@@ -22,33 +22,23 @@
       <el-table-column prop="stock" label="库存" width="100"></el-table-column>
       <el-table-column label="上架" width="100">
         <template slot-scope="scope">
-          <el-switch
-            style="display: block"
-            v-model="scope.row.isPut"
-            active-color="#13ce66"
-            inactive-color="#ff4949"></el-switch>
-          <!-- <div class="check-div" :class="scope.row.isPut?'checked-put':'unchecked-put'"
-            @click="changePutState(scope.$index, currentPageData)"></div> -->
+          <el-switch class="tableScopeSwitch" @change="handleStatusChange(scope.$index, scope.row)" active-text="上架"
+            inactive-text="下架" v-model="scope.row.isPut">
+          </el-switch>
         </template>
       </el-table-column>
       <el-table-column label="推荐" width="100">
         <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.isRecommend">
+          <el-switch class="tableScopeSwitch" @change="handleStatusChange(scope.$index, scope.row)" active-text="推荐"
+            inactive-text="推荐" v-model="scope.row.isRecommend">
           </el-switch>
-          <!-- <div class="check-div" :class="scope.row.isRecommend?'checked-put':'unchecked-put'"
-            @click="changeRecommendState(scope.$index, currentPageData)"></div> -->
         </template>
       </el-table-column>
       <el-table-column prop="isForbid" label="禁售" width="100">
         <template slot-scope="scope">
-          <el-switch
-            style="display: block"
-            v-model="scope.row.isForbid"
-            active-color="#13ce66"
-            inactive-color="#ff4949"></el-switch>
-          <!-- <div class="check-div" :class="scope.row.isForbid?'checked-forbid':'unchecked-forbid'"
-            @click="changeForbidState(scope.$index, currentPageData)"></div> -->
+          <el-switch class="tableScopeSwitch" @change="handleStatusChange(scope.$index, scope.row)" active-text="禁售"
+            inactive-text="禁售" v-model="scope.row.isForbid" active-color="#FF7575">
+          </el-switch>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="120">
@@ -69,16 +59,12 @@
           删除
         </button>
       </div>
-
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
         :page-sizes="[1,5,10, 15, 20, 25]" :page-size="pageSize" :current-page.sync="currentPage" :pager-count="5"
         :background="false" layout="total, sizes, prev, pager, next, jumper" :total="totalNum">
       </el-pagination>
-
     </div>
-
   </div>
-
 </template>
 
 <script>
@@ -153,7 +139,7 @@
         this.multipleSelection = val;
       },
       deleteRow(index, rows) {
-        this.$confirm('该条数据删除后将无法找回, 是否继续?', '提示', {
+        this.$confirm('确定删除 1 个选择项吗？ 删除的选择项将进入回收站中', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -225,9 +211,100 @@
     }
   }
 </script>
+
 <style scoped lang="less">
   .el-table {
     font-size: 12px;
+    color: #333333;
+  }
+
+  // ----------修改elementui开关的默认样式-----------
+  .tableScopeSwitch {
+    /deep/.el-switch__label {
+      position: absolute;
+      display: none;
+      color: #fff;
+    }
+
+    /*打开时文字位置设置*/
+    /deep/.el-switch__label--right {
+      z-index: 1;
+      right: 20px;
+      /*不同场景下可能不同，自行调整*/
+    }
+
+    /*关闭时文字位置设置*/
+    /deep/.el-switch__label--left {
+      z-index: 1;
+      left: 20px;
+      /*不同场景下可能不同，自行调整*/
+    }
+
+    /*显示文字*/
+    /deep/.el-switch__label.is-active {
+      display: block;
+    }
+
+    /deep/ .el-switch__label * {
+      font-size: 12px;
+    }
+
+    /deep/.el-switch__core,
+    /deep/.el-switch.is-checked .el-switch__core {
+      width: 55px !important;
+    }
+  }
+
+  // ----------修改elementui表格的默认样式-----------
+  /deep/.el-table__body-wrapper {
+    &::-webkit-scrollbar {
+      height: 7px;
+      width: 7px;
+    }
+
+    &::-webkit-scrollbar-track {
+      // 轨道颜色
+      background-color: #fff;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      // 滚动块颜色
+      background-color: #E6E9ED;
+      // border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      // hover高亮
+      background-color: #d5d8db;
+    }
+  }
+
+  // 解决表格固定列问题
+  /deep/.el-table__fixed,
+  /deep/.el-table__fixed-right {
+    height: calc(100% - 7px) !important;
+    box-shadow: -5px -2px 10px rgba(0, 0, 0, .12) !important;
+
+    .el-table__fixed-body-wrapper {
+      height: calc(100% - 36px) !important;
+    }
+  }
+
+  // 当表格没有滚动条时
+  /deep/.el-table__body-wrapper.is-scrolling-none~.el-table__fixed-right {
+    height: 100% !important;
+    bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  // 当表格有纵向滚动条时
+  /deep/ .el-table--scrollable-y .el-table__fixed-right {
+    right: 7px !important;
+  }
+
+  // 当表格只有横向滚动条，没有纵向滚动条时
+  /deep/.el-table--scrollable-x:not(.el-table--scrollable-y) .el-table__fixed-right {
+    right: 0 !important;
   }
 
   //商品名称
@@ -272,11 +349,16 @@
   .bottoms-box {
     padding: 20px 50px 25px 15px;
     background-color: #fff;
-    font-size: 12px;
     display: flex;
     justify-content: space-between;
 
     .left {
+      /deep/ .el-checkbox__label {
+        font-size: 12px;
+        font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+        font-weight: 400;
+        color: #555555;
+      }
 
       //批量删除按钮
       .pl-delete-btn {
@@ -289,7 +371,14 @@
         line-height: 24px;
         border: none;
         color: #fff;
+        font-size: 12px;
       }
+    }
+
+    /deep/.el-pagination button,
+    .el-pagination span:not([class*=suffix]) {
+      font-size: 12px;
+      color: #777777;
     }
   }
 

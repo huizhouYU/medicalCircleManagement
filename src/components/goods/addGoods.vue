@@ -18,8 +18,7 @@
         <el-cascader v-model="inputKey" placeholder="可输入分类名称" :options="linkageData" @change="handleChange"
           class="input-search" clearable :filterable="true">
         </el-cascader>
-        <!-- <el-input v-model="inputKey" placeholder="可输入分类名称" class="input-search"></el-input> -->
-        <button class="btn-search" @click="position1()">
+        <button class="btn-search" @click="position()">
           <img src="../../assets/images/icon_search.png" alt="">
         </button>
       </div>
@@ -28,26 +27,33 @@
     <div class="multistage-linkage">
       <div class="module-uls">
         <!-- 一级菜单 -->
-        <ul class="item-a" id="item-a">
-          <li v-for="(item,index) in linkageData" :key="item.value"
-            :class="{'selected':selectIndex.item1 == item.value}" @click="chooseItem1(index,item.value)">
-            {{item.label}} <i class="iconfont">&#xe62b;</i>
-          </li>
-        </ul>
+        <div class="item-a">
+          <ul class="item-a-ul" id="item-a">
+            <li v-for="(item,index) in linkageData" :key="item.value"
+              :class="{'selected':selectIndex.item1 == item.value}" @click="chooseItem1(index,item.value)">
+              {{item.label}} <i class="iconfont">&#xe62b;</i>
+            </li>
+          </ul>
+        </div>
+
         <!-- 二级菜单 -->
-        <ul class="item-b" v-show="isShowFlag2">
-          <li v-for="(item,index) in item2ChildData" :key="item.value"
-            :class="{'selected':selectIndex.item2 == item.value}" @click="chooseItem2(index,item.value)">
-            {{item.label}}<i class="iconfont">&#xe62b;</i>
-          </li>
-        </ul>
+        <div class="item-b">
+          <ul class="item-b-ul" v-show="isShowFlag2">
+            <li v-for="(item,index) in item2ChildData" :key="item.value"
+              :class="{'selected':selectIndex.item2 == item.value}" @click="chooseItem2(index,item.value)">
+              {{item.label}}<i class="iconfont">&#xe62b;</i>
+            </li>
+          </ul>
+        </div>
         <!-- 三级菜单 -->
-        <ul class="item-c" v-show="isShowFlag3">
-          <li v-for="(item,index) in item3ChildData" :key="item.value"
-            :class="{'selected':selectIndex.item3 == item.value}" @click="chooseItem3(index,item.value)">
-            {{item.label}}<i class="iconfont">&#xe62b;</i>
-          </li>
-        </ul>
+        <div class="item-c">
+          <ul class="item-c-ul" v-show="isShowFlag3">
+            <li v-for="(item,index) in item3ChildData" :key="item.value"
+              :class="{'selected':selectIndex.item3 == item.value}" @click="chooseItem3(index,item.value)">
+              {{item.label}}<i class="iconfont">&#xe62b;</i>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="selectedTitle-box">
         <span>您当前选择的是：</span>
@@ -106,7 +112,7 @@
     },
     methods: {
       async loadData() {
-        await axios.get("http://192.168.0.110:8080/static/testData/classifyData.json").then(res => {
+        await axios.get("../../../static/testData/classifyData.json").then(res => {
           console.log(res);
           if (res.status == 200) {
             this.linkageData = res.data.linkageData
@@ -118,7 +124,7 @@
 
             this.chosedData = JSON.parse(this.$route.query.chosedData)
             this.setData()
-            this.position()
+            this.position1()
           }
         })
       },
@@ -139,7 +145,7 @@
           this.isNextFlag = false
         }
       },
-      position1() {
+      position() {
         for (var i = 0; i < this.linkageData.length; i++) {
           //循环一级菜单
           if (this.inputKey[0] == this.linkageData[i].value) {
@@ -148,6 +154,9 @@
             this.selectIndex.item1 = this.inputKey[0]
             this.isShowFlag2 = "true"
             this.item2ChildData = this.linkageData[i].children
+            if (i * 32 > 370) {
+              document.getElementById('item-a').scrollTop = i * 32
+            }
             for (var j = 0; j < this.item2ChildData.length; j++) {
               //循环二级菜单
               if (this.inputKey[1] == this.item2ChildData[j].value) {
@@ -155,6 +164,9 @@
                 this.chosedData[1].label = this.item2ChildData[j].label
                 this.selectIndex.item2 = this.inputKey[1]
                 this.item3ChildData = this.item2ChildData[j].children
+                if (j * 32 > 370) {
+                  document.getElementById('item-b').scrollTop = j * 32
+                }
                 //判断三级菜单有无内容
                 if (this.item3ChildData.length > 0) {
                   this.isShowFlag3 = "true"
@@ -165,6 +177,9 @@
                         this.chosedData[2].value = this.inputKey[2]
                         this.chosedData[2].label = this.item3ChildData[x].label
                         this.selectIndex.item3 = this.inputKey[2]
+                        if (x * 32 > 370) {
+                          document.getElementById('item-c').scrollTop = x * 32
+                        }
                         this.setData()
                         return
                       }
@@ -180,9 +195,7 @@
         }
       },
       // 根据传值定位三级联动菜单
-      position() {
-        console.log("this.inputKey", this.inputKey)
-        console.log("定位")
+      position1() {
         this.selectIndex.item1 = this.chosedData[0].value
         this.selectIndex.item2 = this.chosedData[1].value
         this.selectIndex.item3 = this.chosedData[2].value
@@ -190,13 +203,10 @@
         //循环一级菜单
         for (var i = 0; i < this.linkageData.length; i++) {
           if (this.linkageData[i].value == this.chosedData[0].value) {
-
-            // if(i*32 > 170 ){
-            //   console.log(i*32)
-            //   // document.getElementById('item-a').scrollTop=i*32
-            //   document.getElementsByClassName("item-a")[0].scrollTop=200
-            //   console.log(document.getElementsByClassName("item-a")[0].scrollTop)
-            // }
+            console.log(i * 32)
+            if (i * 32 > 370) {
+              document.getElementById('item-a').scrollTop = i * 32
+            }
             this.item2ChildData = this.linkageData[i].children
             this.isShowFlag2 = true
             //循环二级菜单
@@ -204,7 +214,19 @@
               if (this.item2ChildData[j].value == this.chosedData[1].value) {
                 this.item3ChildData = this.item2ChildData[j].children
                 this.isShowFlag3 = true
-                return
+                if (j * 32 > 370) {
+                  document.getElementById('item-b').scrollTop = j * 32
+                }
+                for (var x = 0; x < this.item3ChildData.length; x++) {
+                  //循环三级菜单
+                  if (this.chosedData[2].value == this.item3ChildData[x].value) {
+                    if (x * 32 > 370) {
+                      document.getElementById('item-c').scrollTop = x * 32
+                    }
+                    this.setData()
+                    return
+                  }
+                }
               }
             }
             return
@@ -348,7 +370,6 @@
     align-items: center;
 
     span {
-      letter-spacing: 1px;
       font-size: 12px;
       font-family: Microsoft YaHei-Regular, Microsoft YaHei;
       font-weight: 400;
@@ -368,11 +389,11 @@
       .input-search {
         width: 560px;
         height: 34px;
-        font-size: 12px;
 
         /deep/ .el-input__inner {
           height: 34px;
           line-height: 34px;
+          font-size: 12px;
         }
 
       }
@@ -400,22 +421,6 @@
       line-height: 34px;
     }
 
-    // /deep/.el-cascader__dropdown .el-cascader-panel {
-    //   font-size: 12px;
-    //   display: none !important;
-    // }
-
-    // /deep/.el-cascader-menu{
-    //   font-size: 12px;
-    //   display: none !important;
-    // }
-
-    // /deep/ .el-cascader-panel {
-    //   display: none;
-    // }
-    // /deep/ .el-cascader-menu{
-    //   display: none;
-    // }
   }
 
 
@@ -428,26 +433,27 @@
     box-sizing: border-box;
 
     //改变滚动条样式  start
-    .item-a::-webkit-scrollbar,
-    .item-b::-webkit-scrollbar,
-    .item-c::-webkit-scrollbar {
-      width: 4px;
+    .item-a-ul::-webkit-scrollbar,
+    .item-b-ul::-webkit-scrollbar,
+    .item-c-ul::-webkit-scrollbar {
+      padding: 2px 0px;
+      width: 2px;
     }
 
-    .item-a::-webkit-scrollbar-thumb,
-    .item-b::-webkit-scrollbar-thumb,
-    .item-c::-webkit-scrollbar-thumb {
+    .item-a-ul::-webkit-scrollbar-thumb,
+    .item-b-ul::-webkit-scrollbar-thumb,
+    .item-c-ul::-webkit-scrollbar-thumb {
       border-radius: 10px;
       box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0);
     }
 
-    .item-a::-webkit-scrollbar-track,
-    .item-b::-webkit-scrollbar-track,
-    .item-c::-webkit-scrollbar-track {
-      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    .item-a-ul::-webkit-scrollbar-track,
+    .item-b-ul::-webkit-scrollbar-track,
+    .item-c-ul::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0);
       border-radius: 0;
-      background: rgba(0, 0, 0, 0.1);
+      background: rgba(0, 0, 0, 0);
     }
 
     //改变滚动条样式  end
@@ -466,7 +472,11 @@
         border-radius: 10px 10px 10px 10px;
         box-sizing: border-box;
         border: 1px solid #EBEEF5;
-        overflow-y: auto;
+
+        ul {
+          height: 100%;
+          overflow-y: auto;
+        }
 
         li {
           width: 100%;

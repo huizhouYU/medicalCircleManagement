@@ -1,18 +1,13 @@
 <template>
   <el-container class="content">
-    <!-- <el-header class="header">
-      <home-header></home-header>
-    </el-header> -->
+   
     <el-container>
       <!-- 左侧菜单栏 -->
-      <!-- :class="[{password:isHide},'owl']" -->
-      <!-- :class="[{collapse-aside:isColl},'aside']" -->
       <el-aside :class="[{collapseAside:isColl},'aside']">
         <MenusTree :getIsCollapse="getCollapse"></MenusTree>
       </el-aside>
       <el-container>
         <el-header class="header">
-          <!-- <home-header></home-header> -->
           <div class="header-box">
             <div class="img-box">
             </div>
@@ -45,7 +40,6 @@
       MenusTree,
       homeHeader
     },
-
     created() {
       // console.log(this.$router)
       // 获取token
@@ -82,7 +76,6 @@
 <style scoped lang="less">
   /* 整个页面 */
   .content {
-    // height: 100%;
     background-color: #F5F7FA;
     position: relative;
   }
