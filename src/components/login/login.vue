@@ -364,29 +364,29 @@
         // })
 
       },
-      async newlogin() {
-        if (this.loginForm.username === '' && this.loginForm.password === '') {
-          this.$message.error('用户名和密码不能为空！')
-          return ''
-        }
-        const res = await this.$http.post('login', this.loginForm)
-        // 对象结构赋值
-        const {
-          data,
-          meta: {
-            msg,
-            status
-          }
-        } = res.data
-        if (msg === 200) {
-          // 保存token值
-          localStorage.setItem('token', data.token)
-          // 登录成功 跳转首页
-          this.$router.push({
-            name: 'home'
-          })
-        }
-      },
+      // async newlogin() {
+      //   if (this.loginForm.username === '' && this.loginForm.password === '') {
+      //     this.$message.error('用户名和密码不能为空！')
+      //     return ''
+      //   }
+      //   const res = await this.$http.post('login', this.loginForm)
+      //   // 对象结构赋值
+      //   const {
+      //     data,
+      //     meta: {
+      //       msg,
+      //       status
+      //     }
+      //   } = res.data
+      //   if (msg === 200) {
+      //     // 保存token值
+      //     localStorage.setItem('token', data.token)
+      //     // 登录成功 跳转首页
+      //     this.$router.push({
+      //       name: 'home'
+      //     })
+      //   }
+      // },
       getCookie() {
         if (document.cookie.length > 0) {
           var arr = document.cookie.split(";");
@@ -568,6 +568,7 @@
       position: relative;
 
       /* 接下来是猫头鹰的样式 */
+      /* 接下来是猫头鹰的样式 */
       .owl {
         width: 211px;
         height: 108px;
@@ -579,65 +580,65 @@
         /* 水平居中 */
         left: 50%;
         transform: translateX(-50%);
+      }
 
-        .hand {
-          width: 34px;
-          height: 34px;
-          border-radius: 40px;
-          background-color: #39b4ff;
-          /* 绝对定位 */
-          position: absolute;
-          left: 12px;
-          bottom: -8px;
-          /* 沿Y轴缩放0.6倍（压扁） */
-          transform: scaleY(0.6);
-          /* 动画过渡 */
-          transition: 0.3s ease-out;
-        }
+      .owl .hand {
+        width: 34px;
+        height: 34px;
+        border-radius: 40px;
+        background-color: #39b4ff;
+        /* 绝对定位 */
+        position: absolute;
+        left: 12px;
+        bottom: -8px;
+        /* 沿Y轴缩放0.6倍（压扁） */
+        transform: scaleY(0.6);
+        /* 动画过渡 */
+        transition: 0.3s ease-out;
+      }
 
-        .hand.hand-r {
-          left: 170px;
-        }
+      .owl .hand.hand-r {
+        left: 170px;
+      }
 
-        .password .hand {
-          transform: translateX(42px) translateY(-15px) scale(0.7);
-        }
+      .owl.password .hand {
+        transform: translateX(42px) translateY(-15px) scale(0.7);
+      }
 
-        .password .hand.hand-r {
-          transform: translateX(-42px) translateY(-15px) scale(0.7);
-        }
+      .owl.password .hand.hand-r {
+        transform: translateX(-42px) translateY(-15px) scale(0.7);
+      }
 
-        .arms {
-          position: absolute;
-          top: 58px;
-          width: 100%;
-          height: 41px;
-          overflow: hidden;
+      .owl .arms {
+        position: absolute;
+        top: 58px;
+        width: 100%;
+        height: 41px;
+        overflow: hidden;
+      }
 
-          .arm {
-            width: 40px;
-            height: 65px;
-            position: absolute;
-            left: 20px;
-            top: 40px;
-            background: url("../../../static/img/login/owl-login-arm.png") no-repeat;
-            transform: rotate(-20deg);
-            transition: 0.3s ease-out;
+      .owl .arms .arm {
+        width: 40px;
+        height: 65px;
+        position: absolute;
+        left: 20px;
+        top: 40px;
+        background: url("../../../static/img/login/owl-login-arm.png") no-repeat;
+        transform: rotate(-20deg);
+        transition: 0.3s ease-out;
+      }
 
-            .arm-r {
-              transform: rotate(20deg) scaleX(-1);
-              left: 158px;
-            }
+      .owl .arms .arm.arm-r {
+        transform: rotate(20deg) scaleX(-1);
+        left: 158px;
+      }
 
-            .arm {
-              transform: translateY(-40px) translateX(40px);
+      .owl.password .arms .arm {
+        transform: translateY(-40px) translateX(40px);
+      }
 
-              .arm-r {
-                transform: translateY(-40px) translateX(-40px) scaleX(-1);
-              }
-            }
-          }
-        }
+      .owl.password .arms .arm.arm-r {
+        transform: translateY(-40px) translateX(-40px) scaleX(-1);
       }
 
       /*猫头鹰的样式  结束 */
@@ -892,7 +893,7 @@
           // /deep/.form-label {
           //   margin-bottom: 0px;
           // }
-          /deep/ .el-form-item{
+          /deep/ .el-form-item {
             margin-bottom: 0px;
           }
 

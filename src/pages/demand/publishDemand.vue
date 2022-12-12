@@ -439,7 +439,7 @@
       }
 
       .edit {
-        height: 260px;
+        height: 366px;
       }
     }
   }
